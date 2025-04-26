@@ -25,13 +25,13 @@ const Landing = () => {
         snapshot.docs.forEach((doc) => {
           list.push({ id: doc.id, ...doc.data() });
         });
-  
+
         list.sort((a, b) => {
           return b.timeStamp.seconds - a.timeStamp.seconds;
         });
-  
+
         const topFourProducts = list.slice(0, 4);
-  
+
         setProducts(topFourProducts);
         setLoading(false);
       },
@@ -39,7 +39,7 @@ const Landing = () => {
         console.error(error);
       }
     );
-  
+
     return () => {
       unsub();
     }
@@ -53,7 +53,7 @@ const Landing = () => {
 
   const loadingOverlayStyle = {
     display: loading ? 'flex' : 'none',
-    height: '50vh',
+    height: '100%',
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
@@ -65,11 +65,21 @@ const Landing = () => {
       {!loading ?
         (
           <div>
-            <div className='landing-img'></div>
+            
+            <div className='landing-img'>
+              <div className='landing-img-text'>
+                <span>
+                  A New Story with Every Stroke of the Brush
+                </span>
+                <button>
+                  View All Products
+                </button>
+              </div>
+            </div>
 
             <div className='latest-products' style={{ display: "flex", flexDirection: "column", textAlign: "center", gap: "24px" }}>
               {/* Latest Products */}
-              <div className='productsCard-container' style={{display: "flex", gap: "24px", marginTop: "24px"}}>
+              <div className='productsCard-container' style={{ display: "flex", gap: "24px", marginTop: "24px" }}>
 
                 {products &&
                   products.map((item) => (
@@ -81,7 +91,7 @@ const Landing = () => {
                           <div className='newest-product' style={{ backgroundImage: `url(${item.img})` }}>
                             <div className="hero-text">
                               <div className='text-container'>
-                                <h1 style={{fontSize:'36px'}}>{item.name} out now</h1>
+                                <h1 style={{ fontSize: '36px' }}>{item.name} out now</h1>
                                 <button>preview</button>
                               </div>
                             </div>
@@ -95,7 +105,7 @@ const Landing = () => {
 
                       }
 
-                      
+
                     </div>
                   ))
                 }
@@ -109,7 +119,7 @@ const Landing = () => {
             <div>
               <Steps />
             </div>
-          </div>        
+          </div>
         ) :
         (
           <div style={loadingOverlayStyle}>

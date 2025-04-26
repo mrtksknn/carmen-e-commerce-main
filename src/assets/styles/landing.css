@@ -17,10 +17,38 @@
 .landing-img {
   width: 100%;
   height: 750px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-image: url(../images/newMainBg.jpg);
+
+  .landing-img-text {
+    gap: 12px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    font-size: 48px;
+    align-items: center;
+    flex-direction: column;
+    backdrop-filter: blur(5px);
+    justify-content: center;
+    background: #00000088;
+
+    span {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    button {
+      height: 44px;
+      font-size: 24px;
+      padding: 8px 12px;
+      width: fit-content;
+    }
+  }
 }
 
 .newest-product {
