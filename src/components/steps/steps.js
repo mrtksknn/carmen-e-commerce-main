@@ -30,23 +30,25 @@ const Steps = ({ show }) => {
     ]
 
     return (
-        <div className={`section steps ${animate ? 'animated' : ''}`}>
-            <h2>başlamak için bu 3 adımı takip edin</h2>
+        <section>
+            <div className={`section steps ${animate ? 'animated' : ''}`}>
+                <h2>başlamak için bu 3 adımı takip edin</h2>
 
-            <div className='stepsCard-container'>
-                {
-                    stepsDetail?.map((step, index) => (
-                        <div key={step.title} className={`steps-card cards-${index}`}>
-                            <div className="icon">
-                                <span className="material-icons">{step.icon}</span>
+                <div className='stepsCard-container'>
+                    {
+                        stepsDetail?.map((step, index) => (
+                            <div key={step.title} className={`steps-card cards-${index}`}>
+                                <div className="icon">
+                                    <span className="material-icons">{step.icon}</span>
+                                </div>
+                                <p className='title'>{step.title}</p>
+                                <p className='subtitle'>{step.subTitle}</p>
                             </div>
-                            <p className='title'>{step.title}</p>
-                            <p className='subtitle'>{step.subTitle}</p>
-                        </div>
-                    ))
-                }
+                        ))
+                    }
+                </div>
             </div>
-        </div>
+        </section>
     );
 };
 
