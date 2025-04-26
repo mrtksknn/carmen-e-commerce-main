@@ -1,0 +1,50 @@
+.originals-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.originals-card-container {
+    display: grid;
+    row-gap: 40px;
+    margin: 0 auto;
+    column-gap: 32px;
+    max-width: 1560px;
+    justify-content: center;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+}
+
+/*********** MEDIA QUERIES ***********/
+/* 1440px ve daha geniş ekranlar için stil */
+@media only screen and (min-width: 1441px) {
+    .originals-card-container {
+        grid-template-columns: repeat(4, 1fr);
+        column-gap: 40px;
+    }
+}
+  
+/* 1024px - 1439px arası ekranlar için stil */
+@media only screen and (min-width: 1025px) and (max-width: 1440px) {
+    .originals-card-container {
+        grid-template-columns: repeat(3, 1fr);
+        column-gap: 32px;
+    }
+}
+  
+/* 768px - 1023px arası ekranlar için stil */
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+    .originals-card-container {
+        grid-template-columns: repeat(2, 1fr);
+        column-gap: 24px;
+    }
+}
+  
+/* 320px'den küçük ekranlar için stil */
+@media only screen and (max-width: 767px) {
+    .originals-card-container {
+        grid-template-columns: 1fr;
+        row-gap: 24px;
+    }
+}

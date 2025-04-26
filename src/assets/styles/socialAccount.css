@@ -1,0 +1,58 @@
+.socialAccount-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.socialCards {
+    gap: 8px;
+    height: 100%;
+    display: flex;
+    max-width: 1290px;
+    justify-content: center;
+}
+
+.socialCard {
+    width: 100%;
+    height: 100%;
+    max-width: 190px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url(../images/mainBackground.png);
+}
+
+.socialCard > img {
+    width: 100%;
+    height: 100%;
+}
+
+/*********** MEDIA QUERIES ***********/
+
+/* 1440px ve daha geniş ekranlar için stil */
+@media only screen and (min-width: 1440px) {
+
+}
+
+/* 1024px - 1439px arası ekranlar için stil */
+@media only screen and (min-width: 1024px) and (max-width: 1439px) {
+
+}
+
+/* 768px - 1023px arası ekranlar için stil */
+@media only screen and (min-width: 768px) and (max-width: 1023px) {
+  
+}
+
+/* 320px - 767px arası ekranlar için stil */
+@media only screen and (min-width: 320px) and (max-width: 767px) {
+  
+}
+
+/* 320px'den küçük ekranlar için stil */
+@media only screen and (max-width: 425px) {
+  .socialAccount-container {
+    text-align: center;
+  }
+}

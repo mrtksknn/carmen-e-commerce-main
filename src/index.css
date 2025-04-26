@@ -1,0 +1,34 @@
+* {
+  margin: 0;
+  padding: 0;
+  color: #fff;
+  font-weight: 400;
+  text-decoration: none;
+  box-sizing: border-box;
+  font-family: "Roboto", serif;
+}
+
+#root {
+  width: 100%;
+}
+
+/* Font Weight */
+.bold {
+  font-weight: 700;
+}
+
+/* Colors */
+.wine-red { color: #971616; }
+.netural-dark { background: #121212; }
+
+.page-header {
+  gap: 8px;
+  width: 100%;
+  height: 80px;
+  display: flex;
+  margin-bottom: 24px;
+  align-items: center;
+  background: #ff2c2c26;
+  justify-content: center;
+  text-transform: uppercase;
+}
