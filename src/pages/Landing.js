@@ -6,6 +6,7 @@ import '../assets/styles/landing.css';
 
 import { db } from "../firebase";
 import { collection, onSnapshot } from "firebase/firestore";
+import Collections from '../components/collections/collections';
 
 const Landing = () => {
 
@@ -114,13 +115,15 @@ const Landing = () => {
                       </div>
                     ))
                   }
-                </div>
 
-                <a href="/tum-urunler">Tümünü Gör...</a>
+                </div>
               </div>
             </section>
 
+            <Collections />
+
             <Steps />
+
           </div>
         ) :
         (
