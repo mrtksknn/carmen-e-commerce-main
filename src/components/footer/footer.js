@@ -1,14 +1,12 @@
 import '../../assets/styles/footer.css';
-import SocialAccount from './socialAccount';
 
 const Footer = () => {
     return (
         <footer className="footer-container">
-<SocialAccount />
 
             <div className='footer'>
 
-                <div style={{gap: "12px", display: "flex", flexDirection: "column"}}>
+                <div style={{gap: "8px", display: "flex", flexDirection: "column"}}>
                     <label>Gelişmelerden, yeni ürünlerden ve daha fazlası için üye olun...</label>
                     <input
                         className='subscribe'

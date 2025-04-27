@@ -17,12 +17,12 @@
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 2rem;
-        background: #971616a6;
+        background: #191919;
     }
 }
 
 .collection-item {
-    background-color: #191919;
+    background-color: #681414;
     border-radius: 8px;
     overflow: hidden;
     text-align: center;
@@ -33,7 +33,6 @@
 .images-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 5px;
     height: auto;
 }
 

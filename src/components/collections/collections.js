@@ -51,7 +51,7 @@ const Collections = () => {
 
     return (
         <section className="collections-container">
-            <h1 className="wine-red">Koleksiyonlar</h1>
+            <h1 className="wine-red">Collections</h1>
             <div className="collections">
                 {Object.entries(products).map(([collectionName, items]) => (
                     <div key={collectionName} className="collection-item">

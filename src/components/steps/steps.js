@@ -30,9 +30,9 @@ const Steps = ({ show }) => {
     ]
 
     return (
-        <section>
-            <div className={`section steps ${animate ? 'animated' : ''}`}>
-                <h2>başlamak için bu 3 adımı takip edin</h2>
+        <section className="steps-container">
+            <div className={`steps ${animate ? 'animated' : ''}`}>
+                <h2>3 Steps to Start</h2>
 
                 <div className='stepsCard-container'>
                     {

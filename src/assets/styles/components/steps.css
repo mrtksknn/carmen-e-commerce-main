@@ -1,76 +1,85 @@
-.steps {
+.steps-container {
     display: flex;
     align-items: center;
     flex-direction: column;
     text-transform: capitalize;
+
+    .steps {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        text-transform: capitalize;
+
+        .stepsCard-container {
+            gap: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+
+            .steps-card {
+                gap: 24px;
+                width: 400px;
+                height: 160px;
+                display: flex;
+                padding: 24px;
+                margin-top: 40px;
+                position: relative;
+                align-items: center;
+                border-radius: 10px;
+                flex-direction: column;
+                justify-content: end;
+                background: #681414;
+
+                .title {
+                    font-size: 24px;
+                    font-weight: 700;
+                    text-transform: capitalize;
+                }
+
+                .subtitle {
+                    font-size: 14px;
+                    letter-spacing: 1px;
+                    line-height: 16px;
+                    color: #ffffff78;
+                    text-align: center;
+                    text-transform: capitalize;
+                }
+            }
+        }
+    }
 }
 
-.steps > h2 {
+.steps>h2 {
     margin: 24px 0;
     letter-spacing: 1px;
 }
 
-.stepsCard-container {
-    flex-wrap: wrap;
-}
-
-.steps-card {
-    gap: 24px;
-    width: 400px;
-    height: 320px;
-    display: flex;
-    padding: 24px;
-    align-items: center;
-    border-radius: 10px;
-    flex-direction: column;
-    justify-content: center;
-    border: 1px solid #5F5F5F;
-}
-
-.steps-card:hover {
-    border: 1px solid #fff;
-}
-
-.steps-card > .title {
-    font-size: 24px;
-    font-weight: 700;
-    text-transform: capitalize;
-}
-
-.steps-card > .subtitle {
-    font-size: 14px;
-    letter-spacing: 1px;
-    line-height: 16px;
-    color: #ffffff78;
-    text-align: center;
-    text-transform: capitalize;
-}
-
 .icon {
+    top: -40px;
     width: 80px;
     height: 80px;
     display: flex;
     border-radius: 50%;
-    background: #971616;
+    background: #fff;
     align-items: center;
+    position: absolute;
     justify-content: center;
+
+    span {
+        color: #000;
+    }
 }
 
-.icon > span {
+.icon>span {
     font-size: 36px;
 }
 
 /*********** MEDIA QUERIES ***********/
 
 /* 1440px ve daha geniş ekranlar için stil */
-@media only screen and (min-width: 1441px) {
-
-}
+@media only screen and (min-width: 1441px) {}
 
 /* 1024px - 1439px arası ekranlar için stil */
-@media only screen and (min-width: 1025px) and (max-width: 1440px) {
-
-}
+@media only screen and (min-width: 1025px) and (max-width: 1440px) {}
 
 /* 768px - 1023px arası ekranlar için stil */
 @media only screen and (min-width: 768px) and (max-width: 1024px) {
@@ -80,9 +89,7 @@
 }
 
 /* 320px - 767px arası ekranlar için stil */
-@media only screen and (min-width: 320px) and (max-width: 767px) {
-  
-}
+@media only screen and (min-width: 320px) and (max-width: 767px) {}
 
 /* 320px'den küçük ekranlar için stil */
 @media only screen and (max-width: 425px) {

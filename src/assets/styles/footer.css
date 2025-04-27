@@ -1,63 +1,53 @@
 .footer-container {
     gap: 24px;
     display: flex;
-    margin-top: auto;
     padding: 32px 30px;
-    flex-direction: column;
+    border-top: 1px solid #252525;
+
+    .footer {
+        width: 100%;
+        display: flex;
+        margin: 0 auto;
+        align-items: center;
+        justify-content: space-between;
+
+        div {
+
+            label {
+                font-size: 14px;
+            }
+        }
     }
 
-.footer {
-    width: 100%;
-    display: flex;
-    margin: 0 auto;
-    max-width: 1240px;
-    align-items: center;
-    justify-content: space-between;
+    .subscribe {
+        outline: none;
+        box-shadow: none;
+        background: rgb(25 25 25);
+    }
+
+    .patent {
+        min-width: 340px;
+        font-size: 14px;
+        padding-top: 24px;
+        text-align: right;
+        letter-spacing: 2px;
+    }
 }
 
-.documents {
-    gap: 12px;
-    display: flex;
-    flex-direction: column;
-}
-
-.documents > div {
-    gap: 12px;
-    display: flex;
-    font-size: 18px;
-    margin-bottom: 24px;
-}
-
-.patent {
-    width: 100%;
-    font-size: 12px;
-    padding-top: 24px;
-    text-align: center;
-    letter-spacing: 2px;
-    border-top: 1px solid #777E90;
-}
 
 /*********** MEDIA QUERIES ***********/
 
 /* 1440px ve daha geniş ekranlar için stil */
-@media only screen and (min-width: 1440px) {
-
-}
+@media only screen and (min-width: 1440px) {}
 
 /* 1024px - 1439px arası ekranlar için stil */
-@media only screen and (min-width: 1024px) and (max-width: 1439px) {
-
-}
+@media only screen and (min-width: 1024px) and (max-width: 1439px) {}
 
 /* 768px - 1023px arası ekranlar için stil */
-@media only screen and (min-width: 768px) and (max-width: 1023px) {
-  
-}
+@media only screen and (min-width: 768px) and (max-width: 1023px) {}
 
 /* 320px - 767px arası ekranlar için stil */
-@media only screen and (min-width: 320px) and (max-width: 767px) {
-  
-}
+@media only screen and (min-width: 320px) and (max-width: 767px) {}
 
 /* 320px'den küçük ekranlar için stil */
 @media only screen and (max-width: 425px) {

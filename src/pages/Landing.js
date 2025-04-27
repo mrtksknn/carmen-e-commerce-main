@@ -122,7 +122,7 @@ const Landing = () => {
 
             <Collections />
 
-            <Steps />
+            {/* <Steps /> */}
 
           </div>
         ) :
