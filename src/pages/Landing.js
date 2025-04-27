@@ -73,9 +73,11 @@ const Landing = () => {
                   <span>
                     A New Story with Every Stroke of the Brush
                   </span>
-                  <button>
-                    View All Products
-                  </button>
+                  <a href="/products">
+                    <button>
+                      View All Products
+                    </button>
+                  </a>
                 </div>
               </div>
             </section>

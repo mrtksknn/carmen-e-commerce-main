@@ -20,7 +20,7 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<Landing />} />
             <Route path="tum-urunler" element={<AllProducts />} />
-            <Route path="orijinal" element={<Originals />} />
+            <Route path="products" element={<Originals />} />
             <Route path="baski" element={<Prints />} />
             <Route path="koleksiyonlar" element={<Collections />} />
             <Route path="hakkimda" element={<AboutMe />} />

@@ -42,16 +42,18 @@
       font-weight: 600;
     }
 
-    button {
-      height: 44px;
-      font-size: 24px;
-      padding: 8px 12px;
-      width: fit-content;
-    }
+    a {
+      button {
+        width: fit-content;
+        height: 44px;
+        font-size: 24px;
+        padding: 8px 12px;
+      }
 
-    button:hover {
-      cursor: pointer;
-      background: #811414;
+      button:hover {
+        cursor: pointer;
+        background: #811414;
+      }
     }
   }
 }

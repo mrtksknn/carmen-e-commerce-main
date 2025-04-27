@@ -26,7 +26,7 @@ const TopMenu = () => {
         },
         {
             text: "Originals",
-            link: "/orijinal"
+            link: "/products"
         },
         {
             text: "Products",
