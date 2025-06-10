@@ -101,7 +101,9 @@ const Landing = () => {
                               <div className="hero-text">
                                 <div className='text-container'>
                                   <h1 style={{ fontSize: '36px' }}>{item.name}</h1>
-                                  <button>Preview</button>
+                                  <a href={`/details/${item.name?.toLowerCase()}`}>
+                                    <button>Preview</button>
+                                  </a>
                                 </div>
                               </div>
                             </div>

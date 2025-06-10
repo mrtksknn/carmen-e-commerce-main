@@ -25,12 +25,8 @@ const TopMenu = () => {
             link: "/"
         },
         {
-            text: "Originals",
-            link: "/products"
-        },
-        {
             text: "Products",
-            link: "/urunler"
+            link: "/products"
         },
         {
             text: "Collections",

@@ -68,9 +68,9 @@ const Originals = () => {
   return (
     <div className="originals-container">
       <div className='page-header'>
-        <h4><a href="/">Anasayfa</a></h4>
+        <h4><a href="/">Home</a></h4>
         <h4 style={{fontSize: '24px'}}>/</h4>
-        <h4>Orijinal</h4>
+        <h4>Products</h4>
       </div>
 
       {!loading ?

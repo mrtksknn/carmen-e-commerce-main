@@ -1,5 +1,6 @@
 import './App.css';
 import React from 'react';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 // Pages
 import Layout from './pages/Layout';
@@ -12,9 +13,11 @@ import Upload from './pages/Upload';
 import AllProducts from './pages/AllProducts';
 import Collections from './pages/Collections';
 
+const queryClient = new QueryClient();
+
 function App() {
   return (
-    <div className="App netural-dark scrollable">
+    <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Layout />}>
@@ -29,7 +32,7 @@ function App() {
           <Route path="upload" element={<Upload />} />
         </Routes>
       </BrowserRouter>
-    </div>
+    </QueryClientProvider>
   );
 }
 
