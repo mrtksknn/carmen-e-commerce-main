@@ -4,26 +4,21 @@ import React from 'react';
 // Components
 import Topbar from '../components/topbar/topbar';
 import Footer from '../components/footer/footer';
-import TopMenu from '../components/topbar/topMenu/topMenu';
 // Css
 import '../assets/styles/layout.css';
 
 const Layout = () => {
 
   return (
-    <div style={{height: '100%'}}>
-      <div className="layout-container">
-        <Topbar />
-        <TopMenu />
+    <div className="min-h-screen bg-background">
+      <Topbar />
 
-        <main>
-          <Outlet />
-        </main>
+      <main>
+        <Outlet />
+      </main>
 
-        <Footer />
-      </div>
+      <Footer />
     </div>
-    
   )
 };
 
