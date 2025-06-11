@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
+import { Link } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
-import Steps from '../components/steps/steps';
 import '../assets/styles/landing.css';
 
 import { db } from "../firebase";
@@ -70,14 +70,30 @@ const Landing = () => {
             <section>
               <div className='landing-img'>
                 <div className='landing-img-text'>
-                  <span>
-                    A New Story with Every Stroke of the Brush
-                  </span>
-                  <a href="/products">
-                    <button>
-                      View All Products
-                    </button>
-                  </a>
+                  <div className='landing-img-content'>
+                    <h1>
+                      Welcome to My
+                      Art Universe
+                    </h1>
+                    <p>
+                      Discover a collection of original artworks that capture the beauty of nature, the complexity of emotions, and the magic of imagination.
+                    </p>
+
+                    <div className='link-container'>
+                      <Link
+                        to="/collections"
+                        className="link active-link"
+                      >
+                        Explore Collections
+                      </Link>
+                      <Link
+                        to="/about"
+                        className="link"
+                      >
+                        About the Artist
+                      </Link>
+                    </div>
+                  </div>
                 </div>
               </div>
             </section>
