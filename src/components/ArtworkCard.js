@@ -1,0 +1,42 @@
+
+import React from 'react';
+import { Link } from 'react-router-dom';
+
+const ArtworkCard = ({ artwork, showPrice = true }) => {
+  return (
+    <Link 
+      to={`/artwork/${artwork.id}`}
+      className="group block bg-card rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105"
+    >
+      <div className="aspect-[4/3] overflow-hidden">
+        <img
+          src={artwork.image}
+          alt={artwork.title}
+          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+        />
+      </div>
+      <div className="p-4 text-white flex flex-col text-left">
+        <h3 className="text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
+          {artwork.title}
+        </h3>
+
+        <p className="text-muted-foreground text-sm mb-2 line-clamp-2">
+          {artwork.description}
+        </p>
+
+        <div className="flex justify-between items-center">
+          <span className="text-xs text-muted-foreground bg-red-500/50 px-2 py-1 rounded">
+            {artwork.category}
+          </span>
+          {showPrice && (
+            <span className="text-lg font-bold text-primary">
+              {artwork.price}
+            </span>
+          )}
+        </div>
+      </div>
+    </Link>
+  );
+};
+
+export default ArtworkCard;

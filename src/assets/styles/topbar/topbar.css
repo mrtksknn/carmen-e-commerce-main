@@ -8,6 +8,7 @@
     position: fixed;
     top: 0;
     z-index: 1;
+    border-bottom: 1px solid #570e0d;
     backdrop-filter: blur(4px);
 }
 

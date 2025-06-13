@@ -70,7 +70,8 @@
           border-radius: calc(0.5rem - 2px);
         }
 
-        .active-link, .link:hover {
+        .active-link,
+        .link:hover {
           color: #000;
           background: #fff;
         }
@@ -99,93 +100,63 @@
 }
 
 .latest-products {
-  gap: 24px;
-  margin-top: 2rem;
+  margin: 5rem 0;
   display: flex;
   flex-direction: column;
   text-align: center;
 
-  h1 {
-    margin: 0;
-    font-weight: 600;
-    letter-spacing: 2px;
+  .section-header {
+    display: flex;
+    margin-bottom: 3rem;
+    align-items: center;
+    flex-direction: column;
+
+    h2 {
+      margin: 0;
+      color: #fff;
+      font-weight: 700;
+      font-size: 2.25rem;
+      letter-spacing: 2px;
+    }
+
+    p {
+      color: #94a3b8;
+      max-width: 42rem;
+      font-size: 1.25rem;
+    }
   }
 
   .productsCard-container {
-    gap: 24px;
+    width: 100%;
     display: flex;
+    justify-content: center;
 
-    .product-card {
-      background: #d1d1d10a;
-      padding: 20px;
-      border-radius: 10px;
+    .grid-layout {
+      width: 100%;
+      align-items: center;
+      max-width: 1280px;
+      display: grid;
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+      gap: 2rem;
+    }
 
-      .newest-product {
-        width: 100%;
-        height: 550px;
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(../images/mainBackground.png);
+    @media (min-width: 768px) {
+      .grid-layout {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
 
-        .hero-text {
-          .text-container {
-            gap: 24px;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            flex-direction: column;
-            border-radius: 6px;
-            text-align: center;
-            justify-content: center;
-            background: #121212cc;
-
-            button:hover {
-              cursor: pointer;
-              background: #811414;
-            }
-          }
-        }
+    @media (min-width: 1024px) {
+      .grid-layout {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
       }
     }
   }
 }
 
-.newest-container {
-  gap: 24px;
-  display: flex;
-  justify-content: center;
-}
-
-.newest-product {
-  position: relative;
-}
-
-.hero-text {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.4s ease-in-out;
-}
-
-.newest-product:hover .hero-text {
-  opacity: 1;
-}
-
 /*********** MEDIA QUERIES ***********/
 /* 1440px ve daha geniş ekranlar için stil */
 @media only screen and (min-width: 1441px) {
-  .productsCard-container {
-    padding: 0 30px;
-  }
-
   .product-card {
     width: 100% !important;
   }
