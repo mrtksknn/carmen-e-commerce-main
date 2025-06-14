@@ -2,13 +2,6 @@ import '../assets/styles/aboutMe.css';
 
 const AboutMe = () => {
 
-  const avatarImage = {
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    backgroundImage: 'url("https://loremflickr.com/640/480/people")'
-  };
-
   return (
     <div className="max-w-4xl mx-auto px-4 py-12 mt-12">
       {/* Hero Section */}

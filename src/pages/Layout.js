@@ -3,7 +3,6 @@ import { Outlet } from "react-router-dom";
 import React from 'react';
 // Components
 import Topbar from '../components/topbar/topbar';
-import Footer from '../components/footer/footer';
 // Css
 import '../assets/styles/layout.css';
 
