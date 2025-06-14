@@ -23,7 +23,7 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<Landing />} />
             <Route path="tum-urunler" element={<AllProducts />} />
-            <Route path="products" element={<Originals />} />
+            <Route path="products" element={<AllProducts />} />
             <Route path="baski" element={<Prints />} />
             <Route path="collections" element={<Collections />} />
             <Route path="hakkimda" element={<AboutMe />} />
