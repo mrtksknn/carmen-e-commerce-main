@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../assets/styles/landing.css';
 import ArtworkCard from '../components/ArtworkCard';
-import Collections from '../components/collections/collections';
+import SubscriptionArea from '../components/SubscriptionArea';
 
 const Landing = () => {
   const artworks = [
@@ -82,36 +82,34 @@ const Landing = () => {
   return (
     <div className="landing-container">
 
-      <section>
-        <div className='landing-img'>
-          <div className='landing-img-text'>
-            <div className='landing-img-content'>
-              <h1>
-                Welcome to My
-                Art Universe
-              </h1>
-              <p>
-                Discover a collection of original artworks that capture the beauty of nature, the complexity of emotions, and the magic of imagination.
-              </p>
-
-              <div className='link-container'>
-                <Link
-                  to="/collections"
-                  className="link active-link"
-                >
-                  Explore Collections
-                </Link>
-                <Link
-                  to="/about"
-                  className="link"
-                >
-                  About the Artist
-                </Link>
-              </div>
-            </div>
-          </div>
+      <section className="landing-img relative h-screen flex items-center justify-center">
+        <div className="relative text-center px-4 flex flex-col w-full h-full text-white"
+          style={{ backdropFilter: 'blur(5px)', background: '#00000088', alignItems: 'center', justifyContent: 'center' }}
+        >
+        <h1 className="text-5xl md:text-7xl font-bold text-foreground mb-6 animate-fade-in">
+          Welcome to My
+          <span className="text-primary block">Art Universe</span>
+        </h1>
+        <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto animate-fade-in">
+          Discover a collection of original artworks that capture the beauty of nature,
+          the complexity of emotions, and the magic of imagination.
+        </p>
+        <div className="space-x-4 animate-fade-in">
+          <Link
+            to="/collections"
+            className="text-black bg-white inline-block bg-primary text-primary-foreground px-8 py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors"
+          >
+            Explore Collections
+          </Link>
+          <Link
+            to="/about"
+            className="inline-block border border-primary text-primary px-8 py-3 rounded-lg font-semibold hover:bg-primary hover:text-primary-foreground transition-colors"
+          >
+            About the Artist
+          </Link>
         </div>
-      </section>
+    </div>
+      </section >
 
       <section>
         <div className='latest-products'>
@@ -135,12 +133,23 @@ const Landing = () => {
             </div>
 
           </div>
+
+          <div className="text-center mt-8">
+            <Link
+              to="/products"
+              className="text-white inline-block bg-red-500/50 text-accent-foreground px-8 py-3 rounded-lg font-semibold hover:bg-red-500/75"
+            >
+              View All Artworks
+            </Link>
+          </div>
         </div>
       </section>
 
-      <Collections />
+      <SubscriptionArea />
 
-    </div>
+      {/* <Collections /> */}
+
+    </div >
   );
 };
 
