@@ -26,7 +26,7 @@ function App() {
             <Route path="products" element={<AllProducts />} />
             <Route path="baski" element={<Prints />} />
             <Route path="collections" element={<Collections />} />
-            <Route path="hakkimda" element={<AboutMe />} />
+            <Route path="about" element={<AboutMe />} />
             <Route path="/details/:productName" element={<Details />} />
           </Route>
           <Route path="upload" element={<Upload />} />
