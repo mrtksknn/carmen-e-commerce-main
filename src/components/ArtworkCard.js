@@ -10,14 +10,14 @@ const ArtworkCard = ({ artwork, showPrice = true }) => {
     >
       <div className="aspect-[4/3] overflow-hidden">
         <img
-          src={artwork.image}
-          alt={artwork.title}
+          src={artwork.img}
+          alt={artwork.name}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
         />
       </div>
       <div className="p-4 text-white flex flex-col text-left">
         <h3 className="text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
-          {artwork.title}
+          {artwork.name}
         </h3>
 
         <p className="text-muted-foreground text-sm mb-2 line-clamp-2">

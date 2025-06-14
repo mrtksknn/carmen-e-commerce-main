@@ -1,83 +1,46 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../assets/styles/landing.css';
+import { db } from "../firebase";
+import { collection, onSnapshot } from "firebase/firestore";
 import ArtworkCard from '../components/ArtworkCard';
 import SubscriptionArea from '../components/SubscriptionArea';
 
 const Landing = () => {
-  const artworks = [
-    {
-      id: '1',
-      title: 'Mountain Serenity',
-      description: 'A breathtaking landscape capturing the tranquil beauty of mountain peaks at sunset.',
-      image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop',
-      price: '$1,200',
-      category: 'Landscapes',
-      dimensions: '24" x 36"',
-      medium: 'Oil on Canvas',
-      year: '2023'
-    },
-    {
-      id: '2',
-      title: 'Urban Dreams',
-      description: 'An abstract interpretation of city life with vibrant colors and dynamic forms.',
-      image: 'https://images.unsplash.com/photo-1470813740244-df37b8c1edcb?w=800&h=600&fit=crop',
-      price: '$800',
-      category: 'Abstract',
-      dimensions: '18" x 24"',
-      medium: 'Acrylic on Canvas',
-      year: '2023'
-    },
-    {
-      id: '3',
-      title: 'Ocean Depths',
-      description: 'A mesmerizing seascape that captures the power and beauty of ocean waves.',
-      image: 'https://images.unsplash.com/photo-1500375592092-40eb2168fd21?w=800&h=600&fit=crop',
-      price: '$950',
-      category: 'Seascapes',
-      dimensions: '20" x 30"',
-      medium: 'Watercolor',
-      year: '2023'
-    },
-    {
-      id: '4',
-      title: 'Forest Light',
-      description: 'Sunbeams filtering through ancient trees, creating a magical woodland scene.',
-      image: 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800&h=600&fit=crop',
-      price: '$1,100',
-      category: 'Landscapes',
-      dimensions: '22" x 28"',
-      medium: 'Oil on Canvas',
-      year: '2023'
-    },
-    {
-      id: '5',
-      title: 'Desert Bloom',
-      description: 'A vibrant display of wildflowers blooming in an unexpected desert landscape.',
-      image: 'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=800&h=600&fit=crop',
-      price: '$750',
-      category: 'Nature',
-      dimensions: '16" x 20"',
-      medium: 'Acrylic on Canvas',
-      year: '2023'
-    },
-    {
-      id: '6',
-      title: 'Alpine Majesty',
-      description: 'Towering peaks covered in snow, representing the raw power of nature.',
-      image: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800&h=600&fit=crop',
-      price: '$1,400',
-      category: 'Landscapes',
-      dimensions: '30" x 40"',
-      medium: 'Oil on Canvas',
-      year: '2023'
-    }
-  ]
-  const featuredArtworks = artworks.slice(0, 3);
+
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    const unsub = onSnapshot(collection(db, "products"),
+      (snapshot) => {
+        let list = [];
+        snapshot.docs.forEach((doc) => {
+          list.push({ id: doc.id, ...doc.data() });
+        });
+
+        list.sort((a, b) => {
+          return b.timeStamp.seconds - a.timeStamp.seconds;
+        });
+
+        const topThreeProducts = list.slice(0, 3);
+
+        setProducts(topThreeProducts);
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+
+    return () => {
+      unsub();
+    }
+  }, []);
+
+
 
   return (
     <div className="landing-container">
@@ -86,29 +49,29 @@ const Landing = () => {
         <div className="relative text-center px-4 flex flex-col w-full h-full text-white"
           style={{ backdropFilter: 'blur(5px)', background: '#00000088', alignItems: 'center', justifyContent: 'center' }}
         >
-        <h1 className="text-5xl md:text-7xl font-bold text-foreground mb-6 animate-fade-in">
-          Welcome to My
-          <span className="text-primary block">Art Universe</span>
-        </h1>
-        <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto animate-fade-in">
-          Discover a collection of original artworks that capture the beauty of nature,
-          the complexity of emotions, and the magic of imagination.
-        </p>
-        <div className="space-x-4 animate-fade-in">
-          <Link
-            to="/collections"
-            className="text-black bg-white inline-block bg-primary text-primary-foreground px-8 py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors"
-          >
-            Explore Collections
-          </Link>
-          <Link
-            to="/about"
-            className="inline-block border border-primary text-primary px-8 py-3 rounded-lg font-semibold hover:bg-primary hover:text-primary-foreground transition-colors"
-          >
-            About the Artist
-          </Link>
+          <h1 className="text-5xl md:text-7xl font-bold text-foreground mb-6 animate-fade-in">
+            Welcome to My
+            <span className="text-primary block">Art Universe</span>
+          </h1>
+          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto animate-fade-in">
+            Discover a collection of original artworks that capture the beauty of nature,
+            the complexity of emotions, and the magic of imagination.
+          </p>
+          <div className="space-x-4 animate-fade-in">
+            <Link
+              to="/collections"
+              className="text-black bg-white inline-block bg-primary text-primary-foreground px-8 py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors"
+            >
+              Explore Collections
+            </Link>
+            <Link
+              to="/about"
+              className="inline-block border border-primary text-primary px-8 py-3 rounded-lg font-semibold hover:bg-primary hover:text-primary-foreground transition-colors"
+            >
+              About the Artist
+            </Link>
+          </div>
         </div>
-    </div>
       </section >
 
       <section>
@@ -125,8 +88,8 @@ const Landing = () => {
           <div className='productsCard-container'>
 
             <div className='grid-layout'>
-              {featuredArtworks &&
-                featuredArtworks.map((artwork) => (
+              {products &&
+                products.map((artwork) => (
                   <ArtworkCard key={artwork.id} artwork={artwork} />
                 ))
               }
@@ -147,7 +110,33 @@ const Landing = () => {
 
       <SubscriptionArea />
 
-      {/* <Collections /> */}
+      <section className="py-20 bg-accent/20">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-4xl text-white font-bold text-foreground mb-6">The Artist Behind the Vision</h2>
+              <p className="text-lg text-muted-foreground mb-6" style={{ color: '#94a3b8' }}>
+                With over a decade of experience in fine arts, I create pieces that bridge the gap
+                between traditional techniques and contemporary expression. Each artwork tells a story,
+                captures a moment, or expresses an emotion that words cannot convey.
+              </p>
+              <Link
+                to="/about"
+                className="inline-block text-white font-semibold hover:underline"
+              >
+                Learn more about my journey →
+              </Link>
+            </div>
+            <div className="relative">
+              <img
+                src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=600&h=600&fit=crop"
+                alt="Artist at work"
+                className="rounded-lg shadow-xl"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
 
     </div >
   );
