@@ -7,7 +7,7 @@ import Layout from './pages/Layout';
 import Landing from './pages/Landing';
 import AboutMe from './pages/AboutMe';
 import Details from './pages/ProductDetails';
-import Upload from './pages/Upload';
+import Upload from './pages/Admin';
 import AllProducts from './pages/AllProducts';
 import Collections from './pages/Collections';
 import ContactMe from './pages/ContactMe';
@@ -28,7 +28,7 @@ function App() {
             <Route path="contact" element={<ContactMe />} />
             <Route path="/details/:productName" element={<Details />} />
           </Route>
-          <Route path="upload" element={<Upload />} />
+          <Route path="admin" element={<Upload />} />
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>
