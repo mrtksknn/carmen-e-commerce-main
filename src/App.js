@@ -21,12 +21,11 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Landing />} />
-            <Route path="tum-urunler" element={<AllProducts />} />
             <Route path="products" element={<AllProducts />} />
             <Route path="collections" element={<Collections />} />
             <Route path="about" element={<AboutMe />} />
             <Route path="contact" element={<ContactMe />} />
-            <Route path="/details/:productName" element={<Details />} />
+            <Route path="/product/:id" element={<Details />} />
           </Route>
           <Route path="admin" element={<Upload />} />
         </Routes>
