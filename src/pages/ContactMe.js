@@ -1,5 +1,8 @@
 import '../assets/styles/aboutMe.css';
 import React, { useState } from 'react';
+import emailjs from 'emailjs-com';
+import { db } from "../firebase";
+import { collection, getDocs } from "firebase/firestore";
 
 const ContactMe = () => {
 
@@ -7,20 +10,37 @@ const ContactMe = () => {
     name: '',
     email: '',
     subject: '',
-    message: ''
+    message: '',
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Simulate form submission
-    setFormData({ name: '', email: '', subject: '', message: '' });
+
+    emailjs
+      .send(
+        'service_tb170xp',    // örn: service_gmail
+        'template_6rez0q9',   // örn: template_contact
+        {
+          name: formData.name,
+          from_name: formData.name,
+          from_email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+        },
+        'HPGdH6pTAslP_R5k0'     // örn: xYzAbC123456
+      )
+      .then(() => {
+        alert('Your message was sent successfully!');
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      })
+      .catch((error) => {
+        alert('An error occurred. Please try again.');
+        console.error('Email send error:', error);
+      });
   };
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   return (
@@ -67,7 +87,7 @@ const ContactMe = () => {
                 onChange={handleChange}
                 required
                 style={{ borderColor: '#e5e7eb24' }}
-                className="w-full px-4 py-2 border border-input rounded-lg bg-transparent text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-4 py-2 border border-input rounded-lg bg-transparent text-white focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
 
@@ -82,13 +102,13 @@ const ContactMe = () => {
                 onChange={handleChange}
                 required
                 style={{ borderColor: '#e5e7eb24' }}
-                className="w-full px-4 py-2 border border-input rounded-lg bg-transparent text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-4 py-2 border border-input rounded-lg bg-transparent text-white focus:outline-none focus:ring-2 focus:ring-primary"
               >
-                <option value="">Select a subject</option>
-                <option value="purchase">Purchase Inquiry</option>
-                <option value="commission">Commission Request</option>
-                <option value="exhibition">Exhibition Opportunity</option>
-                <option value="general">General Question</option>
+                <option className='text-black' value="">Select a subject</option>
+                <option className='text-black' value="purchase">Purchase Inquiry</option>
+                <option className='text-black' value="commission">Commission Request</option>
+                <option className='text-black' value="exhibition">Exhibition Opportunity</option>
+                <option className='text-black' value="general">General Question</option>
               </select>
             </div>
 
@@ -104,7 +124,7 @@ const ContactMe = () => {
                 required
                 rows={5}
                 style={{ borderColor: '#e5e7eb24' }}
-                className="w-full px-4 py-2 border border-input rounded-lg bg-transparent text-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-vertical"
+                className="w-full px-4 py-2 border border-input rounded-lg bg-transparent text-white focus:outline-none focus:ring-2 focus:ring-primary resize-vertical"
                 placeholder="Tell me about your interest in my artwork or any questions you have..."
               />
             </div>

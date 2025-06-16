@@ -31,7 +31,7 @@ const Details = () => {
     return () => {
       unsub();
     }
-  }, [productName]);
+  }, [productName, id]);
 
   if (!id) {
     return (
