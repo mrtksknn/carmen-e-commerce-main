@@ -1,7 +1,15 @@
-// components/SubscriptionArea.js
 import React, { useState } from "react";
 import { Mail } from "lucide-react";
 import { useCustomToast } from "../components/ui/toast-context";
+import { db } from "../firebase"; // <- Firebase bağlantısı
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
 
 const SubscriptionArea = () => {
   const [email, setEmail] = useState("");
@@ -10,6 +18,7 @@ const SubscriptionArea = () => {
 
   const handleSubscribe = async (e) => {
     e.preventDefault();
+
     if (!email) {
       toast({
         type: "error",
@@ -20,14 +29,41 @@ const SubscriptionArea = () => {
 
     setIsLoading(true);
 
-    setTimeout(() => {
+    try {
+      // E-posta zaten kayıtlı mı kontrol et
+      const q = query(collection(db, "subscribers"), where("email", "==", email));
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        toast({
+          type: "info",
+          message: "This email is already subscribed.",
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      // Yeni abone olarak ekle
+      await addDoc(collection(db, "subscribers"), {
+        email,
+        subscribedAt: serverTimestamp(),
+      });
+
       toast({
         type: "success",
         message: "Thank you for subscribing to our newsletter.",
       });
+
       setEmail("");
+    } catch (error) {
+      console.error("Subscription failed:", error);
+      toast({
+        type: "error",
+        message: "Something went wrong. Please try again.",
+      });
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   return (
