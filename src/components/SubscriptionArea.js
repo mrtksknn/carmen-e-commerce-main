@@ -1,22 +1,31 @@
-
-import React, { useState } from 'react';
-import { Mail } from 'lucide-react';
+// components/SubscriptionArea.js
+import React, { useState } from "react";
+import { Mail } from "lucide-react";
+import { useCustomToast } from "../components/ui/toast-context";
 
 const SubscriptionArea = () => {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const toast = useCustomToast();
 
   const handleSubscribe = async (e) => {
     e.preventDefault();
     if (!email) {
+      toast({
+        type: "error",
+        message: "Please enter your email address to subscribe.",
+      });
       return;
     }
 
     setIsLoading(true);
 
-    // Simulate subscription process
     setTimeout(() => {
-      setEmail('');
+      toast({
+        type: "success",
+        message: "Thank you for subscribing to our newsletter.",
+      });
+      setEmail("");
       setIsLoading(false);
     }, 1000);
   };
@@ -30,11 +39,11 @@ const SubscriptionArea = () => {
           </div>
         </div>
 
-        <h2 className="text-3xl md:text-4xl font-bold text-foreground text-white mb-4">
+        <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
           Stay Updated with New Artworks
         </h2>
 
-        <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto" style={{ color: '#94a3b8' }}>
+        <p className="text-lg mb-8 max-w-2xl mx-auto" style={{ color: "#94a3b8" }}>
           Subscribe to our newsletter and be the first to know about new collections,
           exclusive pieces, and upcoming exhibitions.
         </p>
@@ -45,15 +54,19 @@ const SubscriptionArea = () => {
             placeholder="Enter your email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
             disabled={isLoading}
           />
-          <button type="submit" disabled={isLoading} class="text-black inline-block bg-white text-accent-foreground px-8 py-2 rounded-lg font-semibold">
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="text-black bg-white px-8 py-2 rounded-lg font-semibold"
+          >
             {isLoading ? "Subscribing..." : "Subscribe"}
           </button>
         </form>
 
-        <p className="text-sm text-muted-foreground mt-4" style={{ color: '#94a3b8' }}>
+        <p className="text-sm mt-4" style={{ color: "#94a3b8" }}>
           We respect your privacy. Unsubscribe at any time.
         </p>
       </div>
