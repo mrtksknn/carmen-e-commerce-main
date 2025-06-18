@@ -1,31 +1,26 @@
 import React, { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
+import {
+  Card, CardContent, CardDescription, CardHeader, CardTitle
+} from '../components/ui/card';
+import {
+  Tabs, TabsContent, TabsList, TabsTrigger
+} from '../components/ui/tabs';
 import ProductList from '../components/admin/ProductList';
 import ProductForm from '../components/admin/ProductForm';
 import { Plus } from 'lucide-react';
 
 import { storage, db } from "../firebase";
-import { getDownloadURL, uploadBytesResumable } from "firebase/storage";
-import { ref } from "firebase/storage";
-import { collection, onSnapshot } from "firebase/firestore";
+import { getDownloadURL, uploadBytesResumable, ref } from "firebase/storage";
+import { collection, onSnapshot, deleteDoc, doc } from "firebase/firestore";
 
-// Css
 import '../assets/styles/upload.css';
 
 const initialState = {
-  name: "",
-  width: "",
-  height: "",
-  price: "",
-  material: "",
-  category: "",
-  collections: "",
-  description: ""
-}
+  name: "", width: "", height: "", price: "",
+  material: "", category: "", collections: "", description: ""
+};
 
 const Admin = () => {
-
   const [showProductForm, setShowProductForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
 
@@ -33,12 +28,19 @@ const Admin = () => {
   const [progress, setProgress] = useState(null);
   const [products, setProducts] = useState([]);
   const [file, setFile] = useState(null);
-
   const [data, setData] = useState(initialState);
 
   const handleEditProduct = (product) => {
     setEditingProduct(product);
     setShowProductForm(true);
+  };
+
+  const handleDeleteProduct = async (productId) => {
+    try {
+      await deleteDoc(doc(db, "products", productId));
+    } catch (err) {
+      console.error("Delete failed:", err);
+    }
   };
 
   const handleCloseProductForm = () => {
@@ -49,15 +51,8 @@ const Admin = () => {
   useEffect(() => {
     const unsub = onSnapshot(collection(db, "products"),
       (snapshot) => {
-        let list = [];
-        snapshot.docs.forEach((doc) => {
-          list.push({ id: doc.id, ...doc.data() });
-        });
-
-        list.sort((a, b) => {
-          return b.timeStamp?.seconds - a.timeStamp?.seconds;
-        });
-
+        let list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        list.sort((a, b) => b.timeStamp?.seconds - a.timeStamp?.seconds);
         setProducts(list);
       },
       (error) => {
@@ -65,10 +60,7 @@ const Admin = () => {
       }
     );
 
-    return () => {
-      unsub();
-    }
-
+    return () => unsub();
   }, []);
 
   useEffect(() => {
@@ -77,29 +69,16 @@ const Admin = () => {
       const uploadTask = uploadBytesResumable(storageRef, file);
 
       uploadTask.on("state_changed", (snapShot) => {
-        const progress =
-          (snapShot.bytesTransferred / snapShot.totalBytes) * 100;
+        const progress = (snapShot.bytesTransferred / snapShot.totalBytes) * 100;
         setProgress(progress);
-        switch (snapShot.state) {
-          case "paused":
-            console.log("upload is Pause");
-            break;
-          case "running":
-            console.log("Upload is running");
-            break;
-          default:
-            break;
-        }
-      }, (error) => {
-        console.error(error);
-      },
+      }, console.error,
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadUrl) => {
-            setData((prev) => ({ ...prev, img: downloadUrl }))
+            setData((prev) => ({ ...prev, img: downloadUrl }));
           });
         }
       );
-    }
+    };
 
     if (file) {
       uploadFile();
@@ -107,7 +86,6 @@ const Admin = () => {
       setFilePreview(objectUrl);
       return () => URL.revokeObjectURL(objectUrl);
     }
-
   }, [file]);
 
   return (
@@ -121,16 +99,10 @@ const Admin = () => {
 
       <Tabs defaultValue="products" className="w-full max-w-7xl">
         <TabsList className="grid w-full grid-cols-2 bg-red-500/50">
-          <TabsTrigger
-            className="text-white rounded-md data-[state=active]:bg-black data-[state=active]:text-white"
-            value="products"
-          >
+          <TabsTrigger className="text-white rounded-md data-[state=active]:bg-black data-[state=active]:text-white" value="products">
             Products
           </TabsTrigger>
-          <TabsTrigger
-            className="text-white rounded-md data-[state=active]:bg-black data-[state=active]:text-white"
-            value="collections"
-          >
+          <TabsTrigger className="text-white rounded-md data-[state=active]:bg-black data-[state=active]:text-white" value="collections">
             Collections
           </TabsTrigger>
         </TabsList>
@@ -161,7 +133,11 @@ const Admin = () => {
                   onSave={handleCloseProductForm}
                 />
               ) : (
-                <ProductList onEdit={handleEditProduct} />
+                <ProductList
+                  products={products}
+                  onEdit={handleEditProduct}
+                  onDelete={handleDeleteProduct}
+                />
               )}
             </CardContent>
           </Card>
@@ -171,7 +147,6 @@ const Admin = () => {
           COMING SOON
         </TabsContent>
       </Tabs>
-
     </div>
   );
 };

@@ -1,24 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
-
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Card, CardContent } from '../ui/card';
 
 import { db } from "../../firebase";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot, addDoc, serverTimestamp } from "firebase/firestore";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
-const ProductForm = ({ product, onClose, onSave }) => {
-
+const ProductForm = ({ product, onClose }) => {
   const inputRef = useRef(null);
   const [categoryList, setCategoryList] = useState([]);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    image: '', // Will store object URL if uploaded
-    imageFile: null, // For the actual File object
+    image: '',
+    imageFile: null,
     price: '',
     category: '',
     dimensions: '',
-    medium: '',
-    year: ''
+    material: '',
+    img: '',
   });
   const [dragActive, setDragActive] = useState(false);
 
@@ -27,50 +26,32 @@ const ProductForm = ({ product, onClose, onSave }) => {
       collection(db, "products"),
       (snapshot) => {
         const categorySet = new Set();
-
         snapshot.docs.forEach((doc) => {
           const data = doc.data();
-          if (data.category) {
-            categorySet.add(data.category);
-          }
+          if (data.category) categorySet.add(data.category);
         });
-
-        const categories = [...Array.from(categorySet)];
-        setCategoryList(categories);
+        setCategoryList([...Array.from(categorySet)]);
       },
-      (error) => {
-        console.error("Error fetching categories:", error);
-      }
+      (error) => console.error("Kategori alınamadı:", error)
     );
-
     return () => unsub();
   }, []);
 
   useEffect(() => {
     if (product) {
       setFormData({
-        name: product.name || '',
+        title: product.name || '',
         description: product.description || '',
         img: product.img || '',
         price: product.price || '',
         category: product.category || '',
         dimensions: product.dimensions || '',
         material: product.material || '',
+        image: '',
+        imageFile: null,
       });
     }
   }, [product]);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (!formData.title || !formData.price || !formData.category) {
-      return;
-    }
-
-    console.log('Saving product:', formData);
-
-    onSave(formData); // optional: pass form data if needed
-  };
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({
@@ -79,40 +60,65 @@ const ProductForm = ({ product, onClose, onSave }) => {
     }));
   };
 
-  // Handle dropped files
   const handleFile = (file) => {
     if (!file) return;
     const objectUrl = URL.createObjectURL(file);
     if (formData.image && formData.imageFile) {
       URL.revokeObjectURL(formData.image);
     }
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       image: objectUrl,
       imageFile: file,
     }));
   };
 
-  // Drag-n-drop handlers
-  const onDragEnter = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    e.stopPropagation();
-    setDragActive(true);
+
+    if (!formData.title || !formData.price || !formData.category) return;
+
+    try {
+      let imageUrl = formData.img || '';
+
+      if (formData.imageFile) {
+        const storage = getStorage();
+        const storageRef = ref(storage, `product_images/${Date.now()}_${formData.imageFile.name}`);
+        await uploadBytes(storageRef, formData.imageFile);
+        imageUrl = await getDownloadURL(storageRef);
+      }
+
+      const newProduct = {
+        name: formData.title,
+        description: formData.description,
+        img: imageUrl,
+        price: formData.price,
+        category: formData.category,
+        dimensions: formData.dimensions,
+        material: formData.material,
+        timeStamp: serverTimestamp(),
+      };
+
+      await addDoc(collection(db, "products"), newProduct);
+      console.log("Ürün başarıyla eklendi:", newProduct);
+      onClose(); // Formu kapat
+    } catch (error) {
+      console.error("Ürün eklenirken hata:", error);
+    }
+  };
+
+  // Drag-n-drop
+  const onDragEnter = (e) => {
+    e.preventDefault(); e.stopPropagation(); setDragActive(true);
   };
   const onDragLeave = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
+    e.preventDefault(); e.stopPropagation(); setDragActive(false);
   };
   const onDragOver = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(true);
+    e.preventDefault(); e.stopPropagation(); setDragActive(true);
   };
   const onDrop = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
+    e.preventDefault(); e.stopPropagation(); setDragActive(false);
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       handleFile(e.dataTransfer.files[0]);
     }
@@ -133,24 +139,19 @@ const ProductForm = ({ product, onClose, onSave }) => {
 
           <form onSubmit={handleSubmit} className="space-y-6 border-none">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
               <div className="space-y-2 relative">
                 <div
-                  id="image-upload"
                   className={`
                     relative flex items-center justify-center border-2 border-dashed rounded-lg px-6 py-48 mt-1
                     transition-colors bg-background overflow-hidden
                     ${dragActive ? "border-primary bg-muted" : "border-border"}
                     cursor-pointer
                   `}
-                  tabIndex={0}
-                  onClick={() => inputRef.current && inputRef.current.click()}
+                  onClick={() => inputRef.current?.click()}
                   onDragEnter={onDragEnter}
                   onDragOver={onDragOver}
                   onDragLeave={onDragLeave}
                   onDrop={onDrop}
-                  role="button"
-                  aria-label="Upload image"
                 >
                   <input
                     ref={inputRef}
@@ -159,10 +160,9 @@ const ProductForm = ({ product, onClose, onSave }) => {
                     className="hidden"
                     onChange={onFileChange}
                   />
-
-                  {formData.img ? (
+                  {formData.image || formData.img ? (
                     <img
-                      src={formData.image}
+                      src={formData.image || formData.img}
                       alt="Selected artwork"
                       className="absolute top-0 left-0 w-full h-full object-cover rounded-lg"
                     />
@@ -174,27 +174,21 @@ const ProductForm = ({ product, onClose, onSave }) => {
                 </div>
               </div>
 
-                
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label htmlFor="title" className="block text-sm font-medium">
-                    Name *
-                  </label>
+                  <label htmlFor="title">Name *</label>
                   <input
                     id="title"
-                    value={formData.name}
+                    value={formData.title}
                     onChange={(e) => handleChange('title', e.target.value)}
                     placeholder="Enter artwork title"
                     required
                     className="bg-transparent w-full border rounded px-3 py-2 text-sm"
-                    style={{ borderColor: 'rgba(229, 231, 235, 0.23)' }}
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor="price" className="block text-sm font-medium">
-                    Price *
-                  </label>
+                  <label htmlFor="price">Price *</label>
                   <input
                     id="price"
                     value={formData.price}
@@ -202,20 +196,16 @@ const ProductForm = ({ product, onClose, onSave }) => {
                     placeholder="$1,200"
                     required
                     className="bg-transparent w-full border rounded px-3 py-2 text-sm"
-                    style={{ borderColor: 'rgba(229, 231, 235, 0.23)' }}
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor="category" className="block text-sm font-medium">
-                    Category *
-                  </label>
+                  <label htmlFor="category">Category *</label>
                   <select
                     id="category"
                     value={formData.category}
                     onChange={(e) => handleChange('category', e.target.value)}
                     className="bg-transparent w-full border rounded px-3 py-2 text-sm"
-                    style={{ borderColor: 'rgba(229, 231, 235, 0.23)' }}
                   >
                     <option value="" disabled>
                       Select a category
@@ -231,37 +221,29 @@ const ProductForm = ({ product, onClose, onSave }) => {
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor="dimensions" className="block text-sm font-medium">
-                    Dimensions
-                  </label>
+                  <label htmlFor="dimensions">Dimensions</label>
                   <input
                     id="dimensions"
                     value={formData.dimensions}
                     onChange={(e) => handleChange('dimensions', e.target.value)}
                     placeholder='24" x 36"'
                     className="bg-transparent w-full border rounded px-3 py-2 text-sm"
-                    style={{ borderColor: 'rgba(229, 231, 235, 0.23)' }}
                   />
                 </div>
 
                 <div className="space-y-2 md:col-span-2">
-                  <label htmlFor="medium" className="block text-sm font-medium">
-                    Medium
-                  </label>
+                  <label htmlFor="medium">Medium</label>
                   <input
                     id="medium"
                     value={formData.material}
-                    onChange={(e) => handleChange('medium', e.target.value)}
+                    onChange={(e) => handleChange('material', e.target.value)}
                     placeholder="Oil on Canvas"
                     className="bg-transparent w-full border rounded px-3 py-2 text-sm"
-                    style={{ borderColor: 'rgba(229, 231, 235, 0.23)' }}
                   />
                 </div>
 
                 <div className="space-y-2 md:col-span-2">
-                  <label htmlFor="description" className="block text-sm font-medium">
-                    Description
-                  </label>
+                  <label htmlFor="description">Description</label>
                   <textarea
                     id="description"
                     value={formData.description}
@@ -269,7 +251,6 @@ const ProductForm = ({ product, onClose, onSave }) => {
                     placeholder="Enter artwork description"
                     rows={4}
                     className="bg-transparent w-full border rounded px-3 py-2 text-sm"
-                    style={{ borderColor: 'rgba(229, 231, 235, 0.23)' }}
                   />
                 </div>
               </div>
@@ -282,7 +263,6 @@ const ProductForm = ({ product, onClose, onSave }) => {
               >
                 {product ? 'Update Product' : 'Add Product'}
               </button>
-
               <button
                 type="button"
                 onClick={onClose}

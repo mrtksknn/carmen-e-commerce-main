@@ -1,8 +1,6 @@
 import '../assets/styles/aboutMe.css';
 import React, { useState } from 'react';
 import emailjs from 'emailjs-com';
-import { db } from "../firebase";
-import { collection, getDocs } from "firebase/firestore";
 
 const ContactMe = () => {
 
