@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const ProductList = ({ products, onEdit, onDelete }) => {
+const ProductList = ({ products, onEdit, onDelete, onToggleStatus }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 7;
 
@@ -43,6 +43,14 @@ const ProductList = ({ products, onEdit, onDelete }) => {
                   </td>
                   <td className="px-6 py-3">
                     <div className="flex items-center gap-2">
+                      <button
+                        className="border flex items-center gap-2 py-1 px-2 rounded-md hover:bg-red-500/25"
+                        style={{ borderColor: "rgba(229, 231, 235, 0.23)" }}
+                        onClick={() => onToggleStatus(artwork)}
+                      >
+                        {artwork.status ? "Unmark Sold" : "Mark as Sold"}
+                      </button>
+
                       <button
                         className="border flex items-center gap-2 py-1 px-2 rounded-md hover:bg-red-500/25"
                         style={{ borderColor: "rgba(229, 231, 235, 0.23)" }}

@@ -11,7 +11,8 @@ import { Plus } from 'lucide-react';
 
 import { storage, db } from "../firebase";
 import { getDownloadURL, uploadBytesResumable, ref } from "firebase/storage";
-import { collection, onSnapshot, deleteDoc, doc } from "firebase/firestore";
+import { collection, onSnapshot, deleteDoc, doc, updateDoc, deleteField } from "firebase/firestore";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 import '../assets/styles/upload.css';
 
@@ -21,6 +22,7 @@ const initialState = {
 };
 
 const Admin = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showProductForm, setShowProductForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
 
@@ -47,6 +49,53 @@ const Admin = () => {
     setShowProductForm(false);
     setEditingProduct(null);
   };
+
+  const handleToggleStatus = async (product) => {
+    try {
+      const productRef = doc(db, "products", product.id);
+
+      if (product.status) {
+        // Sold durumundan çıkart: status alanını sil
+        await updateDoc(productRef, {
+          status: deleteField(),
+        });
+      } else {
+        // Satılmamış ürünü "Sold" yap
+        await updateDoc(productRef, {
+          status: true,
+        });
+      }
+    } catch (err) {
+      console.error("Toggle status error:", err);
+    }
+  };
+
+  useEffect(() => {
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
+
+    if (!currentUser) {
+      const email = prompt("Giriş için e-posta adresinizi girin:");
+      const password = prompt("Şifrenizi girin:");
+
+      if (email && password) {
+        signInWithEmailAndPassword(auth, email, password)
+          .then(() => {
+            setIsAuthenticated(true);
+          })
+          .catch((error) => {
+            alert("Giriş başarısız: " + error.message);
+            // Başarısızsa yönlendirme veya boş sayfa
+            window.location.href = "/";
+          });
+      } else {
+        alert("E-posta ve şifre gereklidir.");
+        window.location.href = "/";
+      }
+    } else {
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   useEffect(() => {
     const unsub = onSnapshot(collection(db, "products"),
@@ -87,6 +136,10 @@ const Admin = () => {
       return () => URL.revokeObjectURL(objectUrl);
     }
   }, [file]);
+
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <div className="flex flex-col items-center">
@@ -137,6 +190,7 @@ const Admin = () => {
                   products={products}
                   onEdit={handleEditProduct}
                   onDelete={handleDeleteProduct}
+                  onToggleStatus={handleToggleStatus}
                 />
               )}
             </CardContent>
