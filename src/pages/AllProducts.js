@@ -52,7 +52,7 @@ const AllProducts = () => {
   }, []);
 
   return (
-    <div className="allProducts flex flex-col items-center" style={{ marginTop: '65px' }}>
+    <div className="allProducts flex flex-col items-center px-4" style={{ marginTop: '65px' }}>
 
       <div className='max-w-7xl w-full'>
         {/* Header */}
@@ -71,14 +71,16 @@ const AllProducts = () => {
               type="text"
               placeholder="Search artworks..."
               value={searchTerm}
+              style={{ borderColor: '#93939340' }}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-4 py-2 border border-input rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full px-4 py-2 border border-input rounded-lg bg-black text-white focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
           <select
             value={sortBy}
+            style={{ borderColor: '#93939340' }}
             onChange={(e) => setSortBy(e.target.value)}
-            className="px-4 py-2 border border-input rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+            className="px-4 py-2 border border-input rounded-lg bg-black text-white focus:outline-none focus:ring-2 focus:ring-primary"
           >
             <option value="name">Sort by Name</option>
             <option value="price">Sort by Price</option>

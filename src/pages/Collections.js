@@ -53,7 +53,7 @@ const Collections = () => {
   return (
     <div className="collections-container">
       {/* Header */}
-      <div className="text-center mb-12">
+      <div className="text-center mb-12 px-4">
         <h1 className="text-4xl font-bold text-white mb-4 mt-12">Art Collections</h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto" style={{ color: '#94a3b8' }}>
           Explore my artworks organized by themes and styles. Each collection represents
@@ -62,7 +62,7 @@ const Collections = () => {
       </div>
 
       {/* Category Filter */}
-      <div className="flex flex-wrap justify-center gap-4 mb-12">
+      <div className="flex flex-wrap justify-center gap-2 mb-12 px-1">
         {categoryList.map((category) => (
           <button
             key={category}
@@ -78,7 +78,7 @@ const Collections = () => {
       </div>
 
       {/* Artworks Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mb-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mb-12 px-3">
         {filteredArtworks.map((artwork) => (
           <ArtworkCard key={artwork.id} artwork={artwork} />
         ))}

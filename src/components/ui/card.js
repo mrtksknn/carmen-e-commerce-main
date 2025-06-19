@@ -26,26 +26,28 @@ const CardHeader = forwardRef((props, ref) => {
 });
 CardHeader.displayName = "CardHeader";
 
-const CardTitle = forwardRef((props, ref) => {
-  const { className, ...rest } = props;
+const CardTitle = forwardRef(({ className, children, ...rest }, ref) => {
   return (
     <h3
       ref={ref}
       className={cn("text-2xl font-semibold leading-none tracking-tight", className)}
       {...rest}
-    />
+    >
+      {children}
+    </h3>
   );
 });
 CardTitle.displayName = "CardTitle";
 
-const CardDescription = forwardRef((props, ref) => {
-  const { className, ...rest } = props;
+const CardDescription = forwardRef(({ className, children, ...rest }, ref) => {
   return (
     <p
       ref={ref}
       className={cn("text-sm text-muted-foreground", className)}
       {...rest}
-    />
+    >
+      {children}
+    </p>
   );
 });
 CardDescription.displayName = "CardDescription";

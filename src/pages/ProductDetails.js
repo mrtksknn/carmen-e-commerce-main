@@ -48,14 +48,14 @@ const Details = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 pt-12">
       {/* Breadcrumb */}
-      <nav className="mb-8 mt-12">
+      <nav className="mb-4 mt-12">
         <Link to="/products" className="text-white hover:underline">
           ← Back to All Products
         </Link>
       </nav>
 
       {/* Artwork Details */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6">
         <div>
           <img
             src={data?.img}
@@ -76,7 +76,7 @@ const Details = () => {
             </p>
           </div>
 
-          <div className="border-t border-border pt-6">
+          <div className="border-t border-border pt-6" style={{ borderColor: '#e5e7eb38' }}>
             <h3 className="text-xl font-semibold text-white mb-4">Product Details</h3>
             <dl className="space-y-3">
               <div className="flex justify-between">
@@ -94,7 +94,7 @@ const Details = () => {
             </dl>
           </div>
 
-          <div className="border-t border-border pt-6">
+          <div className="border-t border-border pt-6" style={{ borderColor: '#e5e7eb38' }}>
             <Link
               to="/contact"
               className="inline-block w-full bg-white text-black text-center px-8 py-4 rounded-lg font-semibold hover:bg-primary/90 transition-colors"

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent } from '../ui/card';
 
 import { db } from "../../firebase";
-import { collection, onSnapshot, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, onSnapshot, addDoc, updateDoc, doc, serverTimestamp } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const ProductForm = ({ product, onClose }) => {
@@ -88,7 +88,7 @@ const ProductForm = ({ product, onClose }) => {
         imageUrl = await getDownloadURL(storageRef);
       }
 
-      const newProduct = {
+      const productData = {
         name: formData.title,
         description: formData.description,
         img: imageUrl,
@@ -96,14 +96,23 @@ const ProductForm = ({ product, onClose }) => {
         category: formData.category,
         dimensions: formData.dimensions,
         material: formData.material,
-        timeStamp: serverTimestamp(),
       };
 
-      await addDoc(collection(db, "products"), newProduct);
-      console.log("Ürün başarıyla eklendi:", newProduct);
+      if (product?.id) {
+        // 🛠️ Güncelleme işlemi
+        const productRef = doc(db, "products", product.id);
+        await updateDoc(productRef, productData);
+      } else {
+        // ➕ Yeni ürün ekleme
+        await addDoc(collection(db, "products"), {
+          ...productData,
+          timeStamp: serverTimestamp(),
+        });
+      }
+
       onClose(); // Formu kapat
     } catch (error) {
-      console.error("Ürün eklenirken hata:", error);
+      console.error("Ürün eklenirken/güncellenirken hata:", error);
     }
   };
 
@@ -134,7 +143,7 @@ const ProductForm = ({ product, onClose }) => {
       <CardContent className="pb-0">
         <div className="rounded-md py-5 px-0 shadow-sm">
           <h2 className="text-2xl font-semibold mb-6">
-            {product ? 'Edit Product' : 'Add New Product'}
+            {product ? 'Update Product' : 'Add Product'}
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-6 border-none">
@@ -183,6 +192,7 @@ const ProductForm = ({ product, onClose }) => {
                     onChange={(e) => handleChange('title', e.target.value)}
                     placeholder="Enter artwork title"
                     required
+                    style={{ borderColor: 'rgb(243 244 246 / 0.25)' }}
                     className="bg-transparent w-full border rounded px-3 py-2 text-sm"
                   />
                 </div>
@@ -195,6 +205,7 @@ const ProductForm = ({ product, onClose }) => {
                     onChange={(e) => handleChange('price', e.target.value)}
                     placeholder="$1,200"
                     required
+                    style={{ borderColor: 'rgb(243 244 246 / 0.25)' }}
                     className="bg-transparent w-full border rounded px-3 py-2 text-sm"
                   />
                 </div>
@@ -204,6 +215,7 @@ const ProductForm = ({ product, onClose }) => {
                   <select
                     id="category"
                     value={formData.category}
+                    style={{ borderColor: 'rgb(243 244 246 / 0.25)' }}
                     onChange={(e) => handleChange('category', e.target.value)}
                     className="bg-transparent w-full border rounded px-3 py-2 text-sm"
                   >
@@ -225,6 +237,7 @@ const ProductForm = ({ product, onClose }) => {
                   <input
                     id="dimensions"
                     value={formData.dimensions}
+                    style={{ borderColor: 'rgb(243 244 246 / 0.25)' }}
                     onChange={(e) => handleChange('dimensions', e.target.value)}
                     placeholder='24" x 36"'
                     className="bg-transparent w-full border rounded px-3 py-2 text-sm"
@@ -236,6 +249,7 @@ const ProductForm = ({ product, onClose }) => {
                   <input
                     id="medium"
                     value={formData.material}
+                    style={{ borderColor: 'rgb(243 244 246 / 0.25)' }}
                     onChange={(e) => handleChange('material', e.target.value)}
                     placeholder="Oil on Canvas"
                     className="bg-transparent w-full border rounded px-3 py-2 text-sm"
@@ -247,6 +261,7 @@ const ProductForm = ({ product, onClose }) => {
                   <textarea
                     id="description"
                     value={formData.description}
+                    style={{ borderColor: 'rgb(243 244 246 / 0.25)' }}
                     onChange={(e) => handleChange('description', e.target.value)}
                     placeholder="Enter artwork description"
                     rows={4}

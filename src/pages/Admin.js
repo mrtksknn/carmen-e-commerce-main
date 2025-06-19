@@ -142,7 +142,7 @@ const Admin = () => {
   }
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center px-4">
       <div className="text-center my-6">
         <h1 className="text-4xl font-bold text-white mb-2">Admin Dashboard</h1>
         <p className="text-xl text-muted-foreground" style={{ color: '#94a3b8' }}>
@@ -161,7 +161,7 @@ const Admin = () => {
         </TabsList>
 
         <TabsContent value="products" className="space-y-6 text-white">
-          <Card style={{ borderColor: "rgba(229, 231, 235, 0.23)" }}>
+          <Card style={{ borderColor: "rgba(229, 231, 235, 0.23)", width: '100%' }}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pt-2">
               <div className="gap-2 flex flex-col">
                 <CardTitle>Manage Products</CardTitle>

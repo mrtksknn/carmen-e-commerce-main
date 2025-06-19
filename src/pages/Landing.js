@@ -57,7 +57,7 @@ const Landing = () => {
             Discover a collection of original artworks that capture the beauty of nature,
             the complexity of emotions, and the magic of imagination.
           </p>
-          <div className="space-x-4 animate-fade-in">
+          <div className="animate-fade-in sm:items-center flex-col md:flex-row space-x-0 md:space-x-4 gap-3 md:gap-0 flex">
             <Link
               to="/collections"
               className="text-black bg-white inline-block bg-primary text-primary-foreground px-8 py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors"
