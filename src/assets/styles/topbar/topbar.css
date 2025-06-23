@@ -53,3 +53,19 @@
 .active-link {
     background-color: #e4212159;
 }
+
+.menu-item.active-link {
+    background-color: #b91c1c; /* kırmızı aktif */
+    color: white;
+  }
+  
+  .menu-item.inActive-link {
+    color: #cbd5e1;
+  }
+  
+  /* Mobil menü link hover */
+  @media (max-width: 767px) {
+    .menu-item:hover {
+      background-color: #dc2626; /* koyu kırmızı */
+    }
+  }
