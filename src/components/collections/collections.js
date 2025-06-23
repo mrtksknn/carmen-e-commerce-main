@@ -1,71 +1,67 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../../firebase";
 import { collection, onSnapshot } from "firebase/firestore";
-
-// Css
-import '../../assets/styles/components/collections.css';
+import "../../assets/styles/components/collections.css";
 
 const Collections = () => {
-    const [products, setProducts] = useState([]);
-    const [, setLoading] = useState(true);
+  const [groupedProducts, setGroupedProducts] = useState({});
 
-    useEffect(() => {
-        const unsub = onSnapshot(collection(db, "products"),
-            (snapshot) => {
-                let list = [];
-                snapshot.docs.forEach((doc) => {
-                    const data = doc.data();
-                    if (data.collections !== undefined) { // collections alanı mevcutsa
-                        list.push({ id: doc.id, ...data });
-                    }
-                });
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      collection(db, "products"),
+      (snapshot) => {
+        const productsWithCollections = snapshot.docs
+          .map((doc) => ({ id: doc.id, ...doc.data() }))
+          .filter((item) => item.collections !== undefined);
 
-                // Zaman damgasına göre sıralama
-                list.sort((a, b) => {
-                    return b.timeStamp.seconds - a.timeStamp.seconds;
-                });
+        // Sort by timestamp descending
+        productsWithCollections.sort((a, b) => {
+          const timeA = a.timeStamp?.seconds || 0;
+          const timeB = b.timeStamp?.seconds || 0;
+          return timeB - timeA;
+        });
 
-                // collections değerine göre gruplandırma
-                const groupedByCollections = list.reduce((acc, item) => {
-                    const key = item.collections;
-                    if (!acc[key]) {
-                        acc[key] = [];
-                    }
-                    acc[key].push(item);
-                    return acc;
-                }, {});
+        // Group by `collections` field
+        const grouped = productsWithCollections.reduce((acc, product) => {
+          const key = product.collections;
+          if (!acc[key]) acc[key] = [];
+          acc[key].push(product);
+          return acc;
+        }, {});
 
-                setProducts(groupedByCollections);
-                console.log(products)
-                setLoading(false)
-            },
-            (error) => {
-                console.error(error);
-            }
-        );
-
-        return () => {
-            unsub();
-        };
-    }, []);
-
-    return (
-        <section className="collections-container">
-            <h1 className="wine-red">Collections</h1>
-            <div className="collections">
-                {Object.entries(products).map(([collectionName, items]) => (
-                    <div key={collectionName} className="collection-item">
-                        <div className="images-grid">
-                            {items.slice(0, 4).map((item) => (
-                                <img key={item.id} src={item.img} alt={item.name} />
-                            ))}
-                        </div>
-                        <p className="collection-title">{collectionName}</p>
-                    </div>
-                ))}
-            </div>
-        </section>
+        setGroupedProducts(grouped);
+      },
+      (error) => {
+        console.error("Firestore snapshot error:", error);
+      }
     );
+
+    return () => unsubscribe();
+  }, []);
+
+  return (
+    <section className="collections-container">
+      <h1 className="wine-red">Collections</h1>
+
+      <div className="collections">
+        {Object.entries(groupedProducts).map(([collectionName, items]) => (
+          <div key={collectionName} className="collection-item">
+            <div className="images-grid">
+              {items.slice(0, 4).map((item) => (
+                <img
+                  key={item.id}
+                  src={item.img}
+                  alt={item.name || "Artwork"}
+                  loading="lazy"
+                />
+              ))}
+            </div>
+            <p className="collection-title">{collectionName}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
 };
 
 export default Collections;

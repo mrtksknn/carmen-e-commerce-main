@@ -3,45 +3,43 @@ import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebas
 import { Navigate } from "react-router-dom";
 
 const AdminRoute = ({ children }) => {
-  const [loading, setLoading] = useState(true);
-  const [allowed, setAllowed] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState(null);
 
   useEffect(() => {
     const auth = getAuth();
 
+    const authenticate = async () => {
+      const email = prompt("Giriş için e-posta adresinizi girin:");
+      const password = prompt("Şifrenizi girin:");
+
+      if (!email || !password) {
+        alert("E-posta ve şifre gerekli.");
+        return setIsAuthorized(false);
+      }
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        setIsAuthorized(true);
+      } catch {
+        alert("Giriş başarısız. Ana sayfaya yönlendiriliyorsunuz.");
+        setIsAuthorized(false);
+      }
+    };
+
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        setAllowed(true);
-        setLoading(false);
+        setIsAuthorized(true);
       } else {
-        const email = prompt("Giriş için e-posta adresinizi girin:");
-        const password = prompt("Şifrenizi girin:");
-
-        if (email && password) {
-          signInWithEmailAndPassword(auth, email, password)
-            .then(() => {
-              setAllowed(true);
-              setLoading(false);
-            })
-            .catch(() => {
-              alert("Giriş başarısız. Ana sayfaya yönlendiriliyorsunuz.");
-              setAllowed(false);
-              setLoading(false);
-            });
-        } else {
-          alert("Giriş bilgileri gerekli.");
-          setAllowed(false);
-          setLoading(false);
-        }
+        authenticate();
       }
     });
 
     return () => unsubscribe();
   }, []);
 
-  if (loading) return null; // veya <div>Yükleniyor...</div>
+  if (isAuthorized === null) return null; // Optionally show a loader
 
-  return allowed ? children : <Navigate to="/" />;
+  return isAuthorized ? children : <Navigate to="/" replace />;
 };
 
 export default AdminRoute;

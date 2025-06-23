@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Card, CardContent } from '../ui/card';
-
+import React, { useState, useEffect, useRef } from "react";
+import { Card, CardContent } from "../ui/card";
 import { db } from "../../firebase";
 import { collection, onSnapshot, addDoc, updateDoc, doc, serverTimestamp } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -8,133 +7,130 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 const ProductForm = ({ product, onClose }) => {
   const inputRef = useRef(null);
   const [categoryList, setCategoryList] = useState([]);
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    image: '',
-    imageFile: null,
-    price: '',
-    category: '',
-    dimensions: '',
-    material: '',
-    img: '',
-  });
   const [dragActive, setDragActive] = useState(false);
 
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    img: "",
+    image: "",
+    imageFile: null,
+    price: "",
+    category: "",
+    dimensions: "",
+    material: ""
+  });
+
+  // Load categories
   useEffect(() => {
-    const unsub = onSnapshot(
-      collection(db, "products"),
-      (snapshot) => {
-        const categorySet = new Set();
-        snapshot.docs.forEach((doc) => {
-          const data = doc.data();
-          if (data.category) categorySet.add(data.category);
-        });
-        setCategoryList([...Array.from(categorySet)]);
-      },
-      (error) => console.error("Kategori alınamadı:", error)
-    );
+    const unsub = onSnapshot(collection(db, "products"), (snapshot) => {
+      const categories = new Set();
+      snapshot.forEach((doc) => {
+        const cat = doc.data().category;
+        if (cat) categories.add(cat);
+      });
+      setCategoryList([...categories]);
+    });
+
     return () => unsub();
   }, []);
 
+  // Populate form if editing
   useEffect(() => {
     if (product) {
       setFormData({
-        title: product.name || '',
-        description: product.description || '',
-        img: product.img || '',
-        price: product.price || '',
-        category: product.category || '',
-        dimensions: product.dimensions || '',
-        material: product.material || '',
-        image: '',
+        title: product.name || "",
+        description: product.description || "",
+        img: product.img || "",
+        image: "",
         imageFile: null,
+        price: product.price || "",
+        category: product.category || "",
+        dimensions: product.dimensions || "",
+        material: product.material || ""
       });
     }
   }, [product]);
 
-  const handleChange = (field, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+  const handleChange = (key, value) => {
+    setFormData((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleFile = (file) => {
+  const handleFileSelect = (file) => {
     if (!file) return;
-    const objectUrl = URL.createObjectURL(file);
+    const previewUrl = URL.createObjectURL(file);
+
     if (formData.image && formData.imageFile) {
       URL.revokeObjectURL(formData.image);
     }
+
     setFormData((prev) => ({
       ...prev,
-      image: objectUrl,
       imageFile: file,
+      image: previewUrl
     }));
+  };
+
+  const uploadImage = async () => {
+    const storage = getStorage();
+    const storageRef = ref(storage, `product_images/${Date.now()}_${formData.imageFile.name}`);
+    await uploadBytes(storageRef, formData.imageFile);
+    return await getDownloadURL(storageRef);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!formData.title || !formData.price || !formData.category) return;
+    const { title, price, category } = formData;
+    if (!title || !price || !category) return;
 
     try {
-      let imageUrl = formData.img || '';
-
+      let imgUrl = formData.img;
       if (formData.imageFile) {
-        const storage = getStorage();
-        const storageRef = ref(storage, `product_images/${Date.now()}_${formData.imageFile.name}`);
-        await uploadBytes(storageRef, formData.imageFile);
-        imageUrl = await getDownloadURL(storageRef);
+        imgUrl = await uploadImage();
       }
 
       const productData = {
         name: formData.title,
         description: formData.description,
-        img: imageUrl,
+        img: imgUrl,
         price: formData.price,
         category: formData.category,
         dimensions: formData.dimensions,
-        material: formData.material,
+        material: formData.material
       };
 
       if (product?.id) {
-        // 🛠️ Güncelleme işlemi
-        const productRef = doc(db, "products", product.id);
-        await updateDoc(productRef, productData);
+        await updateDoc(doc(db, "products", product.id), productData);
       } else {
-        // ➕ Yeni ürün ekleme
         await addDoc(collection(db, "products"), {
           ...productData,
-          timeStamp: serverTimestamp(),
+          timeStamp: serverTimestamp()
         });
       }
 
-      onClose(); // Formu kapat
-    } catch (error) {
-      console.error("Ürün eklenirken/güncellenirken hata:", error);
+      onClose();
+    } catch (err) {
+      console.error("Ürün kaydedilemedi:", err);
     }
   };
 
-  // Drag-n-drop
-  const onDragEnter = (e) => {
-    e.preventDefault(); e.stopPropagation(); setDragActive(true);
-  };
-  const onDragLeave = (e) => {
-    e.preventDefault(); e.stopPropagation(); setDragActive(false);
-  };
-  const onDragOver = (e) => {
-    e.preventDefault(); e.stopPropagation(); setDragActive(true);
-  };
-  const onDrop = (e) => {
-    e.preventDefault(); e.stopPropagation(); setDragActive(false);
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleFile(e.dataTransfer.files[0]);
-    }
-  };
-  const onFileChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      handleFile(e.target.files[0]);
+  const dragProps = {
+    onDragEnter: (e) => {
+      e.preventDefault();
+      setDragActive(true);
+    },
+    onDragOver: (e) => {
+      e.preventDefault();
+    },
+    onDragLeave: (e) => {
+      e.preventDefault();
+      setDragActive(false);
+    },
+    onDrop: (e) => {
+      e.preventDefault();
+      setDragActive(false);
+      const file = e.dataTransfer?.files?.[0];
+      if (file) handleFileSelect(file);
     }
   };
 
@@ -143,140 +139,110 @@ const ProductForm = ({ product, onClose }) => {
       <CardContent className="pb-0">
         <div className="rounded-md py-5 px-0 shadow-sm">
           <h2 className="text-2xl font-semibold mb-6">
-            {product ? 'Update Product' : 'Add Product'}
+            {product ? "Update Product" : "Add Product"}
           </h2>
 
-          <form onSubmit={handleSubmit} className="space-y-6 border-none">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2 relative">
+              {/* Image Upload */}
+              <div className="relative space-y-2">
                 <div
-                  className={`
-                    relative flex items-center justify-center border-2 border-dashed rounded-lg px-6 py-48 mt-1
-                    transition-colors bg-background overflow-hidden
-                    ${dragActive ? "border-primary bg-muted" : "border-border"}
-                    cursor-pointer
-                  `}
+                  {...dragProps}
                   onClick={() => inputRef.current?.click()}
-                  onDragEnter={onDragEnter}
-                  onDragOver={onDragOver}
-                  onDragLeave={onDragLeave}
-                  onDrop={onDrop}
+                  className={`relative flex items-center justify-center border-2 border-dashed rounded-lg px-6 py-48 mt-1 bg-background overflow-hidden cursor-pointer transition-colors ${
+                    dragActive ? "border-primary bg-muted" : "border-border"
+                  }`}
                 >
                   <input
                     ref={inputRef}
                     type="file"
                     accept="image/*"
                     className="hidden"
-                    onChange={onFileChange}
+                    onChange={(e) => handleFileSelect(e.target.files?.[0])}
                   />
                   {formData.image || formData.img ? (
                     <img
                       src={formData.image || formData.img}
-                      alt="Selected artwork"
+                      alt="Preview"
                       className="absolute top-0 left-0 w-full h-full object-cover rounded-lg"
                     />
                   ) : (
-                    <span className="text-muted-foreground text-center z-10">
-                      Drag and drop an image here, or click to select one
+                    <span className="z-10 text-muted-foreground text-center">
+                      Drag and drop an image or click to upload
                     </span>
                   )}
                 </div>
               </div>
 
+              {/* Input Fields */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label htmlFor="title">Name *</label>
-                  <input
-                    id="title"
-                    value={formData.title}
-                    onChange={(e) => handleChange('title', e.target.value)}
-                    placeholder="Enter artwork title"
-                    required
-                    style={{ borderColor: 'rgb(243 244 246 / 0.25)' }}
-                    className="bg-transparent w-full border rounded px-3 py-2 text-sm"
-                  />
-                </div>
+                {[
+                  { id: "title", label: "Name *", placeholder: "Artwork title", required: true },
+                  { id: "price", label: "Price *", placeholder: "$1,200", required: true },
+                  { id: "dimensions", label: "Dimensions", placeholder: '24" x 36"' },
+                  { id: "material", label: "Medium", placeholder: "Oil on Canvas", full: true }
+                ].map(({ id, label, placeholder, required, full }) => (
+                  <div key={id} className={`space-y-2 ${full ? "md:col-span-2" : ""}`}>
+                    <label htmlFor={id}>{label}</label>
+                    <input
+                      id={id}
+                      value={formData[id]}
+                      required={required}
+                      placeholder={placeholder}
+                      className="bg-transparent w-full border rounded px-3 py-2 text-sm"
+                      style={{ borderColor: "rgb(243 244 246 / 0.25)" }}
+                      onChange={(e) => handleChange(id, e.target.value)}
+                    />
+                  </div>
+                ))}
 
-                <div className="space-y-2">
-                  <label htmlFor="price">Price *</label>
-                  <input
-                    id="price"
-                    value={formData.price}
-                    onChange={(e) => handleChange('price', e.target.value)}
-                    placeholder="$1,200"
-                    required
-                    style={{ borderColor: 'rgb(243 244 246 / 0.25)' }}
-                    className="bg-transparent w-full border rounded px-3 py-2 text-sm"
-                  />
-                </div>
-
+                {/* Category */}
                 <div className="space-y-2">
                   <label htmlFor="category">Category *</label>
                   <select
                     id="category"
+                    required
                     value={formData.category}
-                    style={{ borderColor: 'rgb(243 244 246 / 0.25)' }}
-                    onChange={(e) => handleChange('category', e.target.value)}
+                    onChange={(e) => handleChange("category", e.target.value)}
                     className="bg-transparent w-full border rounded px-3 py-2 text-sm"
+                    style={{ borderColor: "rgb(243 244 246 / 0.25)" }}
                   >
                     <option value="" disabled>
                       Select a category
                     </option>
                     {categoryList
-                      .filter((cat) => cat !== 'All')
-                      .map((category) => (
-                        <option key={category} value={category}>
-                          {category}
+                      .filter((c) => c !== "All")
+                      .map((c) => (
+                        <option key={c} value={c}>
+                          {c}
                         </option>
                       ))}
                   </select>
                 </div>
 
-                <div className="space-y-2">
-                  <label htmlFor="dimensions">Dimensions</label>
-                  <input
-                    id="dimensions"
-                    value={formData.dimensions}
-                    style={{ borderColor: 'rgb(243 244 246 / 0.25)' }}
-                    onChange={(e) => handleChange('dimensions', e.target.value)}
-                    placeholder='24" x 36"'
-                    className="bg-transparent w-full border rounded px-3 py-2 text-sm"
-                  />
-                </div>
-
-                <div className="space-y-2 md:col-span-2">
-                  <label htmlFor="medium">Medium</label>
-                  <input
-                    id="medium"
-                    value={formData.material}
-                    style={{ borderColor: 'rgb(243 244 246 / 0.25)' }}
-                    onChange={(e) => handleChange('material', e.target.value)}
-                    placeholder="Oil on Canvas"
-                    className="bg-transparent w-full border rounded px-3 py-2 text-sm"
-                  />
-                </div>
-
+                {/* Description */}
                 <div className="space-y-2 md:col-span-2">
                   <label htmlFor="description">Description</label>
                   <textarea
                     id="description"
-                    value={formData.description}
-                    style={{ borderColor: 'rgb(243 244 246 / 0.25)' }}
-                    onChange={(e) => handleChange('description', e.target.value)}
-                    placeholder="Enter artwork description"
                     rows={4}
+                    value={formData.description}
+                    placeholder="Enter artwork description"
                     className="bg-transparent w-full border rounded px-3 py-2 text-sm"
+                    style={{ borderColor: "rgb(243 244 246 / 0.25)" }}
+                    onChange={(e) => handleChange("description", e.target.value)}
                   />
                 </div>
               </div>
             </div>
 
+            {/* Buttons */}
             <div className="flex gap-4 pt-4">
               <button
                 type="submit"
                 className="flex-1 bg-white text-black py-2 px-4 rounded hover:bg-gray-800"
               >
-                {product ? 'Update Product' : 'Add Product'}
+                {product ? "Update Product" : "Add Product"}
               </button>
               <button
                 type="button"

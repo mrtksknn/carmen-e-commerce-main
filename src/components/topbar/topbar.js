@@ -19,7 +19,7 @@ const Topbar = () => {
             <div className="topbar">
                 <div className="menu-container">
                     <Link to="/" className='logo'>
-                        CarmenArt
+                        PieceOfOblivion
                     </Link>
 
                     <div className="menu">

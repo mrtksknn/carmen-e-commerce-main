@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Mail } from "lucide-react";
 import { useCustomToast } from "../components/ui/toast-context";
-import { db } from "../firebase"; // <- Firebase bağlantısı
+import { db } from "../firebase";
 import {
   collection,
   addDoc,
@@ -20,47 +20,31 @@ const SubscriptionArea = () => {
     e.preventDefault();
 
     if (!email) {
-      toast({
-        type: "error",
-        message: "Please enter your email address to subscribe.",
-      });
-      return;
+      return toast({ type: "error", message: "Please enter your email address to subscribe." });
     }
 
     setIsLoading(true);
 
     try {
-      // E-posta zaten kayıtlı mı kontrol et
-      const q = query(collection(db, "subscribers"), where("email", "==", email));
-      const querySnapshot = await getDocs(q);
+      const subscriberRef = collection(db, "subscribers");
+      const q = query(subscriberRef, where("email", "==", email));
+      const existing = await getDocs(q);
 
-      if (!querySnapshot.empty) {
-        toast({
-          type: "info",
-          message: "This email is already subscribed.",
-        });
-        setIsLoading(false);
+      if (!existing.empty) {
+        toast({ type: "info", message: "This email is already subscribed." });
         return;
       }
 
-      // Yeni abone olarak ekle
-      await addDoc(collection(db, "subscribers"), {
+      await addDoc(subscriberRef, {
         email,
         subscribedAt: serverTimestamp(),
       });
 
-      toast({
-        type: "success",
-        message: "Thank you for subscribing to our newsletter.",
-      });
-
+      toast({ type: "success", message: "Thank you for subscribing to our newsletter." });
       setEmail("");
     } catch (error) {
       console.error("Subscription failed:", error);
-      toast({
-        type: "error",
-        message: "Something went wrong. Please try again.",
-      });
+      toast({ type: "error", message: "Something went wrong. Please try again." });
     } finally {
       setIsLoading(false);
     }
@@ -79,18 +63,21 @@ const SubscriptionArea = () => {
           Stay Updated with New Artworks
         </h2>
 
-        <p className="text-lg mb-8 max-w-2xl mx-auto" style={{ color: "#94a3b8" }}>
+        <p className="text-lg mb-8 max-w-2xl mx-auto text-slate-400">
           Subscribe to our newsletter and be the first to know about new collections,
           exclusive pieces, and upcoming exhibitions.
         </p>
 
-        <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+        <form
+          onSubmit={handleSubscribe}
+          className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto"
+        >
           <input
             type="email"
             placeholder="Enter your email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="flex h-10 w-full rounded-md border border-input bg-black text-white border-none px-3 py-2 text-base placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex h-10 w-full rounded-md bg-black text-white px-3 py-2 text-base placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-white disabled:opacity-50"
             disabled={isLoading}
           />
           <button
@@ -102,7 +89,7 @@ const SubscriptionArea = () => {
           </button>
         </form>
 
-        <p className="text-sm mt-4" style={{ color: "#94a3b8" }}>
+        <p className="text-sm mt-4 text-slate-400">
           We respect your privacy. Unsubscribe at any time.
         </p>
       </div>

@@ -1,7 +1,6 @@
-import '../assets/styles/aboutMe.css';
+import "../assets/styles/aboutMe.css";
 
 const AboutMe = () => {
-
   return (
     <div className="max-w-4xl mx-auto px-4 py-12 mt-12">
       {/* Hero Section */}
@@ -14,56 +13,58 @@ const AboutMe = () => {
             className="w-full h-full object-cover"
           />
         </div>
-        <h2 className="text-2xl text-muted-foreground font-light" style={{ color: '#94a3b8' }}>
+        <h2 className="text-2xl font-light text-slate-400">
           Capturing the World Through Art
         </h2>
       </div>
 
       {/* Story */}
       <div className="prose prose-lg max-w-none space-y-8">
-        <div className="bg-red-500/25 p-8 rounded-lg">
+        <section className="bg-red-500/25 p-8 rounded-lg">
           <h3 className="text-2xl font-bold text-white mb-4">My Artistic Journey</h3>
-          <p className="text-muted-foreground leading-relaxed" style={{ color: '#94a3b8' }}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis.
+          <p className="leading-relaxed text-slate-400">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+            tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse
+            ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis.
           </p>
-        </div>
+        </section>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
             <h3 className="text-xl font-bold text-white mb-4">Philosophy</h3>
-            <p className="text-muted-foreground leading-relaxed" style={{ color: '#94a3b8' }}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis.
+            <p className="leading-relaxed text-slate-400">
+              Art is not just seen—it’s felt. I believe in evoking emotions that connect
+              people to places, memories, and moments through brushstrokes and color.
             </p>
           </div>
           <div>
             <h3 className="text-xl font-bold text-white mb-4">Technique</h3>
-            <p className="text-muted-foreground leading-relaxed" style={{ color: '#94a3b8' }}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis.
+            <p className="leading-relaxed text-slate-400">
+              I blend traditional and modern mediums to create depth, texture, and meaning.
+              My process includes layering, intuition, and experimentation with materials.
             </p>
           </div>
-        </div>
+        </section>
 
-        <div className="bg-card p-8 rounded-lg border border-border">
+        <section className="bg-card p-8 rounded-lg border border-border">
           <h3 className="text-2xl font-bold text-white mb-6">Exhibitions</h3>
-          <div className="space-y-4 text-white">
-            <h3>COMING SOON</h3>
-          </div>
-        </div>
+          <p className="text-white">COMING SOON</p>
+        </section>
 
-        <div className="text-center">
+        <section className="text-center">
           <h3 className="text-2xl font-bold text-white mb-4">Let's Connect</h3>
-          <p className="text-muted-foreground mb-6" style={{ color: '#94a3b8' }}>
+          <p className="mb-6 text-slate-400">
             I love connecting with fellow art enthusiasts, collectors, and anyone who
             appreciates the power of visual storytelling. Whether you're interested in
             commissioning a piece or simply want to chat about art, I'd love to hear from you.
           </p>
           <a
             href="/contact"
-            className="text-black bg-white inline-block bg-primary text-primary-foreground px-8 py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors"
+            className="inline-block bg-white text-black px-8 py-3 rounded-lg font-semibold hover:bg-slate-200 transition-colors"
           >
             Get in Touch
           </a>
-        </div>
+        </section>
       </div>
     </div>
   );
