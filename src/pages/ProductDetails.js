@@ -67,9 +67,9 @@ const Details = () => {
 
         <div className="space-y-6">
           <div>
-            <span className="inline-block bg-red-500/50 text-white px-3 py-1 rounded-full text-sm font-medium mb-4">
-              {data?.category}
-            </span>
+            {data.collections ? <span className="inline-block bg-red-500/50 text-white px-3 py-1 rounded-full text-sm font-medium mb-4">
+              {data?.collections}
+            </span> : ''}
             <h1 className="text-4xl font-bold text-white mb-4">{data?.name}</h1>
             <p className="text-lg text-white leading-relaxed" style={{ color: '#94a3b8' }}>
               {data?.description}

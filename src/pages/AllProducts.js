@@ -14,7 +14,7 @@ const AllProducts = () => {
     .filter(artwork =>
       artwork.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       artwork.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      artwork.category.toLowerCase().includes(searchTerm.toLowerCase())
+      artwork.collections.toLowerCase().includes(searchTerm.toLowerCase())
     )
     .sort((a, b) => {
       switch (sortBy) {

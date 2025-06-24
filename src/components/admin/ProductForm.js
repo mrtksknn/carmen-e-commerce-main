@@ -6,7 +6,7 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const ProductForm = ({ product, onClose }) => {
   const inputRef = useRef(null);
-  const [categoryList, setCategoryList] = useState([]);
+  const [collectionList, setCollectionsList] = useState([]);
   const [dragActive, setDragActive] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -16,20 +16,24 @@ const ProductForm = ({ product, onClose }) => {
     image: "",
     imageFile: null,
     price: "",
-    category: "",
+    collections: "",
     dimensions: "",
     material: ""
   });
 
-  // Load categories
+  // Load collections
   useEffect(() => {
-    const unsub = onSnapshot(collection(db, "products"), (snapshot) => {
-      const categories = new Set();
+    const unsub = onSnapshot(collection(db, "collections"), (snapshot) => {
+      const collections = new Set();
+
       snapshot.forEach((doc) => {
-        const cat = doc.data().category;
-        if (cat) categories.add(cat);
+        const collectionName = doc.data().name; // string bekleniyor
+        if (typeof collectionName === 'string' && collectionName.trim() !== '') {
+          collections.add(collectionName.trim());
+        }
       });
-      setCategoryList([...categories]);
+
+      setCollectionsList([...collections]);
     });
 
     return () => unsub();
@@ -45,7 +49,7 @@ const ProductForm = ({ product, onClose }) => {
         image: "",
         imageFile: null,
         price: product.price || "",
-        category: product.category || "",
+        collections: product.collections || "",
         dimensions: product.dimensions || "",
         material: product.material || ""
       });
@@ -80,8 +84,8 @@ const ProductForm = ({ product, onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { title, price, category } = formData;
-    if (!title || !price || !category) return;
+    const { title, price, collections } = formData;
+    if (!title || !price || !collections) return;
 
     try {
       let imgUrl = formData.img;
@@ -94,7 +98,7 @@ const ProductForm = ({ product, onClose }) => {
         description: formData.description,
         img: imgUrl,
         price: formData.price,
-        category: formData.category,
+        collections: formData.collections,
         dimensions: formData.dimensions,
         material: formData.material
       };
@@ -149,9 +153,8 @@ const ProductForm = ({ product, onClose }) => {
                 <div
                   {...dragProps}
                   onClick={() => inputRef.current?.click()}
-                  className={`relative flex items-center justify-center border-2 border-dashed rounded-lg px-6 py-48 mt-1 bg-background overflow-hidden cursor-pointer transition-colors ${
-                    dragActive ? "border-primary bg-muted" : "border-border"
-                  }`}
+                  className={`relative flex items-center justify-center border-2 border-dashed rounded-lg px-6 py-48 mt-1 bg-background overflow-hidden cursor-pointer transition-colors ${dragActive ? "border-primary bg-muted" : "border-border"
+                    }`}
                 >
                   <input
                     ref={inputRef}
@@ -198,22 +201,22 @@ const ProductForm = ({ product, onClose }) => {
 
                 {/* Category */}
                 <div className="space-y-2">
-                  <label htmlFor="category">Category *</label>
+                  <label htmlFor="collections">Collections *</label>
                   <select
-                    id="category"
+                    id="collections"
                     required
-                    value={formData.category}
-                    onChange={(e) => handleChange("category", e.target.value)}
+                    value={formData.collections}
+                    onChange={(e) => handleChange("collections", e.target.value)}
                     className="bg-transparent w-full border rounded px-3 py-2 text-sm"
                     style={{ borderColor: "rgb(243 244 246 / 0.25)" }}
                   >
                     <option value="" disabled>
-                      Select a category
+                      Select a collections
                     </option>
-                    {categoryList
+                    {collectionList
                       .filter((c) => c !== "All")
                       .map((c) => (
-                        <option key={c} value={c}>
+                        <option className="text-black" key={c} value={c}>
                           {c}
                         </option>
                       ))}

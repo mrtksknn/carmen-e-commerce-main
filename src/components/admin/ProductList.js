@@ -47,7 +47,7 @@ const ProductList = ({ products, onEdit, onDelete, onToggleStatus }) => {
                     />
                   </td>
                   <td className="px-6 py-3 font-medium">{product.name}</td>
-                  <td className="px-6 py-3">{product.category}</td>
+                  <td className="px-6 py-3">{product.collections ? <span>{product.collections}</span> : '--'}</td>
                   <td className="px-6 py-3">{product.price}</td>
                   <td className="px-6 py-3">
                     <span
@@ -58,7 +58,7 @@ const ProductList = ({ products, onEdit, onDelete, onToggleStatus }) => {
                       {product.status ? "Sold" : "New"}
                     </span>
                   </td>
-                  <td className="px-6 py-3">
+                  <td className="px-6 py-3" style={{ width: '300px' }}>
                     <div className="flex items-center gap-2">
                       <button
                         className="border px-2 py-1 rounded-md hover:bg-red-500/25 text-sm"

@@ -1,33 +1,18 @@
 import React, { useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
 import ProductList from "../components/admin/ProductList";
 import ProductForm from "../components/admin/ProductForm";
+import CollectionForm from "../components/admin/CollectionForm";
 import { Plus } from "lucide-react";
 
 import { storage, db } from "../firebase";
-import {
-  getDownloadURL,
-  uploadBytesResumable,
-  ref as storageRef,
-} from "firebase/storage";
-import {
-  collection,
-  onSnapshot,
-  deleteDoc,
-  doc,
-  updateDoc,
-  deleteField,
-} from "firebase/firestore";
+import { getDownloadURL, uploadBytesResumable, ref as storageRef } from "firebase/storage";
+import { collection, onSnapshot, deleteDoc, doc, updateDoc, deleteField } from "firebase/firestore";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 import "../assets/styles/upload.css";
+import CollectionList from "../components/admin/CollectionList";
 
 const initialState = {
   name: "",
@@ -35,7 +20,6 @@ const initialState = {
   height: "",
   price: "",
   material: "",
-  category: "",
   collections: "",
   description: "",
 };
@@ -46,6 +30,7 @@ const Admin = () => {
 
   // Product form visibility and editing product
   const [showProductForm, setShowProductForm] = useState(false);
+  const [showCollectionForm, setShowCollectionForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
 
   // File upload and preview
@@ -55,6 +40,7 @@ const Admin = () => {
 
   // Product data
   const [products, setProducts] = useState([]);
+  const [collections, setCollections] = useState([]);
   const [formData, setFormData] = useState(initialState);
 
   // Auth: Prompt login if no current user
@@ -89,6 +75,21 @@ const Admin = () => {
           .map((doc) => ({ id: doc.id, ...doc.data() }))
           .sort((a, b) => (b.timeStamp?.seconds || 0) - (a.timeStamp?.seconds || 0));
         setProducts(productList);
+      },
+      (error) => console.error(error)
+    );
+    return () => unsubscribe();
+  }, []);
+
+  // Fetch collections realtime
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      collection(db, "collections"),
+      (snapshot) => {
+        const collectionList = snapshot.docs
+          .map((doc) => ({ id: doc.id, ...doc.data() }))
+          .sort((a, b) => (b.timeStamp?.seconds || 0) - (a.timeStamp?.seconds || 0));
+        setCollections(collectionList);
       },
       (error) => console.error(error)
     );
@@ -232,7 +233,41 @@ const Admin = () => {
         </TabsContent>
 
         <TabsContent value="collections" className="space-y-6 text-white">
-          COMING SOON
+          <Card style={{ borderColor: "rgba(229, 231, 235, 0.23)", width: "100%" }}>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pt-2">
+              <div className="gap-2 flex flex-col">
+                <CardTitle>Manage Collections</CardTitle>
+                <CardDescription style={{ color: "#94a3b8" }}>
+                  Create and organize your artwork collections
+                </CardDescription>
+              </div>
+              <button
+                onClick={() => setShowCollectionForm(true)}
+                className="gap-2 flex items-center py-2 px-5 rounded-md bg-white text-black"
+              >
+                <Plus size={16} />
+                Create Collection
+              </button>
+            </CardHeader>
+            <CardContent>
+              {showCollectionForm ? (
+                <CollectionForm
+                  onClose={() => setShowCollectionForm(false)}
+                  onSave={() => setShowCollectionForm(false)}
+                />
+              ) : (
+                <div className="text-center text-muted-foreground">
+                  <CollectionList
+                    products={collections}
+                    allProducts={products}
+                    onEdit={handleEditProduct}
+                    onDelete={handleDeleteProduct}
+                    onToggleStatus={handleToggleStatus}
+                  />
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>

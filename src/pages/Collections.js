@@ -11,7 +11,7 @@ const Collections = () => {
 
   const filteredArtworks = selectedCategory === 'All'
     ? products
-    : products.filter(artwork => artwork.category === selectedCategory);
+    : products.filter(artwork => artwork.collections === selectedCategory);
 
   useEffect(() => {
     const unsub = onSnapshot(
@@ -24,8 +24,8 @@ const Collections = () => {
           const data = doc.data();
           list.push({ id: doc.id, ...data });
 
-          if (data.category) {
-            categorySet.add(data.category);
+          if (data.collections) {
+            categorySet.add(data.collections);
           }
         });
 
@@ -63,16 +63,16 @@ const Collections = () => {
 
       {/* Category Filter */}
       <div className="flex flex-wrap justify-center gap-2 mb-12 px-1">
-        {categoryList.map((category) => (
+        {categoryList.map((collections) => (
           <button
-            key={category}
-            onClick={() => setSelectedCategory(category)}
-            className={`px-6 py-2 text-white rounded-full font-medium transition-colors ${selectedCategory === category
+            key={collections}
+            onClick={() => setSelectedCategory(collections)}
+            className={`px-6 py-2 text-white rounded-full font-medium transition-colors ${selectedCategory === collections
               ? 'bg-red-500/50'
               : 'bg-red-500/25 hover:bg-accent/80'
               }`}
           >
-            {category}
+            {collections}
           </button>
         ))}
       </div>

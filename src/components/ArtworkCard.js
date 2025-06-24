@@ -37,11 +37,12 @@ const ArtworkCard = ({ artwork, showPrice = true }) => {
 
         <div className="flex justify-between items-center">
           <span className="text-xs text-muted-foreground bg-red-500/50 px-2 py-1 rounded">
-            {artwork.category}
+            {artwork.collections ? <span>{artwork.collections}</span> : <span>No collection</span>}
           </span>
           {showPrice && (
-            <span className="text-lg font-bold text-primary">
-              {artwork.price}
+            <span className="font-bold text-primary flex items-center">
+              <span className='text-md'>{artwork.price}</span>
+              <span className='text-lg'>₺</span>
             </span>
           )}
         </div>
