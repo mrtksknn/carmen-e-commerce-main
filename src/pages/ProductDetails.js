@@ -55,53 +55,56 @@ const Details = () => {
       </nav>
 
       {/* Artwork Details */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6">
-        <div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        <div className="bg-[#0a0a0a] border border-primary/20 rounded-xl p-4 shadow-2xl shadow-black/50">
           <img
             src={data?.img}
             alt={data?.name}
-            style={{ minHeight: '450px', maxHeight: '750px' }}
-            className="w-full h-auto max-h-3/4 rounded-md shadow-xl"
+            className="w-full object-cover rounded-lg"
+            style={{ maxHeight: '70vh' }}
           />
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-6 flex flex-col justify-center">
           <div>
-            {data.collections ? <span className="inline-block bg-red-500/50 text-white px-3 py-1 rounded-full text-sm font-medium mb-4">
-              {data?.collections}
-            </span> : ''}
-            <h1 className="text-4xl font-bold text-white mb-4">{data?.name}</h1>
-            <p className="text-lg text-white leading-relaxed" style={{ color: '#94a3b8' }}>
+            {data.collections && (
+              <span className="inline-block bg-primary/20 border border-primary/30 text-white px-3 py-1 rounded-full text-sm font-medium mb-4">
+                {data?.collections}
+              </span>
+            )}
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 font-serif">{data?.name}</h1>
+            <p className="text-lg text-gray-400 leading-relaxed font-sans">
               {data?.description}
             </p>
           </div>
 
-          <div className="border-t border-border pt-6" style={{ borderColor: '#e5e7eb38' }}>
+          <div className="border-t border-primary/20 pt-6">
             <h3 className="text-xl font-semibold text-white mb-4">Product Details</h3>
             <dl className="space-y-3">
-              <div className="flex justify-between">
-                <dt className="text-white" style={{ color: '#94a3b8' }}>Dimensions:</dt>
+              <div className="flex justify-between items-center bg-[#0a0a0a] py-2 px-4 rounded-lg border border-primary/10">
+                <dt className="text-gray-400">Dimensions:</dt>
                 <dd className="text-white font-medium">{data?.height} x {data?.width}</dd>
               </div>
-              <div className="flex justify-between">
-                <dt className="text-white" style={{ color: '#94a3b8' }}>Medium:</dt>
+              <div className="flex justify-between items-center bg-[#0a0a0a] py-2 px-4 rounded-lg border border-primary/10">
+                <dt className="text-gray-400">Medium:</dt>
                 <dd className="text-white font-medium">{data?.material}</dd>
               </div>
-              <div className="flex justify-between">
-                <dt className="text-white" style={{ color: '#94a3b8' }}>Price:</dt>
-                <dd className="text-2xl font-bold text-white">{data?.price}</dd>
+              <div className="flex justify-between items-center bg-[#0a0a0a] py-3 px-4 rounded-lg border border-primary/30 mt-4">
+                <dt className="text-gray-400 text-lg">Price:</dt>
+                <dd className="text-2xl font-bold text-primary">{data?.price}</dd>
               </div>
             </dl>
           </div>
 
-          <div className="border-t border-border pt-6" style={{ borderColor: '#e5e7eb38' }}>
+          <div className="border-t border-primary/20 pt-6">
             <Link
               to="/contact"
-              className="inline-block w-full bg-white text-black text-center px-8 py-4 rounded-lg font-semibold hover:bg-primary/90 transition-colors"
+              state={{ subject: `Inquiry about ${data?.name}` }}
+              className="inline-block w-full bg-primary text-white text-center px-8 py-4 rounded-lg font-semibold hover:bg-primary-hover transition-all shadow-lg shadow-primary/20 hover:-translate-y-1"
             >
               Inquire About This Piece
             </Link>
-            <p className="text-sm text-muted-foreground mt-2 text-center" style={{ color: '#94a3b8' }}>
+            <p className="text-sm text-gray-500 mt-3 text-center">
               Contact me for availability and shipping information
             </p>
           </div>

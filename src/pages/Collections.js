@@ -54,8 +54,8 @@ const Collections = () => {
     <div className="collections-container">
       {/* Header */}
       <div className="text-center mb-12 px-4">
-        <h1 className="text-4xl font-bold text-white mb-4 mt-12">Art Collections</h1>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto" style={{ color: '#94a3b8' }}>
+        <h1 className="text-4xl font-bold text-white mb-4 mt-12 font-serif">Art Collections</h1>
+        <p className="text-xl text-gray-400 max-w-2xl mx-auto font-sans">
           Explore my artworks organized by themes and styles. Each collection represents
           a unique journey through different artistic expressions.
         </p>
@@ -67,10 +67,11 @@ const Collections = () => {
           <button
             key={collections}
             onClick={() => setSelectedCategory(collections)}
-            className={`px-6 py-2 text-white rounded-full font-medium transition-colors ${selectedCategory === collections
-              ? 'bg-red-500/50'
-              : 'bg-red-500/25 hover:bg-accent/80'
-              }`}
+            className={`px-6 py-2 rounded-full font-medium transition-all duration-300 ${
+              selectedCategory === collections
+                ? 'bg-primary border border-primary text-white shadow-lg shadow-primary/30'
+                : 'bg-[#0a0a0a] border border-primary/20 text-gray-300 hover:bg-primary/20 hover:text-white'
+            }`}
           >
             {collections}
           </button>

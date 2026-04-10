@@ -6,7 +6,7 @@ const ArtworkCard = ({ artwork, showPrice = true }) => {
   return (
     <Link
       to={`/product/${artwork.id}`}
-      className="group block bg-card rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105"
+      className="group block bg-[#0a0a0a] border border-primary/20 rounded-lg overflow-hidden shadow-lg shadow-black/50 hover:shadow-primary/20 hover:border-primary/50 transition-all duration-300 hover:-translate-y-1"
     >
       <div className="aspect-[4/3] overflow-hidden relative">
         <img
@@ -35,8 +35,8 @@ const ArtworkCard = ({ artwork, showPrice = true }) => {
           {artwork.description}
         </p>
 
-        <div className="flex justify-between items-center">
-          <span className="text-xs text-muted-foreground bg-red-500/50 px-2 py-1 rounded">
+        <div className="flex justify-between items-center mt-2">
+          <span className="text-xs bg-primary/20 border border-primary/30 text-white px-3 py-1.5 rounded-full font-medium">
             {artwork.collections ? <span>{artwork.collections}</span> : <span>No collection</span>}
           </span>
           {showPrice && (

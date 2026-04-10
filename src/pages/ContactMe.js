@@ -1,18 +1,24 @@
-import '../assets/styles/aboutMe.css';
 import React, { useState } from 'react';
 import emailjs from 'emailjs-com';
+import { useLocation } from 'react-router-dom';
+import { useCustomToast } from '../components/ui/toast-context';
 
 const ContactMe = () => {
+  const location = useLocation();
+  const showToast = useCustomToast();
 
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    subject: '',
+    subject: location.state?.subject || '',
     message: '',
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     emailjs
       .send(
@@ -28,12 +34,15 @@ const ContactMe = () => {
         'HPGdH6pTAslP_R5k0'     // örn: xYzAbC123456
       )
       .then(() => {
-        alert('Your message was sent successfully!');
+        showToast({ type: "success", message: 'Your message was sent successfully!' });
         setFormData({ name: '', email: '', subject: '', message: '' });
       })
       .catch((error) => {
-        alert('An error occurred. Please try again.');
+        showToast({ type: "error", message: 'An error occurred. Please try again.' });
         console.error('Email send error:', error);
+      })
+      .finally(() => {
+        setIsSubmitting(false);
       });
   };
 
@@ -41,12 +50,14 @@ const ContactMe = () => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  const inputClasses = "w-full px-4 py-3 border border-primary/30 rounded-lg bg-background-dark text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-gray-600";
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
       {/* Header */}
-      <div className="text-center my-12">
-        <h1 className="text-4xl font-bold text-white mb-4">Get in Touch</h1>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto" style={{ color: '#94a3b8' }}>
+      <div className="text-center my-12 tracking-wide">
+        <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 font-serif">Get in Touch</h1>
+        <p className="text-xl text-gray-400 max-w-2xl mx-auto font-sans">
           I'd love to hear from you! Whether you're interested in purchasing artwork,
           commissioning a piece, or just want to say hello.
         </p>
@@ -54,11 +65,11 @@ const ContactMe = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         {/* Contact Form */}
-        <div className="bg-card p-8 rounded-lg border border-border" style={{ borderColor: '#e5e7eb24' }}>
-          <h2 className="text-2xl font-bold text-white mb-6">Send a Message</h2>
+        <div className="bg-[#0a0a0a] p-8 rounded-2xl border border-primary/20 shadow-xl">
+          <h2 className="text-2xl font-bold text-white mb-6 font-serif tracking-wide">Send a Message</h2>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-white mb-2">
+              <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
                 Full Name
               </label>
               <input
@@ -68,13 +79,13 @@ const ContactMe = () => {
                 value={formData.name}
                 onChange={handleChange}
                 required
-                style={{ borderColor: '#e5e7eb24' }}
-                className="w-full px-4 py-2 border border-input rounded-lg bg-transparent text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                className={inputClasses}
+                placeholder="John Doe"
               />
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-white mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
                 Email Address
               </label>
               <input
@@ -84,34 +95,47 @@ const ContactMe = () => {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                style={{ borderColor: '#e5e7eb24' }}
-                className="w-full px-4 py-2 border border-input rounded-lg bg-transparent text-white focus:outline-none focus:ring-2 focus:ring-primary"
+                className={inputClasses}
+                placeholder="john@example.com"
               />
             </div>
 
             <div>
-              <label htmlFor="subject" className="block text-sm font-medium text-white mb-2">
+              <label htmlFor="subject" className="block text-sm font-medium text-gray-300 mb-2">
                 Subject
               </label>
-              <select
-                id="subject"
-                name="subject"
-                value={formData.subject}
-                onChange={handleChange}
-                required
-                style={{ borderColor: '#e5e7eb24' }}
-                className="w-full px-4 py-2 border border-input rounded-lg bg-transparent text-white focus:outline-none focus:ring-2 focus:ring-primary"
-              >
-                <option className='text-black' value="">Select a subject</option>
-                <option className='text-black' value="purchase">Purchase Inquiry</option>
-                <option className='text-black' value="commission">Commission Request</option>
-                <option className='text-black' value="exhibition">Exhibition Opportunity</option>
-                <option className='text-black' value="general">General Question</option>
-              </select>
+              {location.state?.subject && !formData.subject.includes(location.state.subject) ? (
+                 <input 
+                   type="text"
+                   name="subject"
+                   value={formData.subject}
+                   onChange={handleChange}
+                   required
+                   className={inputClasses}
+                 />
+              ) : (
+                <select
+                  id="subject"
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleChange}
+                  required
+                  className={inputClasses}
+                >
+                  <option className='bg-[#121212]' value="">Select a subject</option>
+                  <option className='bg-[#121212]' value="Purchase Inquiry">Purchase Inquiry</option>
+                  <option className='bg-[#121212]' value="Commission Request">Commission Request</option>
+                  <option className='bg-[#121212]' value="Exhibition Opportunity">Exhibition Opportunity</option>
+                  <option className='bg-[#121212]' value="General Question">General Question</option>
+                  {location.state?.subject && (
+                    <option className='bg-[#121212]' value={location.state.subject}>{location.state.subject}</option>
+                  )}
+                </select>
+              )}
             </div>
 
             <div>
-              <label htmlFor="message" className="block text-sm font-medium text-white mb-2">
+              <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
                 Message
               </label>
               <textarea
@@ -121,34 +145,46 @@ const ContactMe = () => {
                 onChange={handleChange}
                 required
                 rows={5}
-                style={{ borderColor: '#e5e7eb24' }}
-                className="w-full px-4 py-2 border border-input rounded-lg bg-transparent text-white focus:outline-none focus:ring-2 focus:ring-primary resize-vertical"
+                className={inputClasses + " resize-y"}
                 placeholder="Tell me about your interest in my artwork or any questions you have..."
               />
             </div>
 
             <button
               type="submit"
-              className="w-full text-black bg-white inline-block bg-primary text-primary-foreground px-8 py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors"
+              disabled={isSubmitting}
+              className="w-full bg-primary text-white px-8 py-4 rounded-lg font-semibold hover:bg-primary-hover shadow-lg shadow-primary/20 transition-all hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Send Message
+              {isSubmitting ? 'Sending...' : 'Send Message'}
             </button>
           </form>
         </div>
 
         {/* Contact Information */}
-        <div className="space-y-8">
-          <div className="bg-card bg-red-500/25 p-8 rounded-lg border-border">
-            <h3 className="text-xl font-bold text-white mb-4">Commission Work</h3>
-            <p className="text-muted-foreground mb-4" style={{ color: '#94a3b8' }}>
+        <div className="space-y-8 flex items-center">
+          <div className="bg-[#0a0a0a] p-8 rounded-2xl border border-primary/20 shadow-xl w-full">
+            <h3 className="text-2xl font-bold text-white mb-4 font-serif">Commission Work</h3>
+            <p className="text-gray-400 mb-6 leading-relaxed">
               I accept custom commissions for paintings, portraits, and special projects.
               Each piece is created with careful attention to your vision and preferences.
             </p>
-            <ul className="text-sm text-muted-foreground space-y-2" style={{ color: '#94a3b8' }}>
-              <li>• Initial consultation to discuss your vision</li>
-              <li>• Sketch approval process</li>
-              <li>• Progress updates throughout creation</li>
-              <li>• Professional framing options available</li>
+            <ul className="text-gray-300 space-y-4">
+              <li className="flex items-center space-x-3">
+                <span className="w-2 h-2 bg-primary rounded-full"></span>
+                <span>Initial consultation to discuss your vision</span>
+              </li>
+              <li className="flex items-center space-x-3">
+                <span className="w-2 h-2 bg-primary rounded-full"></span>
+                <span>Sketch approval process</span>
+              </li>
+              <li className="flex items-center space-x-3">
+                <span className="w-2 h-2 bg-primary rounded-full"></span>
+                <span>Progress updates throughout creation</span>
+              </li>
+              <li className="flex items-center space-x-3">
+                <span className="w-2 h-2 bg-primary rounded-full"></span>
+                <span>Professional framing options available</span>
+              </li>
             </ul>
           </div>
         </div>

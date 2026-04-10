@@ -71,19 +71,17 @@ const AllProducts = () => {
               type="text"
               placeholder="Search artworks..."
               value={searchTerm}
-              style={{ borderColor: '#93939340' }}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-4 py-2 border border-input rounded-lg bg-black text-white focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full px-4 py-3 rounded-lg bg-background-dark border border-primary/30 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-gray-500"
             />
           </div>
           <select
             value={sortBy}
-            style={{ borderColor: '#93939340' }}
             onChange={(e) => setSortBy(e.target.value)}
-            className="px-4 py-2 border border-input rounded-lg bg-black text-white focus:outline-none focus:ring-2 focus:ring-primary"
+            className="px-4 py-3 rounded-lg bg-background-dark border border-primary/30 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all cursor-pointer"
           >
-            <option value="name">Sort by Name</option>
-            <option value="price">Sort by Price</option>
+            <option value="name" className="bg-[#121212]">Sort by Name</option>
+            <option value="price" className="bg-[#121212]">Sort by Price</option>
           </select>
         </div>
 

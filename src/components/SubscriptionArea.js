@@ -51,11 +51,11 @@ const SubscriptionArea = () => {
   };
 
   return (
-    <section className="py-20 bg-red-500/25">
+    <section className="py-12 bg-primary/5 border-y border-primary/20 relative z-20">
       <div className="max-w-4xl mx-auto px-4 text-center">
         <div className="flex justify-center mb-6">
-          <div className="bg-red-900/50 p-4 rounded-full">
-            <Mail className="h-8 w-8 text-white" />
+          <div className="bg-primary/20 border border-primary/40 p-4 rounded-full shadow-[0_0_20px_rgba(120,34,34,0.3)]">
+            <Mail className="h-8 w-8 text-primary-light" />
           </div>
         </div>
 
@@ -70,20 +70,20 @@ const SubscriptionArea = () => {
 
         <form
           onSubmit={handleSubscribe}
-          className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto"
+          className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto"
         >
           <input
             type="email"
             placeholder="Enter your email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="flex h-10 w-full rounded-md bg-black text-white px-3 py-2 text-base placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-white disabled:opacity-50"
+            className="flex h-12 w-full rounded-full bg-[#0a0a0a] border border-primary/30 text-white px-6 py-2 text-base placeholder:text-gray-600 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary disabled:opacity-50 transition-all"
             disabled={isLoading}
           />
           <button
             type="submit"
             disabled={isLoading}
-            className="text-black bg-white px-8 py-2 rounded-lg font-semibold"
+            className="text-white bg-primary px-8 py-2 rounded-full font-semibold hover:bg-primary-hover shadow-lg shadow-primary/20 transition-all"
           >
             {isLoading ? "Subscribing..." : "Subscribe"}
           </button>
