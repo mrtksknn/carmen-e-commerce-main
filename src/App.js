@@ -1,7 +1,7 @@
 import './App.css';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 
 // Toast System
 import { ToastProvider } from "./components/ui/toast-context";
@@ -25,7 +25,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ToastProvider>
         <CustomToaster />
-        <BrowserRouter>
+        <HashRouter>
           <Routes>
             <Route path="/" element={<Layout />}>
               <Route index element={<Landing />} />
@@ -44,7 +44,7 @@ function App() {
               }
             />
           </Routes>
-        </BrowserRouter>
+        </HashRouter>
       </ToastProvider>
     </QueryClientProvider>
   );
