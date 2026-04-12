@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import emailjs from 'emailjs-com';
 import { useLocation } from 'react-router-dom';
 import { useCustomToast } from '../components/ui/toast-context';
+import { User, Mail, Tag, MessageSquare, Send, MapPin, Clock, MoveRight, Loader2 } from 'lucide-react';
 
 const ContactMe = () => {
   const location = useLocation();
   const showToast = useCustomToast();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -22,8 +27,8 @@ const ContactMe = () => {
 
     emailjs
       .send(
-        'service_tb170xp',    // örn: service_gmail
-        'template_6rez0q9',   // örn: template_contact
+        'service_tb170xp',
+        'template_6rez0q9',
         {
           name: formData.name,
           from_name: formData.name,
@@ -31,7 +36,7 @@ const ContactMe = () => {
           subject: formData.subject,
           message: formData.message,
         },
-        'HPGdH6pTAslP_R5k0'     // örn: xYzAbC123456
+        'HPGdH6pTAslP_R5k0'
       )
       .then(() => {
         showToast({ type: "success", message: 'Your message was sent successfully!' });
@@ -50,144 +55,245 @@ const ContactMe = () => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const inputClasses = "w-full px-4 py-3 border border-primary/30 rounded-lg bg-background-dark text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-gray-600";
+  const inputClasses = "w-full pl-12 pr-4 py-4 rounded-xl bg-black/40 border border-white/5 text-white focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-gray-600 font-light backdrop-blur-md";
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12">
-      {/* Header */}
-      <div className="text-center my-12 tracking-wide">
-        <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 font-serif">Get in Touch</h1>
-        <p className="text-xl text-gray-400 max-w-2xl mx-auto font-sans">
-          I'd love to hear from you! Whether you're interested in purchasing artwork,
-          commissioning a piece, or just want to say hello.
-        </p>
-      </div>
+    <div className="relative min-h-screen bg-[#030303] text-white font-sans overflow-hidden py-24">
+      
+      {/* Background Ambient Glows */}
+      <div className="absolute top-[-5%] right-[-10%] w-[50vw] h-[50vw] bg-primary/10 blur-[140px] rounded-full pointer-events-none z-0"></div>
+      <div className="absolute bottom-[10%] left-[-15%] w-[60vw] h-[60vw] bg-primary/5 blur-[120px] rounded-full pointer-events-none z-0"></div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        {/* Contact Form */}
-        <div className="bg-[#0a0a0a] p-8 rounded-2xl border border-primary/20 shadow-xl">
-          <h2 className="text-2xl font-bold text-white mb-6 font-serif tracking-wide">Send a Message</h2>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
-                Full Name
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                className={inputClasses}
-                placeholder="John Doe"
-              />
-            </div>
+      <div className="max-w-7xl mx-auto px-6 lg:px-20 relative z-10">
+        
+        {/* Header */}
+        <div className="text-center mb-16 animate-fade-in">
+          <span className="text-primary font-bold tracking-[0.3em] uppercase text-xs mb-4 block opacity-80">
+            The Concierge
+          </span>
+          <h1 className="text-5xl md:text-6xl font-black mb-6 font-serif tracking-tight">
+            Studio Inquiries
+          </h1>
+          <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto font-light leading-relaxed">
+            I'd love to hear from you. Whether you're interested in acquiring a masterwork,
+            commissioning a custom piece, or exploring an exhibition opportunity.
+          </p>
+        </div>
 
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-                Email Address
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                className={inputClasses}
-                placeholder="john@example.com"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="subject" className="block text-sm font-medium text-gray-300 mb-2">
-                Subject
-              </label>
-              {location.state?.subject && !formData.subject.includes(location.state.subject) ? (
-                 <input 
-                   type="text"
-                   name="subject"
-                   value={formData.subject}
-                   onChange={handleChange}
-                   required
-                   className={inputClasses}
-                 />
-              ) : (
-                <select
-                  id="subject"
-                  name="subject"
-                  value={formData.subject}
+        <div className="flex flex-col lg:flex-row gap-16 lg:gap-20 items-start">
+          
+          {/* Left Side: Contact Form (Glassmorphism) */}
+          <div className="w-full lg:w-3/5 bg-white/5 p-8 md:p-12 rounded-3xl border border-white/10 shadow-2xl backdrop-blur-xl animate-fade-in delay-100">
+            <h2 className="text-2xl font-bold text-white mb-8 font-serif tracking-wide flex items-center gap-3">
+              Direct Transmission
+            </h2>
+            
+            <form onSubmit={handleSubmit} className="space-y-6">
+              
+              <div className="relative group">
+                <label htmlFor="name" className="sr-only">Full Name</label>
+                <div className="absolute top-4 left-4 text-gray-500 group-focus-within:text-primary transition-colors">
+                  <User size={20} />
+                </div>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
                   onChange={handleChange}
                   required
                   className={inputClasses}
-                >
-                  <option className='bg-[#121212]' value="">Select a subject</option>
-                  <option className='bg-[#121212]' value="Purchase Inquiry">Purchase Inquiry</option>
-                  <option className='bg-[#121212]' value="Commission Request">Commission Request</option>
-                  <option className='bg-[#121212]' value="Exhibition Opportunity">Exhibition Opportunity</option>
-                  <option className='bg-[#121212]' value="General Question">General Question</option>
-                  {location.state?.subject && (
-                    <option className='bg-[#121212]' value={location.state.subject}>{location.state.subject}</option>
-                  )}
-                </select>
-              )}
-            </div>
+                  placeholder="Your Full Name"
+                />
+              </div>
 
+              <div className="relative group">
+                <label htmlFor="email" className="sr-only">Email Address</label>
+                <div className="absolute top-4 left-4 text-gray-500 group-focus-within:text-primary transition-colors">
+                  <Mail size={20} />
+                </div>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  className={inputClasses}
+                  placeholder="Email Address"
+                />
+              </div>
+
+              <div className="relative group">
+                <label htmlFor="subject" className="sr-only">Subject</label>
+                <div className="absolute top-4 left-4 text-gray-500 group-focus-within:text-primary transition-colors">
+                  <Tag size={20} />
+                </div>
+                {location.state?.subject && !formData.subject.includes(location.state.subject) ? (
+                   <input 
+                     type="text"
+                     name="subject"
+                     value={formData.subject}
+                     onChange={handleChange}
+                     required
+                     className={inputClasses}
+                   />
+                ) : (
+                  <select
+                    id="subject"
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleChange}
+                    required
+                    className={`${inputClasses} appearance-none cursor-pointer`}
+                  >
+                    <option className='bg-[#121212]' value="">Select the nature of inquiry</option>
+                    <option className='bg-[#121212]' value="Purchase Inquiry">Acquire Artwork</option>
+                    <option className='bg-[#121212]' value="Commission Request">Commission Request</option>
+                    <option className='bg-[#121212]' value="Exhibition Opportunity">Exhibition Collaboration</option>
+                    <option className='bg-[#121212]' value="General Question">General Transmission</option>
+                    {location.state?.subject && (
+                      <option className='bg-[#121212]' value={location.state.subject}>{location.state.subject}</option>
+                    )}
+                  </select>
+                )}
+                {/* Custom chevron for select */}
+                {(!location.state?.subject || formData.subject.includes(location.state.subject)) && (
+                   <div className="absolute top-4 right-4 text-gray-500 pointer-events-none">
+                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6"/></svg>
+                   </div>
+                )}
+              </div>
+
+              <div className="relative group">
+                <label htmlFor="message" className="sr-only">Message</label>
+                <div className="absolute top-4 left-4 text-gray-500 group-focus-within:text-primary transition-colors">
+                  <MessageSquare size={20} />
+                </div>
+                <textarea
+                  id="message"
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
+                  required
+                  rows={6}
+                  className={`${inputClasses} resize-y min-h-[140px]`}
+                  placeholder="Provide details about your interest or specific requests..."
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full flex justify-center items-center gap-3 bg-white text-black px-8 py-4 rounded-xl font-bold uppercase tracking-widest hover:bg-primary hover:text-white shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(120,34,34,0.4)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed group mt-4 overflow-hidden relative"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="animate-spin" size={20} />
+                    <span>Transmitting...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Send Message</span>
+                    <Send size={18} className="transform group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform duration-300" />
+                  </>
+                )}
+              </button>
+            </form>
+          </div>
+
+          {/* Right Side: Commission Roadmap & Info */}
+          <div className="w-full lg:w-2/5 flex flex-col gap-12 animate-fade-in delay-200">
+            
+            {/* The Commission Roadmap */}
             <div>
-              <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
-                Message
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                value={formData.message}
-                onChange={handleChange}
-                required
-                rows={5}
-                className={inputClasses + " resize-y"}
-                placeholder="Tell me about your interest in my artwork or any questions you have..."
-              />
+              <h3 className="text-2xl font-bold text-white mb-8 font-serif tracking-wide border-b border-white/10 pb-4">
+                Commission Roadmap
+              </h3>
+              
+              <div className="relative pl-6 space-y-8 border-l border-white/10 ml-3">
+                
+                <div className="relative">
+                  <div className="absolute -left-[31px] bg-[#030303] p-1">
+                    <div className="w-3 h-3 rounded-full bg-primary ring-4 ring-primary/20"></div>
+                  </div>
+                  <h4 className="text-white font-bold tracking-wide mb-1 flex items-center gap-2">
+                    Phase 1: Dialogue
+                  </h4>
+                  <p className="text-gray-400 font-light text-sm leading-relaxed">
+                    Initial studio consultation to discuss your specific vision, dimensions, and preferred color logic.
+                  </p>
+                </div>
+
+                <div className="relative">
+                  <div className="absolute -left-[31px] bg-[#030303] p-1">
+                    <div className="w-3 h-3 rounded-full bg-white/30"></div>
+                  </div>
+                  <h4 className="text-white font-bold tracking-wide mb-1">
+                    Phase 2: Blueprints
+                  </h4>
+                  <p className="text-gray-400 font-light text-sm leading-relaxed">
+                    Creation and approval of concept sketches and exact timeline commitments.
+                  </p>
+                </div>
+
+                <div className="relative">
+                  <div className="absolute -left-[31px] bg-[#030303] p-1">
+                    <div className="w-3 h-3 rounded-full bg-white/30"></div>
+                  </div>
+                  <h4 className="text-white font-bold tracking-wide mb-1">
+                    Phase 3: Execution
+                  </h4>
+                  <p className="text-gray-400 font-light text-sm leading-relaxed">
+                    The masterpiece is brought to life. You receive exclusive studio progress updates.
+                  </p>
+                </div>
+
+                <div className="relative">
+                  <div className="absolute -left-[31px] bg-[#030303] p-1">
+                    <div className="w-3 h-3 rounded-full bg-white/30"></div>
+                  </div>
+                  <h4 className="text-white font-bold tracking-wide mb-1">
+                    Phase 4: Acquisition
+                  </h4>
+                  <p className="text-gray-400 font-light text-sm leading-relaxed">
+                    Final artwork is cured, varnished, authenticated, and securely shipped globally.
+                  </p>
+                </div>
+
+              </div>
             </div>
 
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full bg-primary text-white px-8 py-4 rounded-lg font-semibold hover:bg-primary-hover shadow-lg shadow-primary/20 transition-all hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isSubmitting ? 'Sending...' : 'Send Message'}
-            </button>
-          </form>
-        </div>
+            {/* Studio Info Card */}
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm">
+               <div className="space-y-6">
+                 <div className="flex items-start gap-4">
+                   <div className="p-3 rounded-lg bg-black/40 text-primary mt-1">
+                     <MapPin size={20} />
+                   </div>
+                   <div>
+                     <p className="text-white font-medium uppercase tracking-widest text-xs mb-1 opacity-60">The Studio Location</p>
+                     <p className="text-gray-300 font-serif text-lg">Private Facility, Global</p>
+                     <p className="text-gray-500 text-sm mt-1">Visits strictly by appointment only</p>
+                   </div>
+                 </div>
+                 
+                 <div className="flex items-start gap-4">
+                   <div className="p-3 rounded-lg bg-black/40 text-primary mt-1">
+                     <Clock size={20} />
+                   </div>
+                   <div>
+                     <p className="text-white font-medium uppercase tracking-widest text-xs mb-1 opacity-60">Response Time</p>
+                     <p className="text-gray-300 font-serif text-lg">24 - 48 Hours</p>
+                     <p className="text-gray-500 text-sm mt-1">Monday – Friday</p>
+                   </div>
+                 </div>
+               </div>
+            </div>
 
-        {/* Contact Information */}
-        <div className="space-y-8 flex items-center">
-          <div className="bg-[#0a0a0a] p-8 rounded-2xl border border-primary/20 shadow-xl w-full">
-            <h3 className="text-2xl font-bold text-white mb-4 font-serif">Commission Work</h3>
-            <p className="text-gray-400 mb-6 leading-relaxed">
-              I accept custom commissions for paintings, portraits, and special projects.
-              Each piece is created with careful attention to your vision and preferences.
-            </p>
-            <ul className="text-gray-300 space-y-4">
-              <li className="flex items-center space-x-3">
-                <span className="w-2 h-2 bg-primary rounded-full"></span>
-                <span>Initial consultation to discuss your vision</span>
-              </li>
-              <li className="flex items-center space-x-3">
-                <span className="w-2 h-2 bg-primary rounded-full"></span>
-                <span>Sketch approval process</span>
-              </li>
-              <li className="flex items-center space-x-3">
-                <span className="w-2 h-2 bg-primary rounded-full"></span>
-                <span>Progress updates throughout creation</span>
-              </li>
-              <li className="flex items-center space-x-3">
-                <span className="w-2 h-2 bg-primary rounded-full"></span>
-                <span>Professional framing options available</span>
-              </li>
-            </ul>
           </div>
         </div>
+
       </div>
     </div>
   );
