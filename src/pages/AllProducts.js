@@ -2,43 +2,24 @@ import React, { useEffect, useState } from 'react';
 import { db } from "../firebase";
 import ArtworkCard from '../components/ArtworkCard';
 import { collection, onSnapshot } from "firebase/firestore";
+import { Search, SlidersHorizontal, ImageOff } from "lucide-react";
 
 const AllProducts = () => {
 
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState('name');
+  const [sortBy, setSortBy] = useState('newest');
 
   const [products, setProducts] = useState([]);
 
-  const filteredArtworks = products
-    .filter(artwork =>
-      artwork.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      artwork.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      artwork.collections.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    .sort((a, b) => {
-      switch (sortBy) {
-        case 'price':
-          return parseInt(a.price.replace(/[$,]/g, '')) - parseInt(b.price.replace(/[$,]/g, ''));
-        case 'year':
-          return b.year.localeCompare(a.year);
-        default:
-          return a.name.localeCompare(b.name);
-      }
-    });
-
+  // Fetch from Firebase
   useEffect(() => {
+    window.scrollTo(0, 0);
     const unsub = onSnapshot(collection(db, "products"),
       (snapshot) => {
         let list = [];
         snapshot.docs.forEach((doc) => {
           list.push({ id: doc.id, ...doc.data() });
         });
-
-        list.sort((a, b) => {
-          return b.timeStamp.seconds - a.timeStamp.seconds;
-        });
-
         setProducts(list);
       },
       (error) => {
@@ -46,68 +27,146 @@ const AllProducts = () => {
       }
     );
 
-    return () => {
-      unsub();
-    }
+    return () => unsub();
   }, []);
 
-  return (
-    <div className="allProducts flex flex-col items-center px-4" style={{ marginTop: '65px' }}>
+  // Filter and Sort Processing
+  const filteredArtworks = products
+    .filter(artwork => {
+      const term = searchTerm.toLowerCase();
+      return (
+        (artwork.name?.toLowerCase() || "").includes(term) ||
+        (artwork.description?.toLowerCase() || "").includes(term) ||
+        (artwork.collections?.toLowerCase() || "").includes(term)
+      );
+    })
+    .sort((a, b) => {
+      const getPrice = (str) => parseFloat(String(str || "0").replace(/[^\d.-]/g, ''));
+      
+      switch (sortBy) {
+        case 'price-asc':
+          return getPrice(a.price) - getPrice(b.price);
+        case 'price-desc':
+          return getPrice(b.price) - getPrice(a.price);
+        case 'name-asc':
+          return String(a.name || "").localeCompare(String(b.name || ""));
+        case 'name-desc':
+          return String(b.name || "").localeCompare(String(a.name || ""));
+        case 'newest':
+        default:
+          return (b.timeStamp?.seconds || 0) - (a.timeStamp?.seconds || 0);
+      }
+    });
 
-      <div className='max-w-7xl w-full'>
+  return (
+    <div className="relative min-h-screen bg-[#030303] text-white font-sans overflow-hidden">
+      
+      {/* Background Ambient Glows */}
+      <div className="absolute top-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-primary/10 blur-[130px] rounded-full pointer-events-none z-0"></div>
+      <div className="absolute bottom-[20%] left-[-10%] w-[40vw] h-[40vw] bg-primary/5 blur-[100px] rounded-full pointer-events-none z-0"></div>
+
+      <div className='max-w-7xl mx-auto px-6 lg:px-20 relative z-10 pt-24 pb-20'>
+        
         {/* Header */}
-        <div className="text-center pt-1">
-          <h1 className="text-4xl font-bold text-white mb-4 mt-12">All Products</h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto" style={{ color: '#94a3b8' }}>
+        <div className="text-center mb-12">
+          <span className="text-primary font-bold tracking-[0.2em] uppercase text-xs animate-fade-in opacity-80 mb-2 block">
+            The Complete Archive
+          </span>
+          <h1 className="text-5xl md:text-6xl font-black mb-6 font-serif tracking-tight animate-fade-in">
+            Masterworks Vault
+          </h1>
+          <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto font-light leading-relaxed animate-fade-in delay-100">
             Browse through my complete collection of artworks. Each piece is available
             for purchase and comes with a certificate of authenticity.
           </p>
         </div>
 
-        {/* Search and Sort */}
-        <div className="flex flex-col md:flex-row gap-4 my-8">
-          <div className="flex-1">
-            <input
-              type="text"
-              placeholder="Search artworks..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-4 py-3 rounded-lg bg-background-dark border border-primary/30 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-gray-500"
-            />
+        {/* Search and Sort Control Bar (Glassmorphism) */}
+        <div className="bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl p-4 md:p-6 mb-12 shadow-2xl animate-fade-in delay-200">
+          <div className="flex flex-col md:flex-row gap-4 md:items-center">
+            
+            {/* Search Input */}
+            <div className="relative flex-1 group">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
+                <Search size={20} />
+              </div>
+              <input
+                type="text"
+                placeholder="Search by title, theme, or collection..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-12 pr-4 py-4 rounded-xl bg-black/40 border border-transparent text-white focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-gray-500 font-light"
+              />
+            </div>
+
+            {/* Divider for desktop */}
+            <div className="hidden md:block w-px h-12 bg-white/10"></div>
+
+            {/* Sort Dropdown */}
+            <div className="relative min-w-[200px] shrink-0">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                <SlidersHorizontal size={18} />
+              </div>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="w-full pl-12 pr-10 py-4 rounded-xl bg-black/40 border border-transparent text-white focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all cursor-pointer font-light appearance-none"
+              >
+                <option value="newest" className="bg-[#121212]">Newest Creations</option>
+                <option value="price-asc" className="bg-[#121212]">Price (Low to High)</option>
+                <option value="price-desc" className="bg-[#121212]">Price (High to Low)</option>
+                <option value="name-asc" className="bg-[#121212]">Title (A - Z)</option>
+                <option value="name-desc" className="bg-[#121212]">Title (Z - A)</option>
+              </select>
+              {/* Custom Dropdown Arrow */}
+              <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-gray-400">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6"/></svg>
+              </div>
+            </div>
+
           </div>
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="px-4 py-3 rounded-lg bg-background-dark border border-primary/30 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all cursor-pointer"
-          >
-            <option value="name" className="bg-[#121212]">Sort by Name</option>
-            <option value="price" className="bg-[#121212]">Sort by Price</option>
-          </select>
         </div>
 
-        {/* Results Count */}
-        <div className="mb-6">
-          <p className="text-white">
-            Showing {filteredArtworks.length} of {products.length} artworks
-          </p>
+        {/* Results Metadata */}
+        <div className="flex justify-between items-end border-b border-white/10 pb-4 mb-8">
+          <h2 className="text-2xl font-serif text-white">Exhibition Wall</h2>
+          <span className="text-sm text-gray-500 font-medium bg-white/5 py-1 px-3 rounded-full border border-white/5">
+            {filteredArtworks.length} Masterworks
+          </span>
         </div>
 
         {/* Artworks Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {filteredArtworks.map((artwork) => (
-            <ArtworkCard key={artwork.id} artwork={artwork} />
+            <div className="animate-fade-in" key={artwork.id}>
+              <ArtworkCard artwork={artwork} />
+            </div>
           ))}
         </div>
 
+        {/* Empty State / Not Found */}
         {filteredArtworks.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground text-lg">
-              No artworks found matching your search.
+          <div className="w-full flex flex-col items-center justify-center py-24 px-4 text-center border border-dashed border-white/10 rounded-2xl bg-white/5 backdrop-blur-sm mt-8 animate-fade-in">
+            <div className="w-20 h-20 bg-black rounded-full flex items-center justify-center mb-6 shadow-inner ring-1 ring-white/10 text-gray-600">
+              <ImageOff size={32} />
+            </div>
+            <h3 className="text-2xl font-serif text-white mb-2">No masterworks discovered</h3>
+            <p className="text-gray-400 max-w-md mx-auto">
+              The archives could not find any artwork matching your criteria ("<span className="text-primary">{searchTerm}</span>"). 
+              Try a different keyword or clear your filters.
             </p>
+            {searchTerm && (
+              <button 
+                onClick={() => { setSearchTerm(''); setSortBy('newest'); }}
+                className="mt-6 px-6 py-2 bg-primary/20 text-primary border border-primary/30 rounded-full hover:bg-primary hover:text-white transition-colors"
+              >
+                Clear Filters
+              </button>
+            )}
           </div>
         )}
-      </div>
 
+      </div>
     </div>
   );
 };
