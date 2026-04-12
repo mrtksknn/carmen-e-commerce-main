@@ -21,15 +21,17 @@ const Landing = () => {
           list.push({ id: doc.id, ...doc.data() });
         });
 
+        // Zaman damgasına göre sırala (En yeni en üstte)
         list.sort((a, b) => {
-          return b.timeStamp.seconds - a.timeStamp.seconds;
+          return (b.timeStamp?.seconds || 0) - (a.timeStamp?.seconds || 0);
         });
 
-        const topThreeProducts = list.slice(0, 3);
-        setProducts(topThreeProducts);
+        // 1 Ana Hero eseri + 3 Sergi Eseri = Toplam 4 eser çekiyoruz
+        const latestMasterworks = list.slice(0, 4);
+        setProducts(latestMasterworks);
       },
       (error) => {
-        console.error(error);
+        console.error("Firebase fetch error: ", error);
       }
     );
 
@@ -37,6 +39,9 @@ const Landing = () => {
       unsub();
     }
   }, []);
+
+  const heroPiece = products.length > 0 ? products[0] : null;
+  const galleryPieces = products.length > 1 ? products.slice(1, 4) : [];
 
   return (
     <div className="landing-container bg-[#030303] text-white font-sans overflow-hidden">
@@ -46,60 +51,86 @@ const Landing = () => {
       <div className="ambient-glow glow-bottom-left"></div>
 
       {/* Hero Section */}
-      <section className="relative pt-24 pb-12 px-6 lg:px-20 z-10 overflow-hidden">
-        <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-8 items-center">
+      <section className="relative w-full min-h-[90vh] pt-20 pb-12 z-10 overflow-hidden flex items-center justify-center">
+        
+        {/* 1280px Max-Width Wrapper */}
+        <div className="w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between px-6 lg:px-8">
           
           {/* Left: Typography & Vision */}
-          <div className="flex flex-col justify-center animate-fade-in z-20">
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black mb-6 font-serif leading-tight tracking-tight">
-              Art that
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-300 to-primary mt-2">
-                Breathes.
-              </span>
-            </h1>
-            <p className="text-xl md:text-2xl text-gray-400 mb-10 max-w-xl font-light leading-relaxed border-l-4 border-primary/50 pl-6">
-              Welcome to a universe of original masterworks. 
-              Discover aesthetics that define emotions and elevate spaces to galleries.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-5">
-              <Link
-                to="/collections"
-                className="inline-flex items-center justify-center bg-primary text-white px-8 py-4 rounded-full font-semibold hover:bg-primary-hover hover:-translate-y-1 transition-all shadow-[0_0_30px_rgba(120,34,34,0.4)]"
-              >
-                Prowl The Gallery
-              </Link>
-              <Link
-                to="/about"
-                className="inline-flex items-center justify-center bg-transparent border border-white/20 text-white px-8 py-4 rounded-full font-semibold hover:border-primary hover:bg-primary/10 hover:-translate-y-1 transition-all backdrop-blur-md"
-              >
-                Meet the Artist
-              </Link>
+          <div className="w-full lg:w-[50%] lg:pr-10 flex flex-col justify-center animate-fade-in z-30 mb-16 lg:mb-0">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="w-12 h-[1px] bg-primary"></div>
+              <span className="text-primary font-bold tracking-[0.4em] uppercase text-xs opacity-90">Exhibition 2026</span>
             </div>
+          
+          <h1 className="text-6xl md:text-8xl lg:text-[7rem] font-black mb-8 font-serif leading-[0.9] tracking-tighter">
+            Where Art<br/>
+            <span className="italic font-light text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-400 to-[#333]">Breathes.</span>
+          </h1>
+          
+          <p className="text-lg md:text-xl text-gray-400 mb-12 max-w-lg font-light leading-relaxed">
+            Welcome to a universe of original masterworks. 
+            Discover aesthetics that define emotions and elevate spaces to galleries.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-6">
+            <Link
+              to="/collections"
+              className="group inline-flex items-center justify-center bg-white text-black px-10 py-4 np-500 rounded-full font-bold uppercase tracking-wider hover:bg-primary hover:text-white transition-all duration-500 shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:shadow-[0_0_40px_rgba(120,34,34,0.6)]"
+            >
+              Enter Vault
+            </Link>
+            <Link
+              to="/about"
+              className="inline-flex items-center justify-center bg-transparent border-b border-white/30 text-white px-2 py-4 font-semibold hover:border-primary hover:text-primary transition-all uppercase tracking-widest text-sm"
+            >
+              Meet the Artist
+            </Link>
+          </div>
           </div>
 
-          {/* Right: Floating Artwork */}
-          <div className="relative hidden lg:flex justify-center items-center h-full z-10">
-            <div className="relative w-[300px] md:w-[350px] lg:w-[400px] aspect-[4/5] animate-float">
-               {/* Decorative glow behind artwork */}
-              <div className="absolute inset-0 bg-primary/40 blur-[80px] rounded-full scale-90"></div>
+          {/* Right: Dynamic Masterpiece Frame */}
+          <div className="w-full lg:w-[50%] h-[60vh] lg:h-[80vh] relative z-10 flex items-center justify-center lg:justify-end">
+            {heroPiece ? (
+              <Link to={`/product/${heroPiece.id}`} className="relative w-full md:w-[80%] lg:w-full h-full rounded-[2rem] overflow-hidden shadow-2xl group cursor-pointer border border-white/10 ring-1 ring-white/5">
               
-              {/* Main Artwork Frame */}
-              <div className="absolute inset-0 border border-white/10 rounded-2xl bg-white/5 backdrop-blur-sm p-4 shadow-2xl">
-                <div 
-                  className="w-full h-full rounded-xl bg-cover bg-center shadow-inner overflow-hidden"
-                >
-                  <img src={require("../assets/images/newMainBg.jpg")} alt="Featured Art" className="w-full h-full object-cover" />
+              {/* Image */}
+              <img 
+                src={heroPiece.img} 
+                alt={heroPiece.name} 
+                className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-[20s] group-hover:scale-110" 
+              />
+              
+              {/* High-end Overlays */}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#030303] via-black/20 to-transparent z-10 opacity-90 transition-opacity duration-700 group-hover:opacity-60"></div>
+              <div className="absolute inset-0 bg-primary/20 mix-blend-overlay z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+
+              {/* Informational Lower Third */}
+              <div className="absolute bottom-0 left-0 w-full p-8 md:p-12 z-20 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                <div className="flex items-end justify-between">
+                  <div>
+                    <div className="flex items-center gap-3 mb-3 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
+                      <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+                      <p className="text-xs text-primary uppercase tracking-[0.3em] font-bold">{heroPiece.collections || 'Latest Drop'}</p>
+                    </div>
+                    <h2 className="text-4xl md:text-5xl font-serif text-white drop-shadow-lg leading-tight">{heroPiece.name}</h2>
+                  </div>
+                  
+                  {/* Subtle View Button */}
+                  <div className="hidden md:flex w-14 h-14 rounded-full border border-white/20 bg-white/5 backdrop-blur-md items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all duration-500 group-hover:bg-primary group-hover:border-primary">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  </div>
                 </div>
               </div>
               
-              {/* Floating Badge */}
-              <div className="absolute -bottom-6 -left-10 bg-black/80 backdrop-blur-md border border-white/10 px-6 py-4 rounded-xl shadow-2xl animate-fade-in" style={{animationDelay: '300ms'}}>
-                <p className="text-sm text-gray-400 uppercase tracking-widest mb-1">New Collection</p>
-                <p className="text-xl font-serif text-white">Nocturne</p>
-              </div>
+            </Link>
+          ) : (
+            <div className="w-full md:w-[80%] lg:w-full max-w-[600px] h-full bg-white/5 rounded-[2rem] border border-white/10 flex items-center justify-center animate-pulse">
+               <span className="text-gray-600 font-serif tracking-widest uppercase">Curating the Vault...</span>
             </div>
+            )}
           </div>
-
+          
         </div>
       </section>
 
@@ -119,7 +150,7 @@ const Landing = () => {
             </div>
             <Link
               to="/products"
-              className="mt-6 md:mt-0 text-white border-b border-primary hover:text-primary transition-colors pb-1 flex items-center gap-2"
+              className="mt-6 md:mt-0 text-white border-b border-primary hover:text-primary transition-colors pb-1 flex items-center gap-2 font-medium"
             >
               Enter the Full Gallery 
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -128,7 +159,7 @@ const Landing = () => {
 
           {/* Asymmetric Gallery Grid */}
           <div className="featured-gallery grid gap-4 md:gap-6">
-            {products && products.map((artwork, index) => (
+            {galleryPieces.length > 0 ? galleryPieces.map((artwork, index) => (
               <Link 
                 to={`/product/${artwork.id}`}
                 key={artwork.id} 
@@ -142,7 +173,7 @@ const Landing = () => {
                 
                 {/* Content */}
                 <div className="relative z-20 p-6 flex flex-col justify-end transform md:translate-y-4 md:group-hover:translate-y-0 transition-transform duration-500">
-                  <span className="text-primary text-[10px] md:text-xs font-bold tracking-widest uppercase mb-2">{artwork.collections || 'Featured Artwork'}</span>
+                  <span className="text-primary text-[10px] md:text-xs font-bold tracking-widest uppercase mb-2">{artwork.collections || 'Featured Selection'}</span>
                   <h3 className="text-xl md:text-2xl font-serif text-white mb-2 group-hover:text-gray-200 transition-colors drop-shadow-lg">{artwork.name}</h3>
                   <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-2 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500 delay-100">
                     <span className="text-gray-300 text-sm line-clamp-2 md:max-w-[70%] drop-shadow-md">{artwork.description}</span>
@@ -150,7 +181,11 @@ const Landing = () => {
                   </div>
                 </div>
               </Link>
-            ))}
+            )) : (
+              <div className="col-span-1 min-h-[300px] flex items-center justify-center text-gray-500 border border-white/10 rounded-2xl bg-white/5">
+                Loading exhibitions...
+              </div>
+            )}
           </div>
 
           <div className="text-center mt-12 md:hidden">
