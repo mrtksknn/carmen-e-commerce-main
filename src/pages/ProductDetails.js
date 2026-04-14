@@ -8,6 +8,7 @@ const Details = () => {
   const { id } = useParams();
   const { productName } = useParams();
   const [data, setData] = useState('');
+  const [activeImage, setActiveImage] = useState('');
 
   useEffect(() => {
     const unsub = onSnapshot(collection(db, "products"),
@@ -21,7 +22,11 @@ const Details = () => {
           return b.timeStamp.seconds - a.timeStamp.seconds;
         });
 
-        setData(list.find(item => item.id === id))
+        const foundItem = list.find(item => item.id === id);
+        setData(foundItem);
+        if (foundItem) {
+          setActiveImage(foundItem.img);
+        }
       },
       (error) => {
         console.error(error);
@@ -56,13 +61,31 @@ const Details = () => {
 
       {/* Artwork Details */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-        <div className="bg-[#0a0a0a] border border-primary/20 rounded-xl p-4 shadow-2xl shadow-black/50">
+        <div className="bg-[#0a0a0a] border border-primary/20 rounded-xl p-4 shadow-2xl shadow-black/50 flex flex-col gap-4 relative">
           <img
-            src={data?.img}
+            src={activeImage || data?.img}
             alt={data?.name}
-            className="w-full object-cover rounded-lg"
+            className="w-full object-cover rounded-lg transition-opacity duration-300"
             style={{ maxHeight: '70vh' }}
           />
+
+          {(data?.img2 || data?.img3) && (
+            <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+              {[data?.img, data?.img2, data?.img3].filter(Boolean).map((imgUrl, idx) => (
+                <div 
+                  key={idx} 
+                  onClick={() => setActiveImage(imgUrl)}
+                  className={`w-24 h-24 flex-shrink-0 cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${
+                    (activeImage || data?.img) === imgUrl 
+                      ? 'border-primary shadow-lg shadow-primary/20 scale-100' 
+                      : 'border-transparent opacity-60 hover:opacity-100 hover:border-primary/50'
+                  }`}
+                >
+                  <img src={imgUrl} alt={`${data?.name} thumbnail ${idx + 1}`} className="w-full h-full object-cover" />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="space-y-6 flex flex-col justify-center">

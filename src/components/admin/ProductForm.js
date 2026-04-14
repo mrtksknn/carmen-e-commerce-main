@@ -14,6 +14,12 @@ const ProductForm = ({ product, onClose }) => {
     img: "",
     image: "",
     imageFile: null,
+    img2: "",
+    image2: "",
+    imageFile2: null,
+    img3: "",
+    image3: "",
+    imageFile3: null,
     price: "",
     collections: "",
     dimensions: "",
@@ -47,6 +53,12 @@ const ProductForm = ({ product, onClose }) => {
         img: product.img || "",
         image: "",
         imageFile: null,
+        img2: product.img2 || "",
+        image2: "",
+        imageFile2: null,
+        img3: product.img3 || "",
+        image3: "",
+        imageFile3: null,
         price: product.price || "",
         collections: product.collections || "",
         dimensions: product.dimensions || "",
@@ -59,24 +71,28 @@ const ProductForm = ({ product, onClose }) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleFileSelect = (file) => {
+  const handleFileSelect = (file, index = 1) => {
     if (!file) return;
     const previewUrl = URL.createObjectURL(file);
 
-    if (formData.image && formData.imageFile) {
-      URL.revokeObjectURL(formData.image);
+    const imageKey = index === 1 ? 'image' : `image${index}`;
+    const fileKey = index === 1 ? 'imageFile' : `imageFile${index}`;
+
+    if (formData[imageKey] && formData[fileKey]) {
+      URL.revokeObjectURL(formData[imageKey]);
     }
 
     setFormData((prev) => ({
       ...prev,
-      imageFile: file,
-      image: previewUrl
+      [fileKey]: file,
+      [imageKey]: previewUrl
     }));
   };
 
-  const uploadImage = async () => {
+  const uploadImageObj = async (fileObj) => {
+    if (!fileObj) return null;
     const formDataUpload = new FormData();
-    formDataUpload.append("image", formData.imageFile);
+    formDataUpload.append("image", fileObj);
 
     const response = await fetch("https://api.imgbb.com/1/upload?key=a031dee68dfc850aab9c876c2cd88113", {
       method: "POST",
@@ -98,14 +114,19 @@ const ProductForm = ({ product, onClose }) => {
 
     try {
       let imgUrl = formData.img;
-      if (formData.imageFile) {
-        imgUrl = await uploadImage();
-      }
+      let imgUrl2 = formData.img2;
+      let imgUrl3 = formData.img3;
+
+      if (formData.imageFile) imgUrl = await uploadImageObj(formData.imageFile);
+      if (formData.imageFile2) imgUrl2 = await uploadImageObj(formData.imageFile2);
+      if (formData.imageFile3) imgUrl3 = await uploadImageObj(formData.imageFile3);
 
       const productData = {
         name: formData.title,
         description: formData.description,
         img: imgUrl,
+        img2: imgUrl2,
+        img3: imgUrl3,
         price: formData.price,
         collections: formData.collections,
         dimensions: formData.dimensions,
@@ -127,24 +148,60 @@ const ProductForm = ({ product, onClose }) => {
     }
   };
 
-  const dragProps = {
-    onDragEnter: (e) => {
-      e.preventDefault();
-      setDragActive(true);
-    },
-    onDragOver: (e) => {
-      e.preventDefault();
-    },
-    onDragLeave: (e) => {
-      e.preventDefault();
-      setDragActive(false);
-    },
-    onDrop: (e) => {
-      e.preventDefault();
-      setDragActive(false);
-      const file = e.dataTransfer?.files?.[0];
-      if (file) handleFileSelect(file);
-    }
+  const ImageUploadSlot = ({ index, label, height }) => {
+    const fileInputRef = useRef(null);
+    const [isDragActive, setIsDragActive] = useState(false);
+
+    const dragPropsLocal = {
+      onDragEnter: (e) => { e.preventDefault(); setIsDragActive(true); },
+      onDragOver: (e) => e.preventDefault(),
+      onDragLeave: (e) => { e.preventDefault(); setIsDragActive(false); },
+      onDrop: (e) => {
+        e.preventDefault();
+        setIsDragActive(false);
+        const file = e.dataTransfer?.files?.[0];
+        if (file) handleFileSelect(file, index);
+      }
+    };
+
+    const imageKey = index === 1 ? 'image' : `image${index}`;
+    const imgKey = index === 1 ? 'img' : `img${index}`;
+    const preview = formData[imageKey] || formData[imgKey];
+
+    return (
+      <div className="relative space-y-2 w-full">
+        <span className="block text-sm font-medium text-gray-300">{label}</span>
+        <div
+          {...dragPropsLocal}
+          onClick={() => fileInputRef.current?.click()}
+          className={`relative flex flex-col items-center justify-center border-2 border-dashed rounded-xl ${height} bg-background-dark overflow-hidden cursor-pointer transition-all hover:bg-primary/5 ${
+            isDragActive ? "border-primary bg-primary/10 scale-95" : "border-primary/30"
+          }`}
+        >
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => handleFileSelect(e.target.files?.[0], index)}
+          />
+          {preview ? (
+            <img
+              src={preview}
+              alt="Preview"
+              className="absolute top-0 left-0 w-full h-full object-cover rounded-xl"
+            />
+          ) : (
+            <div className="z-10 flex flex-col items-center text-gray-500">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="mb-2 text-primary/60">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" />
+              </svg>
+              <span className="text-xs font-medium tracking-wide">Upload</span>
+            </div>
+          )}
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -158,36 +215,11 @@ const ProductForm = ({ product, onClose }) => {
           <form onSubmit={handleSubmit} className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Image Upload */}
-              <div className="relative space-y-2">
-                <div
-                  {...dragProps}
-                  onClick={() => inputRef.current?.click()}
-                  className={`relative flex flex-col items-center justify-center border-2 border-dashed rounded-xl h-[400px] bg-background-dark overflow-hidden cursor-pointer transition-all hover:bg-primary/5 ${
-                    dragActive ? "border-primary bg-primary/10 scale-95" : "border-primary/30"
-                  }`}
-                >
-                  <input
-                    ref={inputRef}
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(e) => handleFileSelect(e.target.files?.[0])}
-                  />
-                  {formData.image || formData.img ? (
-                    <img
-                      src={formData.image || formData.img}
-                      alt="Preview"
-                      className="absolute top-0 left-0 w-full h-full object-cover rounded-xl"
-                    />
-                  ) : (
-                    <div className="z-10 flex flex-col items-center text-gray-500">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="mb-3 text-primary/60">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                      <span className="font-medium tracking-wide">Click or drag image to upload</span>
-                      <span className="text-sm mt-1 opacity-70">JPG, PNG up to 10MB</span>
-                    </div>
-                  )}
+              <div className="flex flex-col gap-4">
+                <ImageUploadSlot index={1} label="Main Image *" height="h-[240px]" />
+                <div className="grid grid-cols-2 gap-4">
+                  <ImageUploadSlot index={2} label="Secondary Image" height="h-[144px]" />
+                  <ImageUploadSlot index={3} label="Tertiary Image" height="h-[144px]" />
                 </div>
               </div>
 
