@@ -62,24 +62,24 @@ const Details = () => {
       {/* Artwork Details */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
         <div className="bg-[#0a0a0a] border border-primary/20 rounded-xl p-4 shadow-2xl shadow-black/50 flex flex-col gap-4 relative">
-          <img
-            src={activeImage || data?.img}
-            alt={data?.name}
-            className="w-full object-cover rounded-lg transition-opacity duration-300"
-            style={{ maxHeight: '70vh' }}
-          />
+          <div className="w-full h-[40vh] md:h-[50vh] lg:h-[55vh] flex items-center justify-center rounded-lg bg-black/20">
+            <img
+              src={activeImage || data?.img}
+              alt={data?.name}
+              className="w-full h-full object-contain transition-opacity duration-300"
+            />
+          </div>
 
           {(data?.img2 || data?.img3) && (
             <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
               {[data?.img, data?.img2, data?.img3].filter(Boolean).map((imgUrl, idx) => (
-                <div 
-                  key={idx} 
+                <div
+                  key={idx}
                   onClick={() => setActiveImage(imgUrl)}
-                  className={`w-24 h-24 flex-shrink-0 cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${
-                    (activeImage || data?.img) === imgUrl 
-                      ? 'border-primary shadow-lg shadow-primary/20 scale-100' 
-                      : 'border-transparent opacity-60 hover:opacity-100 hover:border-primary/50'
-                  }`}
+                  className={`w-24 h-24 flex-shrink-0 cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${(activeImage || data?.img) === imgUrl
+                    ? 'border-primary shadow-lg shadow-primary/20 scale-100'
+                    : 'border-transparent opacity-60 hover:opacity-100 hover:border-primary/50'
+                    }`}
                 >
                   <img src={imgUrl} alt={`${data?.name} thumbnail ${idx + 1}`} className="w-full h-full object-cover" />
                 </div>
@@ -106,7 +106,7 @@ const Details = () => {
             <dl className="space-y-3">
               <div className="flex justify-between items-center bg-[#0a0a0a] py-2 px-4 rounded-lg border border-primary/10">
                 <dt className="text-gray-400">Dimensions:</dt>
-                <dd className="text-white font-medium">{data?.height} x {data?.width}</dd>
+                <dd className="text-white font-medium">{data?.dimensions}</dd>
               </div>
               <div className="flex justify-between items-center bg-[#0a0a0a] py-2 px-4 rounded-lg border border-primary/10">
                 <dt className="text-gray-400">Medium:</dt>
@@ -114,7 +114,7 @@ const Details = () => {
               </div>
               <div className="flex justify-between items-center bg-[#0a0a0a] py-3 px-4 rounded-lg border border-primary/30 mt-4">
                 <dt className="text-gray-400 text-lg">Price:</dt>
-                <dd className="text-2xl font-bold text-primary">{data?.price}</dd>
+                <dd className="text-2xl font-bold text-primary">{data?.price} TL</dd>
               </div>
             </dl>
           </div>
