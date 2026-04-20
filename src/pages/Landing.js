@@ -4,9 +4,10 @@ import '../assets/styles/landing.css';
 import { db } from "../firebase";
 import { collection, onSnapshot } from "firebase/firestore";
 import SubscriptionArea from '../components/SubscriptionArea';
+import { useLanguage } from '../context/LanguageContext';
 
 const Landing = () => {
-
+  const { t } = useLanguage();
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
@@ -60,17 +61,16 @@ const Landing = () => {
           <div className="w-full lg:w-[50%] lg:pr-10 flex flex-col justify-center animate-fade-in z-30 mb-16 lg:mb-0">
             <div className="flex items-center gap-4 mb-8">
               <div className="w-12 h-[1px] bg-primary"></div>
-              <span className="text-primary font-bold tracking-[0.4em] uppercase text-xs opacity-90">Exhibition 2026</span>
+              <span className="text-primary font-bold tracking-[0.4em] uppercase text-xs opacity-90">{t('landing', 'exhibitionBadge')}</span>
             </div>
           
           <h1 className="text-6xl md:text-8xl lg:text-[7rem] font-black mb-8 font-serif leading-[0.9] tracking-tighter">
-            Where Art<br/>
-            <span className="italic font-light text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-400 to-[#333]">Breathes.</span>
+            {t('landing', 'heroTitle')}<br/>
+            <span className="italic font-light text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-400 to-[#333]">{t('landing', 'heroTitleItalic')}</span>
           </h1>
           
           <p className="text-lg md:text-xl text-gray-400 mb-12 max-w-lg font-light leading-relaxed">
-            Welcome to a universe of original masterworks. 
-            Discover aesthetics that define emotions and elevate spaces to galleries.
+            {t('landing', 'heroSubtitle')}
           </p>
           
           <div className="flex flex-col sm:flex-row gap-6">
@@ -78,13 +78,13 @@ const Landing = () => {
               to="/collections"
               className="group inline-flex items-center justify-center bg-white text-black px-10 py-4 np-500 rounded-full font-bold uppercase tracking-wider hover:bg-primary hover:text-white transition-all duration-500 shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:shadow-[0_0_40px_rgba(120,34,34,0.6)]"
             >
-              Enter Vault
+              {t('landing', 'heroCtaPrimary')}
             </Link>
             <Link
               to="/about"
               className="inline-flex items-center justify-center bg-transparent border-b border-white/30 text-white px-2 py-4 font-semibold hover:border-primary hover:text-primary transition-all uppercase tracking-widest text-sm"
             >
-              Meet the Artist
+              {t('landing', 'heroCtaSecondary')}
             </Link>
           </div>
           </div>
@@ -111,7 +111,7 @@ const Landing = () => {
                   <div>
                     <div className="flex items-center gap-3 mb-3 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
                       <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
-                      <p className="text-xs text-primary uppercase tracking-[0.3em] font-bold">{heroPiece.collections || 'Latest Drop'}</p>
+                      <p className="text-xs text-primary uppercase tracking-[0.3em] font-bold">{heroPiece.collections || t('landing', 'latestDrop')}</p>
                     </div>
                     <h2 className="text-4xl md:text-5xl font-serif text-white drop-shadow-lg leading-tight">{heroPiece.name}</h2>
                   </div>
@@ -126,7 +126,7 @@ const Landing = () => {
             </Link>
           ) : (
             <div className="w-full md:w-[80%] lg:w-full max-w-[600px] h-full bg-white/5 rounded-[2rem] border border-white/10 flex items-center justify-center animate-pulse">
-               <span className="text-gray-600 font-serif tracking-widest uppercase">Curating the Vault...</span>
+               <span className="text-gray-600 font-serif tracking-widest uppercase">{t('landing', 'curatingVault')}</span>
             </div>
             )}
           </div>
@@ -140,19 +140,18 @@ const Landing = () => {
           <div className="flex flex-col md:flex-row justify-between items-end mb-10">
             <div>
               <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">
-                Curated Exhibition
+                {t('landing', 'featuredTitle')}
                 <span className="text-primary text-5xl leading-none">.</span>
               </h2>
               <p className="text-gray-400 text-lg max-w-md font-light">
-                An exclusive glimpse into my latest and most treasured creations. 
-                Move closer. Feel the strokes.
+                {t('landing', 'featuredSubtitle')}
               </p>
             </div>
             <Link
               to="/products"
               className="mt-6 md:mt-0 text-white border-b border-primary hover:text-primary transition-colors pb-1 flex items-center gap-2 font-medium"
             >
-              Enter the Full Gallery 
+              {t('landing', 'viewFullGallery')}
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </Link>
           </div>
@@ -173,7 +172,7 @@ const Landing = () => {
                 
                 {/* Content */}
                 <div className="relative z-20 p-6 flex flex-col justify-end transform md:translate-y-4 md:group-hover:translate-y-0 transition-transform duration-500">
-                  <span className="text-primary text-[10px] md:text-xs font-bold tracking-widest uppercase mb-2">{artwork.collections || 'Featured Selection'}</span>
+                  <span className="text-primary text-[10px] md:text-xs font-bold tracking-widest uppercase mb-2">{artwork.collections || t('landing', 'featuredSelection')}</span>
                   <h3 className="text-xl md:text-2xl font-serif text-white mb-2 group-hover:text-gray-200 transition-colors drop-shadow-lg">{artwork.name}</h3>
                   <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-2 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500 delay-100">
                     <span className="text-gray-300 text-sm line-clamp-2 md:max-w-[70%] drop-shadow-md">{artwork.description}</span>
@@ -183,7 +182,7 @@ const Landing = () => {
               </Link>
             )) : (
               <div className="col-span-1 min-h-[300px] flex items-center justify-center text-gray-500 border border-white/10 rounded-2xl bg-white/5">
-                Loading exhibitions...
+                {t('landing', 'loadingExhibitions')}
               </div>
             )}
           </div>
@@ -193,7 +192,7 @@ const Landing = () => {
               to="/products"
               className="inline-block bg-primary text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary-hover shadow-lg shadow-primary/20 transition-all"
             >
-              View All Artworks
+              {t('landing', 'viewAllArtworks')}
             </Link>
           </div>
         </div>
@@ -211,20 +210,19 @@ const Landing = () => {
             
             <div className="lg:col-span-5 order-2 lg:order-1">
               <h2 className="text-sm font-bold tracking-[0.2em] text-primary uppercase mb-6">
-                The Mastermind
+                {t('landing', 'artistSectionLabel')}
               </h2>
               <blockquote className="text-3xl md:text-4xl text-white font-serif leading-snug mb-8 relative">
-                "I create pieces that bridge the gap between traditional technique and contemporary emotion."
+                {t('landing', 'artistQuote')}
               </blockquote>
               <p className="text-lg text-gray-400 mb-10 font-light leading-relaxed">
-                With over a decade of devotion to fine arts, every canvas paints a silent narrative. 
-                My calling is to capture moments that language fails, translating raw emotion into tangible beauty.
+                {t('landing', 'artistBio')}
               </p>
               <Link
                 to="/about"
                 className="inline-flex items-center justify-center bg-[#111] border border-white/10 text-white px-8 py-4 rounded-full font-medium hover:border-primary hover:bg-primary/10 transition-all"
               >
-                Read The Full Story
+                {t('landing', 'artistCta')}
               </Link>
             </div>
 
@@ -243,7 +241,7 @@ const Landing = () => {
         </div>
       </section>
 
-    </div >
+    </div>
   );
 };
 

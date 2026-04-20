@@ -11,8 +11,10 @@ import {
   where,
   getDocs,
 } from "firebase/firestore";
+import { useLanguage } from "../context/LanguageContext";
 
 const SubscriptionArea = () => {
+  const { t } = useLanguage();
   const [email, setEmail] = useState("");
   const [step, setStep] = useState(1); // 1: Email, 2: OTP, 3: Success
   const [generatedCode, setGeneratedCode] = useState("");
@@ -24,7 +26,7 @@ const SubscriptionArea = () => {
     return String(email)
       .toLowerCase()
       .match(
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        /^(([^<>()[\]\\.,;:\s@"]+(.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       );
   };
 
@@ -32,11 +34,11 @@ const SubscriptionArea = () => {
     e.preventDefault();
 
     if (!email) {
-      return toast({ type: "error", message: "Please enter your email address." });
+      return toast({ type: "error", message: t('subscription', 'emptyEmail') });
     }
 
     if (!validateEmail(email)) {
-      return toast({ type: "error", message: "Please enter a valid email address." });
+      return toast({ type: "error", message: t('subscription', 'invalidEmail') });
     }
 
     setIsLoading(true);
@@ -47,7 +49,7 @@ const SubscriptionArea = () => {
       const existing = await getDocs(q);
 
       if (!existing.empty) {
-        toast({ type: "info", message: "This email is already subscribed." });
+        toast({ type: "info", message: t('subscription', 'alreadySubscribed') });
         setIsLoading(false);
         return;
       }
@@ -68,11 +70,11 @@ const SubscriptionArea = () => {
         'HPGdH6pTAslP_R5k0'
       );
 
-      toast({ type: "success", message: "Verification code sent to your email!" });
+      toast({ type: "success", message: t('subscription', 'codeSent') });
       
     } catch (error) {
       console.error("Failed to process:", error);
-      toast({ type: "error", message: "Something went wrong. Please try again." });
+      toast({ type: "error", message: t('subscription', 'genericError') });
     } finally {
       setIsLoading(false);
     }
@@ -82,7 +84,7 @@ const SubscriptionArea = () => {
     e.preventDefault();
     
     if (enteredCode !== generatedCode) {
-       return toast({ type: "error", message: "Invalid verification code. Please try again." });
+       return toast({ type: "error", message: t('subscription', 'invalidCode') });
     }
 
     setIsLoading(true);
@@ -95,13 +97,13 @@ const SubscriptionArea = () => {
         subscribedAt: serverTimestamp(),
       });
 
-      toast({ type: "success", message: "Subscription verified successfully! Welcome." });
+      toast({ type: "success", message: t('subscription', 'subscriptionSuccess') });
       
       // Go to success UI state (Step 3)
       setStep(3);
     } catch (error) {
       console.error("Subscription failed:", error);
-      toast({ type: "error", message: "Something went wrong saving your subscription." });
+      toast({ type: "error", message: t('subscription', 'saveError') });
     } finally {
       setIsLoading(false);
     }
@@ -125,15 +127,15 @@ const SubscriptionArea = () => {
         </div>
 
         <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-          {step === 1 && "Stay Updated with New Artworks"}
-          {step === 2 && "Verify Your Email"}
-          {step === 3 && "Welcome to the Vault"}
+          {step === 1 && t('subscription', 'step1Title')}
+          {step === 2 && t('subscription', 'step2Title')}
+          {step === 3 && t('subscription', 'step3Title')}
         </h2>
 
         <p className="text-lg mb-8 max-w-2xl mx-auto text-slate-400">
-          {step === 1 && "Subscribe to our newsletter and be the first to know about new collections, exclusive pieces, and upcoming exhibitions."}
-          {step === 2 && `We sent a verification code to ${email}. Please enter it below to confirm.`}
-          {step === 3 && "Your subscription has been verified successfully. You will now receive exclusive updates from Studio Carmen."}
+          {step === 1 && t('subscription', 'step1Desc')}
+          {step === 2 && t('subscription', 'step2Desc')}
+          {step === 3 && t('subscription', 'step3Desc')}
         </p>
 
         {step === 1 && (
@@ -143,7 +145,7 @@ const SubscriptionArea = () => {
           >
             <input
               type="email"
-              placeholder="Enter your email address"
+              placeholder={t('subscription', 'emailPlaceholder')}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="flex h-12 w-full rounded-full bg-[#0a0a0a] border border-primary/30 text-white px-6 py-2 text-base placeholder:text-gray-600 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary disabled:opacity-50 transition-all"
@@ -154,7 +156,7 @@ const SubscriptionArea = () => {
               disabled={isLoading}
               className="text-white bg-primary px-8 py-3 sm:py-2 rounded-full font-semibold hover:bg-primary-hover shadow-lg shadow-primary/20 transition-all whitespace-nowrap"
             >
-              {isLoading ? "Processing..." : "Subscribe"}
+              {isLoading ? t('subscription', 'subscribing') : t('subscription', 'subscribeButton')}
             </button>
           </form>
         )}
@@ -167,7 +169,7 @@ const SubscriptionArea = () => {
             <div className="relative">
               <input
                 type="text"
-                placeholder="Enter 6-digit code"
+                placeholder={t('subscription', 'codePlaceholder')}
                 inputMode="numeric"
                 value={enteredCode}
                 onChange={(e) => setEnteredCode(e.target.value)}
@@ -184,14 +186,14 @@ const SubscriptionArea = () => {
                 disabled={isLoading}
                 className="flex items-center justify-center gap-2 text-gray-400 bg-transparent border border-gray-700 px-6 py-3 sm:py-3 rounded-full font-semibold hover:text-white hover:border-gray-500 transition-all flex-1 order-2 sm:order-1"
               >
-                <ArrowLeft size={18} /> Edit Email
+                <ArrowLeft size={18} /> {t('subscription', 'editEmail')}
               </button>
               <button
                 type="submit"
                 disabled={isLoading}
                 className="text-white bg-primary px-6 py-3 sm:py-3 rounded-full font-semibold hover:bg-primary-hover shadow-lg shadow-primary/20 transition-all flex-1 order-1 sm:order-2"
               >
-                {isLoading ? "Verifying..." : "Verify Code"}
+                {isLoading ? t('subscription', 'verifying') : t('subscription', 'verifyButton')}
               </button>
             </div>
           </form>
@@ -200,13 +202,13 @@ const SubscriptionArea = () => {
         {step === 3 && (
           <div className="flex justify-center mt-6 animate-fade-in">
              <div className="inline-flex items-center gap-3 bg-green-500/10 border border-green-500/20 text-green-400 px-6 py-3 rounded-full font-medium">
-               <ShieldCheck size={20} /> Successfully Subscribed
+               <ShieldCheck size={20} /> {t('subscription', 'successBadge')}
              </div>
           </div>
         )}
 
         <p className="text-sm mt-10 text-slate-400">
-          We respect your privacy. Unsubscribe at any time.
+          {t('subscription', 'privacyNote')}
         </p>
       </div>
     </section>

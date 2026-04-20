@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import emailjs from 'emailjs-com';
 import { useLocation } from 'react-router-dom';
 import { useCustomToast } from '../components/ui/toast-context';
-import { User, Mail, Tag, MessageSquare, Send, MapPin, Clock, MoveRight, Loader2 } from 'lucide-react';
+import { User, Mail, Tag, MessageSquare, Send, MapPin, Clock, Loader2 } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 const ContactMe = () => {
   const location = useLocation();
   const showToast = useCustomToast();
+  const { t } = useLanguage();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -39,11 +41,11 @@ const ContactMe = () => {
         'HPGdH6pTAslP_R5k0'
       )
       .then(() => {
-        showToast({ type: "success", message: 'Your message was sent successfully!' });
+        showToast({ type: "success", message: t('contact', 'successMessage') });
         setFormData({ name: '', email: '', subject: '', message: '' });
       })
       .catch((error) => {
-        showToast({ type: "error", message: 'An error occurred. Please try again.' });
+        showToast({ type: "error", message: t('contact', 'errorMessage') });
         console.error('Email send error:', error);
       })
       .finally(() => {
@@ -69,14 +71,13 @@ const ContactMe = () => {
         {/* Header */}
         <div className="text-center mb-16 animate-fade-in">
           <span className="text-primary font-bold tracking-[0.3em] uppercase text-xs mb-4 block opacity-80">
-            The Concierge
+            {t('contact', 'conciergeLabel')}
           </span>
           <h1 className="text-5xl md:text-6xl font-black mb-6 font-serif tracking-tight">
-            Studio Inquiries
+            {t('contact', 'heroTitle')}
           </h1>
           <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto font-light leading-relaxed">
-            I'd love to hear from you. Whether you're interested in acquiring a masterwork,
-            commissioning a custom piece, or exploring an exhibition opportunity.
+            {t('contact', 'heroSubtitle')}
           </p>
         </div>
 
@@ -85,13 +86,13 @@ const ContactMe = () => {
           {/* Left Side: Contact Form (Glassmorphism) */}
           <div className="w-full lg:w-3/5 bg-white/5 p-8 md:p-12 rounded-3xl border border-white/10 shadow-2xl backdrop-blur-xl animate-fade-in delay-100">
             <h2 className="text-2xl font-bold text-white mb-8 font-serif tracking-wide flex items-center gap-3">
-              Direct Transmission
+              {t('contact', 'formTitle')}
             </h2>
             
             <form onSubmit={handleSubmit} className="space-y-6">
               
               <div className="relative group">
-                <label htmlFor="name" className="sr-only">Full Name</label>
+                <label htmlFor="name" className="sr-only">{t('contact', 'namePlaceholder')}</label>
                 <div className="absolute top-4 left-4 text-gray-500 group-focus-within:text-primary transition-colors">
                   <User size={20} />
                 </div>
@@ -103,12 +104,12 @@ const ContactMe = () => {
                   onChange={handleChange}
                   required
                   className={inputClasses}
-                  placeholder="Your Full Name"
+                  placeholder={t('contact', 'namePlaceholder')}
                 />
               </div>
 
               <div className="relative group">
-                <label htmlFor="email" className="sr-only">Email Address</label>
+                <label htmlFor="email" className="sr-only">{t('contact', 'emailPlaceholder')}</label>
                 <div className="absolute top-4 left-4 text-gray-500 group-focus-within:text-primary transition-colors">
                   <Mail size={20} />
                 </div>
@@ -122,7 +123,7 @@ const ContactMe = () => {
                   pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$"
                   title="Please enter a valid email address (e.g. user@domain.com)"
                   className={inputClasses}
-                  placeholder="Email Address"
+                  placeholder={t('contact', 'emailPlaceholder')}
                 />
               </div>
 
@@ -149,11 +150,11 @@ const ContactMe = () => {
                     required
                     className={`${inputClasses} appearance-none cursor-pointer`}
                   >
-                    <option className='bg-[#121212]' value="">Select the nature of inquiry</option>
-                    <option className='bg-[#121212]' value="Purchase Inquiry">Acquire Artwork</option>
-                    <option className='bg-[#121212]' value="Commission Request">Commission Request</option>
-                    <option className='bg-[#121212]' value="Exhibition Opportunity">Exhibition Collaboration</option>
-                    <option className='bg-[#121212]' value="General Question">General Transmission</option>
+                    <option className='bg-[#121212]' value="">{t('contact', 'subjectDefault')}</option>
+                    <option className='bg-[#121212]' value="Purchase Inquiry">{t('contact', 'subjectPurchase')}</option>
+                    <option className='bg-[#121212]' value="Commission Request">{t('contact', 'subjectCommission')}</option>
+                    <option className='bg-[#121212]' value="Exhibition Opportunity">{t('contact', 'subjectExhibition')}</option>
+                    <option className='bg-[#121212]' value="General Question">{t('contact', 'subjectGeneral')}</option>
                     {location.state?.subject && (
                       <option className='bg-[#121212]' value={location.state.subject}>{location.state.subject}</option>
                     )}
@@ -180,7 +181,7 @@ const ContactMe = () => {
                   required
                   rows={6}
                   className={`${inputClasses} resize-y min-h-[140px]`}
-                  placeholder="Provide details about your interest or specific requests..."
+                  placeholder={t('contact', 'messagePlaceholder')}
                 />
               </div>
 
@@ -192,11 +193,11 @@ const ContactMe = () => {
                 {isSubmitting ? (
                   <>
                     <Loader2 className="animate-spin" size={20} />
-                    <span>Transmitting...</span>
+                    <span>{t('contact', 'sending')}</span>
                   </>
                 ) : (
                   <>
-                    <span>Send Message</span>
+                    <span>{t('contact', 'sendButton')}</span>
                     <Send size={18} className="transform group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform duration-300" />
                   </>
                 )}
@@ -210,7 +211,7 @@ const ContactMe = () => {
             {/* The Commission Roadmap */}
             <div>
               <h3 className="text-2xl font-bold text-white mb-8 font-serif tracking-wide border-b border-white/10 pb-4">
-                Commission Roadmap
+                {t('contact', 'roadmapTitle')}
               </h3>
               
               <div className="relative pl-6 space-y-8 border-l border-white/10 ml-3">
@@ -220,10 +221,10 @@ const ContactMe = () => {
                     <div className="w-3 h-3 rounded-full bg-primary ring-4 ring-primary/20"></div>
                   </div>
                   <h4 className="text-white font-bold tracking-wide mb-1 flex items-center gap-2">
-                    Phase 1: Dialogue
+                    {t('contact', 'phase1Title')}
                   </h4>
                   <p className="text-gray-400 font-light text-sm leading-relaxed">
-                    Initial studio consultation to discuss your specific vision, dimensions, and preferred color logic.
+                    {t('contact', 'phase1Desc')}
                   </p>
                 </div>
 
@@ -232,10 +233,10 @@ const ContactMe = () => {
                     <div className="w-3 h-3 rounded-full bg-white/30"></div>
                   </div>
                   <h4 className="text-white font-bold tracking-wide mb-1">
-                    Phase 2: Blueprints
+                    {t('contact', 'phase2Title')}
                   </h4>
                   <p className="text-gray-400 font-light text-sm leading-relaxed">
-                    Creation and approval of concept sketches and exact timeline commitments.
+                    {t('contact', 'phase2Desc')}
                   </p>
                 </div>
 
@@ -244,10 +245,10 @@ const ContactMe = () => {
                     <div className="w-3 h-3 rounded-full bg-white/30"></div>
                   </div>
                   <h4 className="text-white font-bold tracking-wide mb-1">
-                    Phase 3: Execution
+                    {t('contact', 'phase3Title')}
                   </h4>
                   <p className="text-gray-400 font-light text-sm leading-relaxed">
-                    The masterpiece is brought to life. You receive exclusive studio progress updates.
+                    {t('contact', 'phase3Desc')}
                   </p>
                 </div>
 
@@ -256,10 +257,10 @@ const ContactMe = () => {
                     <div className="w-3 h-3 rounded-full bg-white/30"></div>
                   </div>
                   <h4 className="text-white font-bold tracking-wide mb-1">
-                    Phase 4: Acquisition
+                    {t('contact', 'phase4Title')}
                   </h4>
                   <p className="text-gray-400 font-light text-sm leading-relaxed">
-                    Final artwork is cured, varnished, authenticated, and securely shipped globally.
+                    {t('contact', 'phase4Desc')}
                   </p>
                 </div>
 
@@ -274,9 +275,9 @@ const ContactMe = () => {
                      <MapPin size={20} />
                    </div>
                    <div>
-                     <p className="text-white font-medium uppercase tracking-widest text-xs mb-1 opacity-60">The Studio Location</p>
-                     <p className="text-gray-300 font-serif text-lg">Private Facility, Global</p>
-                     <p className="text-gray-500 text-sm mt-1">Visits strictly by appointment only</p>
+                     <p className="text-white font-medium uppercase tracking-widest text-xs mb-1 opacity-60">{t('contact', 'locationLabel')}</p>
+                     <p className="text-gray-300 font-serif text-lg">{t('contact', 'locationValue')}</p>
+                     <p className="text-gray-500 text-sm mt-1">{t('contact', 'locationNote')}</p>
                    </div>
                  </div>
                  
@@ -285,9 +286,9 @@ const ContactMe = () => {
                      <Clock size={20} />
                    </div>
                    <div>
-                     <p className="text-white font-medium uppercase tracking-widest text-xs mb-1 opacity-60">Response Time</p>
-                     <p className="text-gray-300 font-serif text-lg">24 - 48 Hours</p>
-                     <p className="text-gray-500 text-sm mt-1">Monday – Friday</p>
+                     <p className="text-white font-medium uppercase tracking-widest text-xs mb-1 opacity-60">{t('contact', 'responseLabel')}</p>
+                     <p className="text-gray-300 font-serif text-lg">{t('contact', 'responseValue')}</p>
+                     <p className="text-gray-500 text-sm mt-1">{t('contact', 'responseNote')}</p>
                    </div>
                  </div>
                </div>

@@ -3,8 +3,10 @@ import { db } from "../firebase";
 import ArtworkCard from '../components/ArtworkCard';
 import { collection, onSnapshot } from "firebase/firestore";
 import { Search, SlidersHorizontal, ImageOff } from "lucide-react";
+import { useLanguage } from '../context/LanguageContext';
 
 const AllProducts = () => {
+  const { t } = useLanguage();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('newest');
@@ -70,14 +72,13 @@ const AllProducts = () => {
         {/* Header */}
         <div className="text-center mb-12">
           <span className="text-primary font-bold tracking-[0.2em] uppercase text-xs animate-fade-in opacity-80 mb-2 block">
-            The Complete Archive
+            {t('allProducts', 'archiveLabel')}
           </span>
           <h1 className="text-5xl md:text-6xl font-black mb-6 font-serif tracking-tight animate-fade-in">
-            Masterworks Vault
+            {t('allProducts', 'heroTitle')}
           </h1>
           <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto font-light leading-relaxed animate-fade-in delay-100">
-            Browse through my complete collection of artworks. Each piece is available
-            for purchase and comes with a certificate of authenticity.
+            {t('allProducts', 'heroSubtitle')}
           </p>
         </div>
 
@@ -92,7 +93,7 @@ const AllProducts = () => {
               </div>
               <input
                 type="text"
-                placeholder="Search by title, theme, or collection..."
+                placeholder={t('allProducts', 'searchPlaceholder')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-12 pr-4 py-4 rounded-xl bg-black/40 border border-transparent text-white focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-gray-500 font-light"
@@ -112,11 +113,11 @@ const AllProducts = () => {
                 onChange={(e) => setSortBy(e.target.value)}
                 className="w-full pl-12 pr-10 py-4 rounded-xl bg-black/40 border border-transparent text-white focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all cursor-pointer font-light appearance-none"
               >
-                <option value="newest" className="bg-[#121212]">Newest Creations</option>
-                <option value="price-asc" className="bg-[#121212]">Price (Low to High)</option>
-                <option value="price-desc" className="bg-[#121212]">Price (High to Low)</option>
-                <option value="name-asc" className="bg-[#121212]">Title (A - Z)</option>
-                <option value="name-desc" className="bg-[#121212]">Title (Z - A)</option>
+                <option value="newest" className="bg-[#121212]">{t('allProducts', 'sortNewest')}</option>
+                <option value="price-asc" className="bg-[#121212]">{t('allProducts', 'sortPriceAsc')}</option>
+                <option value="price-desc" className="bg-[#121212]">{t('allProducts', 'sortPriceDesc')}</option>
+                <option value="name-asc" className="bg-[#121212]">{t('allProducts', 'sortNameAsc')}</option>
+                <option value="name-desc" className="bg-[#121212]">{t('allProducts', 'sortNameDesc')}</option>
               </select>
               {/* Custom Dropdown Arrow */}
               <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-gray-400">
@@ -129,9 +130,9 @@ const AllProducts = () => {
 
         {/* Results Metadata */}
         <div className="flex justify-between items-end border-b border-white/10 pb-4 mb-8">
-          <h2 className="text-2xl font-serif text-white">Exhibition Wall</h2>
+          <h2 className="text-2xl font-serif text-white">{t('allProducts', 'exhibitionWall')}</h2>
           <span className="text-sm text-gray-500 font-medium bg-white/5 py-1 px-3 rounded-full border border-white/5">
-            {filteredArtworks.length} Masterworks
+            {filteredArtworks.length} {t('allProducts', 'masterworksCount')}
           </span>
         </div>
 
@@ -150,17 +151,16 @@ const AllProducts = () => {
             <div className="w-20 h-20 bg-black rounded-full flex items-center justify-center mb-6 shadow-inner ring-1 ring-white/10 text-gray-600">
               <ImageOff size={32} />
             </div>
-            <h3 className="text-2xl font-serif text-white mb-2">No masterworks discovered</h3>
+            <h3 className="text-2xl font-serif text-white mb-2">{t('allProducts', 'noMasterworksTitle')}</h3>
             <p className="text-gray-400 max-w-md mx-auto">
-              The archives could not find any artwork matching your criteria ("<span className="text-primary">{searchTerm}</span>"). 
-              Try a different keyword or clear your filters.
+              {t('allProducts', 'noMasterworksDesc')}
             </p>
             {searchTerm && (
               <button 
                 onClick={() => { setSearchTerm(''); setSortBy('newest'); }}
                 className="mt-6 px-6 py-2 bg-primary/20 text-primary border border-primary/30 rounded-full hover:bg-primary hover:text-white transition-colors"
               >
-                Clear Filters
+                {t('allProducts', 'clearFilters')}
               </button>
             )}
           </div>

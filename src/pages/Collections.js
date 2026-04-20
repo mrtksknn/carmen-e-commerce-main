@@ -4,8 +4,10 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { db } from "../firebase";
 import { collection, onSnapshot } from "firebase/firestore";
 import ArtworkCard from '../components/ArtworkCard';
+import { useLanguage } from '../context/LanguageContext';
 
 const Collections = () => {
+  const { t } = useLanguage();
   const [products, setProducts] = useState([]);
   const [collectionsInfo, setCollectionsInfo] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -80,11 +82,10 @@ const Collections = () => {
       {/* Header Section */}
       <section className="relative pt-24 pb-12 px-6 lg:px-20 z-10 text-center">
         <h1 className="text-5xl md:text-6xl font-black mb-6 font-serif tracking-tight animate-fade-in">
-          The <span className="text-primary disabled">Gallery</span> Rooms
+          {t('collections', 'heroTitle')} <span className="text-primary">{t('collections', 'heroTitleHighlight')}</span> {t('collections', 'heroTitleSuffix')}
         </h1>
         <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto font-light leading-relaxed animate-fade-in delay-100">
-          Enter thematic spaces. Each collection represents a distinct emotional journey and 
-          aesthetic vision through original masterworks.
+          {t('collections', 'heroSubtitle')}
         </p>
       </section>
 
@@ -109,8 +110,8 @@ const Collections = () => {
                   <span className="text-primary bg-primary/10 p-3 rounded-full mb-3 backdrop-blur-md">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6"></path></svg>
                   </span>
-                  <h3 className="text-xl font-serif font-bold text-white tracking-widest uppercase">The Vault</h3>
-                  <p className="text-xs text-gray-400 mt-2 font-medium">All Masterworks</p>
+                  <h3 className="text-xl font-serif font-bold text-white tracking-widest uppercase">{t('collections', 'vaultTitle')}</h3>
+                  <p className="text-xs text-gray-400 mt-2 font-medium">{t('collections', 'vaultSubtitle')}</p>
                 </div>
               </div>
 
@@ -137,7 +138,7 @@ const Collections = () => {
                   
                   {/* Content */}
                   <div className="absolute inset-0 z-20 flex flex-col justify-end p-6">
-                    <span className="text-[10px] text-primary font-bold tracking-widest uppercase mb-1">Room</span>
+                    <span className="text-[10px] text-primary font-bold tracking-widest uppercase mb-1">{t('collections', 'roomLabel')}</span>
                     <h3 className="text-xl md:text-2xl font-serif text-white drop-shadow-lg">{col.name}</h3>
                   </div>
                 </div>
@@ -175,9 +176,9 @@ const Collections = () => {
           
           <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-10">
             <h2 className="text-2xl font-serif text-white">
-              {selectedCategory === 'All' ? 'Complete Archive' : `${selectedCategory} Collection`}
+              {selectedCategory === 'All' ? t('collections', 'completeArchive') : `${selectedCategory} ${t('collections', 'collectionSuffix')}`}
             </h2>
-            <span className="text-sm text-gray-500 font-medium">{filteredArtworks.length} Masterworks</span>
+            <span className="text-sm text-gray-500 font-medium">{filteredArtworks.length} {t('collections', 'masterworksCount')}</span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -189,7 +190,7 @@ const Collections = () => {
             
             {filteredArtworks.length === 0 && (
               <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center py-20 text-gray-500">
-                <p>No masterworks discovered in this room yet.</p>
+                <p>{t('collections', 'noMasterworks')}</p>
               </div>
             )}
           </div>

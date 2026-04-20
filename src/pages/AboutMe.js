@@ -1,8 +1,10 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Palette, Brush, Eye, Mail, ArrowRight } from "lucide-react";
+import { useLanguage } from "../context/LanguageContext";
 
 const AboutMe = () => {
+  const { t } = useLanguage();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -30,7 +32,7 @@ const AboutMe = () => {
             />
             {/* Vertical Text overlay for desktop */}
             <div className="absolute bottom-10 left-8 z-20 hidden lg:block opacity-40">
-              <p className="writing-vertical-rl rotate-180 uppercase tracking-[0.5em] text-sm font-semibold">Behind the Canvas</p>
+              <p className="writing-vertical-rl rotate-180 uppercase tracking-[0.5em] text-sm font-semibold">{t('about', 'behindCanvas')}</p>
             </div>
           </div>
         </div>
@@ -38,36 +40,29 @@ const AboutMe = () => {
         {/* Right Side: Manifesto & Bio */}
         <div className="lg:w-7/12 flex flex-col justify-center px-8 sm:px-12 py-12 animate-fade-in relative">
           <span className="text-primary font-bold tracking-[0.3em] uppercase text-xs mb-6 block opacity-80">
-            The Mastermind
+            {t('about', 'mastermindLabel')}
           </span>
           <h1 className="text-5xl md:text-7xl font-black mb-8 font-serif leading-[1.1] tracking-tight">
-            I don't paint things.<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-300 to-primary">I paint feelings.</span>
+            {t('about', 'heroTitle')}<br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-300 to-primary">{t('about', 'heroTitleHighlight')}</span>
           </h1>
 
           <div className="w-16 h-1 bg-primary mb-10"></div>
 
           <div className="space-y-6 text-gray-400 font-light leading-relaxed text-lg max-w-xl">
-            <p>
-              Every stroke of the brush is a whisper of my soul on a silent canvas. I started
-              my journey looking for a way to freeze moments that words could never accurately describe.
-            </p>
-            <p>
-              My artworks are born from the chaotic yet beautiful intersections of human emotion,
-              nature's raw power, and the memories we leave behind. The canvas is not just a surface;
-              it's an archive of emotional states.
-            </p>
+            <p>{t('about', 'bio1')}</p>
+            <p>{t('about', 'bio2')}</p>
           </div>
 
           {/* Social Proof / Stats Area */}
           <div className="grid grid-cols-2 gap-8 mt-16 border-t border-white/10 pt-10">
             <div>
               <p className="text-4xl font-serif text-white mb-2">12+</p>
-              <p className="text-sm text-gray-500 uppercase tracking-widest font-bold">Years Creating</p>
+              <p className="text-sm text-gray-500 uppercase tracking-widest font-bold">{t('about', 'yearsCreating')}</p>
             </div>
             <div>
               <p className="text-4xl font-serif text-white mb-2">300+</p>
-              <p className="text-sm text-gray-500 uppercase tracking-widest font-bold">Original Pieces</p>
+              <p className="text-sm text-gray-500 uppercase tracking-widest font-bold">{t('about', 'originalPieces')}</p>
             </div>
           </div>
         </div>
@@ -76,10 +71,9 @@ const AboutMe = () => {
       {/* Method & Philosophy Matrix */}
       <section className="relative z-10 py-16 px-6 lg:px-20 max-w-7xl mx-auto">
         <div className="text-center mb-12 animate-fade-in">
-          <h2 className="text-3xl md:text-5xl font-serif font-bold text-white mb-6">The Doctrine</h2>
+          <h2 className="text-3xl md:text-5xl font-serif font-bold text-white mb-6">{t('about', 'doctrineTitle')}</h2>
           <p className="text-gray-400 max-w-2xl mx-auto text-lg font-light">
-            My creative process is a delicate balance between meticulous technique and
-            raw, unbridled intuition. This is how the magic happens.
+            {t('about', 'doctrineSubtitle')}
           </p>
         </div>
 
@@ -92,10 +86,9 @@ const AboutMe = () => {
             <div className="w-14 h-14 bg-primary/20 rounded-full flex items-center justify-center mb-8 text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-500">
               <Eye size={24} />
             </div>
-            <h3 className="text-2xl font-serif text-white mb-4">Observation</h3>
+            <h3 className="text-2xl font-serif text-white mb-4">{t('about', 'observationTitle')}</h3>
             <p className="text-gray-400 font-light leading-relaxed">
-              Before the brush touches the canvas, I spend days absorbing the subject. It's about
-              seeing beyond the physical form and capturing the essence of the atmosphere.
+              {t('about', 'observationDesc')}
             </p>
           </div>
 
@@ -106,10 +99,9 @@ const AboutMe = () => {
             <div className="w-14 h-14 bg-primary/20 rounded-full flex items-center justify-center mb-8 text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-500">
               <Palette size={24} />
             </div>
-            <h3 className="text-2xl font-serif text-white mb-4">Color Mapping</h3>
+            <h3 className="text-2xl font-serif text-white mb-4">{t('about', 'colorMappingTitle')}</h3>
             <p className="text-gray-400 font-light leading-relaxed">
-              Colors possess their own vocabulary. I curate specific palettes that resonate
-              with the mood, treating dark and cold tones with the same reverence as vibrant highlights.
+              {t('about', 'colorMappingDesc')}
             </p>
           </div>
 
@@ -120,10 +112,9 @@ const AboutMe = () => {
             <div className="w-14 h-14 bg-primary/20 rounded-full flex items-center justify-center mb-8 text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-500">
               <Brush size={24} />
             </div>
-            <h3 className="text-2xl font-serif text-white mb-4">Execution</h3>
+            <h3 className="text-2xl font-serif text-white mb-4">{t('about', 'executionTitle')}</h3>
             <p className="text-gray-400 font-light leading-relaxed">
-              The final stage is deeply physical. Layers of texture are built up, scraped away,
-              and reimagined until the canvas perfectly mirrors the emotion I set out to portray.
+              {t('about', 'executionDesc')}
             </p>
           </div>
 
@@ -140,16 +131,15 @@ const AboutMe = () => {
             <div className="w-20 h-20 bg-black rounded-full flex items-center justify-center mb-8 shadow-inner ring-2 ring-white/10 text-white">
               <Mail size={32} />
             </div>
-            <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-6">Commission a Legacy</h2>
+            <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-6">{t('about', 'commissionTitle')}</h2>
             <p className="text-lg text-gray-300 max-w-xl mx-auto font-light leading-relaxed mb-10">
-              Whether you are a collector looking to acquire an original piece or interested
-              in commissioning a custom masterwork tailored to your space, my studio is open for dialogue.
+              {t('about', 'commissionDesc')}
             </p>
             <Link
               to="/contact"
               className="inline-flex items-center gap-3 bg-white text-black px-10 py-4 rounded-full font-bold uppercase tracking-wider hover:bg-primary hover:text-white transition-all duration-300 shadow-[0_0_40px_rgba(255,255,255,0.2)] hover:shadow-[0_0_40px_rgba(120,34,34,0.6)] hover:scale-105"
             >
-              Reach out to the Studio <ArrowRight size={20} />
+              {t('about', 'commissionCta')} <ArrowRight size={20} />
             </Link>
           </div>
         </div>

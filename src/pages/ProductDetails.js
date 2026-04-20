@@ -3,10 +3,12 @@ import { useParams, Link } from 'react-router-dom';
 import { db } from "../firebase";
 import { collection, onSnapshot } from "firebase/firestore";
 import '../assets/styles/details.css';
+import { useLanguage } from '../context/LanguageContext';
 
 const Details = () => {
   const { id } = useParams();
   const { productName } = useParams();
+  const { t } = useLanguage();
   const [data, setData] = useState('');
   const [activeImage, setActiveImage] = useState('');
 
@@ -41,10 +43,10 @@ const Details = () => {
   if (!id) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-12 text-center">
-        <h1 className="text-4xl font-bold text-foreground mb-4">Artwork Not Found</h1>
-        <p className="text-muted-foreground mb-8">The artwork you're looking for doesn't exist.</p>
+        <h1 className="text-4xl font-bold text-foreground mb-4">{t('productDetails', 'notFoundTitle')}</h1>
+        <p className="text-muted-foreground mb-8">{t('productDetails', 'notFoundDesc')}</p>
         <Link to="/products" className="text-primary hover:underline">
-          ← Back to All Products
+          {t('productDetails', 'backToProducts')}
         </Link>
       </div>
     );
@@ -55,7 +57,7 @@ const Details = () => {
       {/* Breadcrumb */}
       <nav className="mb-4 mt-12">
         <Link to="/products" className="text-white hover:underline">
-          ← Back to All Products
+          {t('productDetails', 'backToProducts')}
         </Link>
       </nav>
 
@@ -102,18 +104,18 @@ const Details = () => {
           </div>
 
           <div className="border-t border-primary/20 pt-6">
-            <h3 className="text-xl font-semibold text-white mb-4">Product Details</h3>
+            <h3 className="text-xl font-semibold text-white mb-4">{t('productDetails', 'productDetailsTitle')}</h3>
             <dl className="space-y-3">
               <div className="flex justify-between items-center bg-[#0a0a0a] py-2 px-4 rounded-lg border border-primary/10">
-                <dt className="text-gray-400">Dimensions:</dt>
+                <dt className="text-gray-400">{t('productDetails', 'dimensionsLabel')}</dt>
                 <dd className="text-white font-medium">{data?.dimensions}</dd>
               </div>
               <div className="flex justify-between items-center bg-[#0a0a0a] py-2 px-4 rounded-lg border border-primary/10">
-                <dt className="text-gray-400">Medium:</dt>
+                <dt className="text-gray-400">{t('productDetails', 'mediumLabel')}</dt>
                 <dd className="text-white font-medium">{data?.material}</dd>
               </div>
               <div className="flex justify-between items-center bg-[#0a0a0a] py-3 px-4 rounded-lg border border-primary/30 mt-4">
-                <dt className="text-gray-400 text-lg">Price:</dt>
+                <dt className="text-gray-400 text-lg">{t('productDetails', 'priceLabel')}</dt>
                 <dd className="text-2xl font-bold text-primary">{data?.price} TL</dd>
               </div>
             </dl>
@@ -125,10 +127,10 @@ const Details = () => {
               state={{ subject: `Inquiry about ${data?.name}` }}
               className="inline-block w-full bg-primary text-white text-center px-8 py-4 rounded-lg font-semibold hover:bg-primary-hover transition-all shadow-lg shadow-primary/20 hover:-translate-y-1"
             >
-              Inquire About This Piece
+              {t('productDetails', 'inquireButton')}
             </Link>
             <p className="text-sm text-gray-500 mt-3 text-center">
-              Contact me for availability and shipping information
+              {t('productDetails', 'inquireNote')}
             </p>
           </div>
         </div>
