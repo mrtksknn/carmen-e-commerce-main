@@ -10,7 +10,10 @@ const Logo = ({ className = '', iconSize = 40, ...props }) => {
         fill="none" 
         xmlns="http://www.w3.org/2000/svg"
         className="shrink-0"
+        role="img"
+        aria-label="Piece Of Oblivion Logo"
       >
+        <title>Piece Of Oblivion Logo</title>
         {/* Brand Mark: Intertwined minimalist C & A */}
         <g transform="translate(2, 5)">
           {/* The 'A' shape */}
