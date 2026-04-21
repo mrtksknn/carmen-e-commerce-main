@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mrtksknn.github.io/carmen-e-commerce-main/sitemap.xml
