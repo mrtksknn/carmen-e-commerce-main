@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { db } from "../firebase";
 import ArtworkCard from '../components/ArtworkCard';
 import { collection, onSnapshot } from "firebase/firestore";
-import { Search, SlidersHorizontal, ImageOff } from "lucide-react";
+import { Search, SlidersHorizontal, ImageOff, X } from "lucide-react";
 import { useLanguage } from '../context/LanguageContext';
 
 const AllProducts = () => {
@@ -12,6 +12,7 @@ const AllProducts = () => {
   const [sortBy, setSortBy] = useState('newest');
 
   const [products, setProducts] = useState([]);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   // Fetch from Firebase
   useEffect(() => {
@@ -23,6 +24,7 @@ const AllProducts = () => {
           list.push({ id: doc.id, ...doc.data() });
         });
         setProducts(list);
+        setIsLoaded(true);
       },
       (error) => {
         console.error(error);
@@ -60,111 +62,164 @@ const AllProducts = () => {
       }
     });
 
+  const clearFilters = () => {
+    setSearchTerm('');
+    setSortBy('newest');
+  };
+
   return (
     <div className="relative min-h-screen bg-[#030303] text-white font-sans overflow-hidden">
 
-      {/* Background Ambient Glows */}
-      <div className="absolute top-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-primary/10 blur-[130px] rounded-full pointer-events-none z-0"></div>
-      <div className="absolute bottom-[20%] left-[-10%] w-[40vw] h-[40vw] bg-primary/5 blur-[100px] rounded-full pointer-events-none z-0"></div>
+      {/* Cinematic Ambient Glows */}
+      <div className="absolute top-[-5%] right-[-10%] w-[55vw] h-[55vw] bg-[#782222]/10 blur-[130px] rounded-full pointer-events-none z-0"></div>
+      <div className="absolute bottom-[20%] left-[-10%] w-[45vw] h-[45vw] bg-[#782222]/5 blur-[120px] rounded-full pointer-events-none z-0"></div>
 
-      <div className='max-w-7xl mx-auto px-6 lg:px-20 relative z-10 pt-24 pb-20'>
+      {/* Noise Texture Overlay for Premium Vibe */}
+      <div className="absolute inset-0 pointer-events-none z-0 opacity-20" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.85\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\' opacity=\'0.2\'/%3E%3C/svg%3E")' }}></div>
 
-        {/* Header */}
-        <div className="text-center mb-12">
-          <span className="text-primary font-bold tracking-[0.2em] uppercase text-xs animate-fade-in opacity-80 mb-2 block">
-            {t('allProducts', 'archiveLabel')}
-          </span>
-          <h1 className="text-5xl md:text-6xl font-black mb-6 font-serif tracking-tight animate-fade-in">
+      <div className='max-w-[85rem] mx-auto px-6 lg:px-20 relative z-10 pt-32 pb-20'>
+
+        {/* ── Header ── */}
+        <div className="text-center mb-16 flex flex-col items-center">
+          {/* Eyebrow */}
+          <div className="flex items-center gap-3 mb-6 animate-fade-in">
+            <div className="w-10 h-px bg-gradient-to-r from-transparent to-[#c0392b]"></div>
+            <span className="text-[0.65rem] font-extrabold tracking-[0.4em] uppercase text-[#c0392b]">
+              {t('allProducts', 'archiveLabel') || 'EXHIBITION WALL'}
+            </span>
+            <div className="w-10 h-px bg-gradient-to-l from-transparent to-[#c0392b]"></div>
+          </div>
+
+          <h1 className="text-5xl md:text-6xl lg:text-[4.5rem] font-black mb-6 font-serif tracking-tight leading-[0.95] animate-fade-in delay-75">
             {t('allProducts', 'heroTitle')}
           </h1>
-          <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto font-light leading-relaxed animate-fade-in delay-100">
+          <p className="text-base md:text-lg text-gray-400 max-w-2xl mx-auto font-light leading-relaxed animate-fade-in delay-150">
             {t('allProducts', 'heroSubtitle')}
           </p>
         </div>
 
-        {/* Search and Sort Control Bar (Glassmorphism) */}
-        <div className="bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl p-4 md:p-6 mb-12 shadow-2xl animate-fade-in delay-200">
-          <div className="flex flex-col md:flex-row gap-4 md:items-center">
+        {/* ── Search and Sort Control Bar (Glassmorphism) ── */}
+        <div className="bg-[#111]/60 border border-white/5 backdrop-blur-xl rounded-2xl p-4 md:p-6 mb-16 shadow-[0_20px_40px_rgba(0,0,0,0.5)] animate-fade-in delay-200 relative overflow-hidden">
+
+          {/* Red glow accent inside bar */}
+          <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#782222]/20 blur-3xl rounded-full pointer-events-none"></div>
+
+          <div className="flex flex-col md:flex-row gap-4 md:items-center relative z-10">
 
             {/* Search Input */}
             <div className="relative flex-1 group">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-500 group-focus-within:text-[#c0392b] transition-colors duration-300">
                 <Search size={20} />
               </div>
               <input
                 type="text"
-                placeholder={t('allProducts', 'searchPlaceholder')}
+                placeholder={t('allProducts', 'searchPlaceholder') || 'Search masterworks...'}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 py-4 rounded-xl bg-black/40 border border-transparent text-white focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-gray-500 font-light"
+                className="w-full pl-12 pr-12 py-3.5 rounded-xl bg-black/40 border border-white/5 text-white focus:outline-none focus:bg-[#030303] focus:border-[#782222]/50 focus:ring-1 focus:ring-[#c0392b]/30 transition-all placeholder:text-gray-600 font-light text-sm"
               />
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm('')}
+                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 hover:text-[#c0392b] transition-colors"
+                >
+                  <X size={16} />
+                </button>
+              )}
             </div>
 
             {/* Divider for desktop */}
-            <div className="hidden md:block w-px h-12 bg-white/10"></div>
+            <div className="hidden md:block w-px h-10 bg-gradient-to-b from-transparent via-white/10 to-transparent"></div>
 
             {/* Sort Dropdown */}
-            <div className="relative min-w-[200px] shrink-0">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+            <div className="relative min-w-[220px] shrink-0 group">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-500 group-focus-within:text-[#c0392b] transition-colors duration-300">
                 <SlidersHorizontal size={18} />
               </div>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="w-full pl-12 pr-10 py-4 rounded-xl bg-black/40 border border-transparent text-white focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all cursor-pointer font-light appearance-none"
+                className="w-full pl-12 pr-10 py-3.5 rounded-xl bg-black/40 border border-white/5 text-white focus:outline-none focus:bg-[#030303] focus:border-[#782222]/50 focus:ring-1 focus:ring-[#c0392b]/30 transition-all cursor-pointer font-light appearance-none text-sm group-hover:border-white/10"
               >
-                <option value="newest" className="bg-[#121212]">{t('allProducts', 'sortNewest')}</option>
-                <option value="price-asc" className="bg-[#121212]">{t('allProducts', 'sortPriceAsc')}</option>
-                <option value="price-desc" className="bg-[#121212]">{t('allProducts', 'sortPriceDesc')}</option>
-                <option value="name-asc" className="bg-[#121212]">{t('allProducts', 'sortNameAsc')}</option>
-                <option value="name-desc" className="bg-[#121212]">{t('allProducts', 'sortNameDesc')}</option>
+                <option value="newest" className="bg-[#121212] py-2">{t('allProducts', 'sortNewest')}</option>
+                <option value="price-asc" className="bg-[#121212] py-2">{t('allProducts', 'sortPriceAsc')}</option>
+                <option value="price-desc" className="bg-[#121212] py-2">{t('allProducts', 'sortPriceDesc')}</option>
+                <option value="name-asc" className="bg-[#121212] py-2">{t('allProducts', 'sortNameAsc')}</option>
+                <option value="name-desc" className="bg-[#121212] py-2">{t('allProducts', 'sortNameDesc')}</option>
               </select>
               {/* Custom Dropdown Arrow */}
-              <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-gray-400">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6" /></svg>
+              <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-gray-500">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6" /></svg>
               </div>
             </div>
 
           </div>
+
+          {/* Active Filters Pill */}
+          {(searchTerm || sortBy !== 'newest') && (
+            <div className="flex items-center gap-3 mt-4 pt-4 border-t border-white/5 animate-fade-in relative z-10">
+              <span className="text-[0.65rem] text-gray-500 uppercase tracking-widest font-bold">Active Filters:</span>
+
+              {searchTerm && (
+                <button onClick={() => setSearchTerm('')} className="inline-flex items-center gap-1.5 text-xs bg-white/5 border border-white/10 text-gray-300 px-3 py-1 rounded-full hover:bg-[#782222]/20 hover:border-[#782222]/50 hover:text-white transition-all">
+                  "{searchTerm}" <X size={10} strokeWidth={3} />
+                </button>
+              )}
+              {sortBy !== 'newest' && (
+                <button onClick={() => setSortBy('newest')} className="inline-flex items-center gap-1.5 text-xs bg-white/5 border border-white/10 text-gray-300 px-3 py-1 rounded-full hover:bg-[#782222]/20 hover:border-[#782222]/50 hover:text-white transition-all">
+                  {sortBy.replace('-', ' ').toUpperCase()} <X size={10} strokeWidth={3} />
+                </button>
+              )}
+
+              <button onClick={clearFilters} className="text-xs text-[#c0392b] hover:text-red-400 ml-auto font-medium transition-colors">
+                Clear All
+              </button>
+            </div>
+          )}
         </div>
 
-        {/* Results Metadata */}
-        <div className="flex justify-between items-end border-b border-white/10 pb-4 mb-8">
-          <h2 className="text-2xl font-serif text-white">{t('allProducts', 'exhibitionWall')}</h2>
-          <span className="text-sm text-gray-500 font-medium bg-white/5 py-1 px-3 rounded-full border border-white/5">
-            {filteredArtworks.length} {t('allProducts', 'masterworksCount')}
-          </span>
+        {/* ── Results Metadata ── */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end border-b border-white/10 pb-5 mb-10 gap-4">
+          <h2 className="text-2xl md:text-3xl font-serif text-white">{t('allProducts', 'exhibitionWall') || 'Exhibition'}</h2>
+
+          <div className="flex items-center bg-white/5 border border-white/10 px-4 py-2 rounded-full backdrop-blur-md shadow-inner">
+            <span className="w-2 h-2 rounded-full bg-[#22c55e] mr-2 animate-pulse"></span>
+            <span className="text-xs text-gray-300 font-bold tracking-wide">
+              <span className="text-white text-sm mr-1">{filteredArtworks.length}</span>
+              {t('allProducts', 'masterworksCount') || 'Pieces'}
+            </span>
+          </div>
         </div>
 
-        {/* Artworks Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {filteredArtworks.map((artwork) => (
-            <div className="animate-fade-in" key={artwork.id}>
+        {/* ── Artworks Grid ── */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 md:gap-8 min-h-[40vh]">
+          {filteredArtworks.map((artwork, i) => (
+            <div className="animate-fade-in" style={{ animationDelay: `${Math.min(i * 50, 400)}ms` }} key={artwork.id}>
               <ArtworkCard artwork={artwork} />
             </div>
           ))}
-        </div>
 
-        {/* Empty State / Not Found */}
-        {filteredArtworks.length === 0 && (
-          <div className="w-full flex flex-col items-center justify-center py-24 px-4 text-center border border-dashed border-white/10 rounded-2xl bg-white/5 backdrop-blur-sm mt-8 animate-fade-in">
-            <div className="w-20 h-20 bg-black rounded-full flex items-center justify-center mb-6 shadow-inner ring-1 ring-white/10 text-gray-600">
-              <ImageOff size={32} />
+          {/* ── Empty State / Not Found ── */}
+          {isLoaded && filteredArtworks.length === 0 && (
+            <div className="col-span-full flex flex-col items-center justify-center py-24 px-4 text-center border border-white/5 bg-white/[0.02] rounded-[2rem] mt-4 animate-fade-in">
+              <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-6 shadow-inner ring-1 ring-white/10 text-gray-600">
+                <ImageOff size={28} />
+              </div>
+              <h3 className="text-xl font-serif text-white mb-2">{t('allProducts', 'noMasterworksTitle')}</h3>
+              <p className="text-sm text-gray-500 max-w-md mx-auto">
+                {t('allProducts', 'noMasterworksDesc')}
+              </p>
+              {(searchTerm || sortBy !== 'newest') && (
+                <button
+                  onClick={clearFilters}
+                  className="mt-6 px-6 py-2 bg-[#782222]/20 text-[#c0392b] font-medium border border-[#782222]/30 rounded-full hover:bg-[#c0392b] hover:text-white transition-all duration-300 text-sm shadow-[0_0_15px_rgba(120,34,34,0.3)]"
+                >
+                  {t('allProducts', 'clearFilters') || 'Clear Filters'}
+                </button>
+              )}
             </div>
-            <h3 className="text-2xl font-serif text-white mb-2">{t('allProducts', 'noMasterworksTitle')}</h3>
-            <p className="text-gray-400 max-w-md mx-auto">
-              {t('allProducts', 'noMasterworksDesc')}
-            </p>
-            {searchTerm && (
-              <button
-                onClick={() => { setSearchTerm(''); setSortBy('newest'); }}
-                className="mt-6 px-6 py-2 bg-primary/20 text-primary border border-primary/30 rounded-full hover:bg-primary hover:text-white transition-colors"
-              >
-                {t('allProducts', 'clearFilters')}
-              </button>
-            )}
-          </div>
-        )}
+          )}
+        </div>
 
       </div>
     </div>
