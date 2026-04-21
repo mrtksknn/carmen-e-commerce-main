@@ -71,7 +71,7 @@ const SubscriptionArea = () => {
       );
 
       toast({ type: "success", message: t('subscription', 'codeSent') });
-      
+
     } catch (error) {
       console.error("Failed to process:", error);
       toast({ type: "error", message: t('subscription', 'genericError') });
@@ -82,9 +82,9 @@ const SubscriptionArea = () => {
 
   const handleVerifyCode = async (e) => {
     e.preventDefault();
-    
+
     if (enteredCode !== generatedCode) {
-       return toast({ type: "error", message: t('subscription', 'invalidCode') });
+      return toast({ type: "error", message: t('subscription', 'invalidCode') });
     }
 
     setIsLoading(true);
@@ -98,7 +98,7 @@ const SubscriptionArea = () => {
       });
 
       toast({ type: "success", message: t('subscription', 'subscriptionSuccess') });
-      
+
       // Go to success UI state (Step 3)
       setStep(3);
     } catch (error) {
@@ -178,7 +178,7 @@ const SubscriptionArea = () => {
                 disabled={isLoading}
               />
             </div>
-            
+
             <div className="flex flex-col sm:flex-row gap-3 mt-2">
               <button
                 type="button"
@@ -201,9 +201,9 @@ const SubscriptionArea = () => {
 
         {step === 3 && (
           <div className="flex justify-center mt-6 animate-fade-in">
-             <div className="inline-flex items-center gap-3 bg-green-500/10 border border-green-500/20 text-green-400 px-6 py-3 rounded-full font-medium">
-               <ShieldCheck size={20} /> {t('subscription', 'successBadge')}
-             </div>
+            <div className="inline-flex items-center gap-3 bg-green-500/10 border border-green-500/20 text-green-400 px-6 py-3 rounded-full font-medium">
+              <ShieldCheck size={20} /> {t('subscription', 'successBadge')}
+            </div>
           </div>
         )}
 

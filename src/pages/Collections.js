@@ -74,7 +74,7 @@ const Collections = () => {
 
   return (
     <div className="collections-container bg-[#030303] min-h-screen text-white font-sans overflow-hidden relative">
-      
+
       {/* Background Ambient Glows */}
       <div className="absolute top-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-primary/10 blur-[120px] rounded-full pointer-events-none z-0"></div>
       <div className="absolute bottom-[20%] left-[-10%] w-[40vw] h-[40vw] bg-primary/5 blur-[100px] rounded-full pointer-events-none z-0"></div>
@@ -92,18 +92,17 @@ const Collections = () => {
       {/* Collection "Album Covers" Carousel */}
       <section className="relative z-20 px-6 lg:px-20 mb-16">
         <div className="max-w-7xl mx-auto relative group">
-          
+
           <div className="overflow-hidden py-4 px-2" ref={emblaRef}>
             <div className="flex gap-6">
-              
+
               {/* The "All" Default Room */}
-              <div 
+              <div
                 onClick={() => setSelectedCategory('All')}
-                className={`flex-[0_0_auto] w-[260px] md:w-[320px] h-[180px] md:h-[220px] rounded-2xl relative cursor-pointer overflow-hidden transition-all duration-500 ${
-                  selectedCategory === 'All' 
-                    ? 'ring-2 ring-primary shadow-[0_0_30px_rgba(120,34,34,0.3)] scale-[1.02]' 
-                    : 'ring-1 ring-white/10 hover:ring-white/30 hover:scale-[1.02] opacity-70 hover:opacity-100'
-                }`}
+                className={`flex-[0_0_auto] w-[260px] md:w-[320px] h-[180px] md:h-[220px] rounded-2xl relative cursor-pointer overflow-hidden transition-all duration-500 ${selectedCategory === 'All'
+                  ? 'ring-2 ring-primary shadow-[0_0_30px_rgba(120,34,34,0.3)] scale-[1.02]'
+                  : 'ring-1 ring-white/10 hover:ring-white/30 hover:scale-[1.02] opacity-70 hover:opacity-100'
+                  }`}
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a1a] to-black z-0"></div>
                 <div className="absolute inset-0 z-10 flex flex-col items-center justify-center p-6 text-center">
@@ -117,25 +116,24 @@ const Collections = () => {
 
               {/* Dynamic Collection Rooms */}
               {collectionsInfo.map((col) => (
-                <div 
+                <div
                   key={col.name}
                   onClick={() => setSelectedCategory(col.name)}
-                  className={`flex-[0_0_auto] w-[260px] md:w-[320px] h-[180px] md:h-[220px] rounded-2xl relative cursor-pointer overflow-hidden transition-all duration-500 ${
-                    selectedCategory === col.name 
-                      ? 'ring-2 ring-primary shadow-[0_0_30px_rgba(120,34,34,0.4)] scale-[1.02]' 
-                      : 'ring-1 ring-white/10 hover:ring-white/30 hover:scale-[1.02] opacity-70 hover:opacity-100'
-                  }`}
+                  className={`flex-[0_0_auto] w-[260px] md:w-[320px] h-[180px] md:h-[220px] rounded-2xl relative cursor-pointer overflow-hidden transition-all duration-500 ${selectedCategory === col.name
+                    ? 'ring-2 ring-primary shadow-[0_0_30px_rgba(120,34,34,0.4)] scale-[1.02]'
+                    : 'ring-1 ring-white/10 hover:ring-white/30 hover:scale-[1.02] opacity-70 hover:opacity-100'
+                    }`}
                 >
                   {/* Background Cover Image */}
-                  <img 
-                    src={col.cover} 
-                    alt={col.name} 
+                  <img
+                    src={col.cover}
+                    alt={col.name}
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 hover:scale-110"
                   />
                   {/* Dark Overlay gradients */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-90 z-10"></div>
                   <div className={`absolute inset-0 z-10 transition-opacity duration-500 ${selectedCategory === col.name ? 'bg-primary/20 mix-blend-overlay' : 'bg-transparent'}`}></div>
-                  
+
                   {/* Content */}
                   <div className="absolute inset-0 z-20 flex flex-col justify-end p-6">
                     <span className="text-[10px] text-primary font-bold tracking-widest uppercase mb-1">{t('collections', 'roomLabel')}</span>
@@ -150,14 +148,14 @@ const Collections = () => {
           {/* Navigation Arrows */}
           {collectionsInfo.length > 2 && (
             <>
-              <button 
+              <button
                 onClick={scrollPrev}
                 className="absolute left-[-15px] top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full bg-black/60 border border-white/10 text-white backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-primary/80 z-30 shadow-xl"
                 aria-label="Previous Collection"
               >
                 <ChevronLeft size={24} />
               </button>
-              <button 
+              <button
                 onClick={scrollNext}
                 className="absolute right-[-15px] top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full bg-black/60 border border-white/10 text-white backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-primary/80 z-30 shadow-xl"
                 aria-label="Next Collection"
@@ -173,7 +171,7 @@ const Collections = () => {
       {/* Artworks Grid Viewer */}
       <section className="relative z-20 px-6 lg:px-20 pb-24 min-h-[50vh]">
         <div className="max-w-7xl mx-auto">
-          
+
           <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-10">
             <h2 className="text-2xl font-serif text-white">
               {selectedCategory === 'All' ? t('collections', 'completeArchive') : `${selectedCategory} ${t('collections', 'collectionSuffix')}`}
@@ -187,7 +185,7 @@ const Collections = () => {
                 <ArtworkCard artwork={artwork} />
               </div>
             ))}
-            
+
             {filteredArtworks.length === 0 && (
               <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center py-20 text-gray-500">
                 <p>{t('collections', 'noMasterworks')}</p>

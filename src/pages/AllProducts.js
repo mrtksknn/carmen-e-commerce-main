@@ -44,7 +44,7 @@ const AllProducts = () => {
     })
     .sort((a, b) => {
       const getPrice = (str) => parseFloat(String(str || "0").replace(/[^\d.-]/g, ''));
-      
+
       switch (sortBy) {
         case 'price-asc':
           return getPrice(a.price) - getPrice(b.price);
@@ -62,13 +62,13 @@ const AllProducts = () => {
 
   return (
     <div className="relative min-h-screen bg-[#030303] text-white font-sans overflow-hidden">
-      
+
       {/* Background Ambient Glows */}
       <div className="absolute top-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-primary/10 blur-[130px] rounded-full pointer-events-none z-0"></div>
       <div className="absolute bottom-[20%] left-[-10%] w-[40vw] h-[40vw] bg-primary/5 blur-[100px] rounded-full pointer-events-none z-0"></div>
 
       <div className='max-w-7xl mx-auto px-6 lg:px-20 relative z-10 pt-24 pb-20'>
-        
+
         {/* Header */}
         <div className="text-center mb-12">
           <span className="text-primary font-bold tracking-[0.2em] uppercase text-xs animate-fade-in opacity-80 mb-2 block">
@@ -85,7 +85,7 @@ const AllProducts = () => {
         {/* Search and Sort Control Bar (Glassmorphism) */}
         <div className="bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl p-4 md:p-6 mb-12 shadow-2xl animate-fade-in delay-200">
           <div className="flex flex-col md:flex-row gap-4 md:items-center">
-            
+
             {/* Search Input */}
             <div className="relative flex-1 group">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
@@ -121,7 +121,7 @@ const AllProducts = () => {
               </select>
               {/* Custom Dropdown Arrow */}
               <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-gray-400">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6"/></svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6" /></svg>
               </div>
             </div>
 
@@ -156,7 +156,7 @@ const AllProducts = () => {
               {t('allProducts', 'noMasterworksDesc')}
             </p>
             {searchTerm && (
-              <button 
+              <button
                 onClick={() => { setSearchTerm(''); setSortBy('newest'); }}
                 className="mt-6 px-6 py-2 bg-primary/20 text-primary border border-primary/30 rounded-full hover:bg-primary hover:text-white transition-colors"
               >

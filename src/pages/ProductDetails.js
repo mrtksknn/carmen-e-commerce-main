@@ -53,7 +53,7 @@ const Details = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 pt-12">
+    <div className="max-w-7xl mx-auto px-4 pt-12 font-sans text-white">
       {/* Breadcrumb */}
       <nav className="mb-4 mt-12">
         <Link to="/products" className="text-white hover:underline">
