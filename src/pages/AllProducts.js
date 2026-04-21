@@ -4,6 +4,7 @@ import ArtworkCard from '../components/ArtworkCard';
 import { collection, onSnapshot } from "firebase/firestore";
 import { Search, SlidersHorizontal, ImageOff, X } from "lucide-react";
 import { useLanguage } from '../context/LanguageContext';
+import SEO from '../components/SEO';
 
 const AllProducts = () => {
   const { t } = useLanguage();
@@ -68,7 +69,11 @@ const AllProducts = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-[#030303] text-white font-sans overflow-hidden">
+    <main className="relative min-h-screen bg-[#030303] text-white font-sans overflow-hidden">
+      <SEO 
+        title="All Products"
+        description="Browse the complete exhibition of unique hand-crafted works."
+      />
 
       {/* Cinematic Ambient Glows */}
       <div className="absolute top-[-5%] right-[-10%] w-[55vw] h-[55vw] bg-[#782222]/10 blur-[130px] rounded-full pointer-events-none z-0"></div>
@@ -80,7 +85,7 @@ const AllProducts = () => {
       <div className='max-w-[85rem] mx-auto px-6 lg:px-20 relative z-10 pt-32 pb-20'>
 
         {/* ── Header ── */}
-        <div className="text-center mb-16 flex flex-col items-center">
+        <header className="text-center mb-16 flex flex-col items-center">
           {/* Eyebrow */}
           <div className="flex items-center gap-3 mb-6 animate-fade-in">
             <div className="w-10 h-px bg-gradient-to-r from-transparent to-[#c0392b]"></div>
@@ -96,10 +101,10 @@ const AllProducts = () => {
           <p className="text-base md:text-lg text-gray-400 max-w-2xl mx-auto font-light leading-relaxed animate-fade-in delay-150">
             {t('allProducts', 'heroSubtitle')}
           </p>
-        </div>
+        </header>
 
         {/* ── Search and Sort Control Bar (Glassmorphism) ── */}
-        <div className="bg-[#111]/60 border border-white/5 backdrop-blur-xl rounded-2xl p-4 md:p-6 mb-16 shadow-[0_20px_40px_rgba(0,0,0,0.5)] animate-fade-in delay-200 relative overflow-hidden">
+        <section className="bg-[#111]/60 border border-white/5 backdrop-blur-xl rounded-2xl p-4 md:p-6 mb-16 shadow-[0_20px_40px_rgba(0,0,0,0.5)] animate-fade-in delay-200 relative overflow-hidden">
 
           {/* Red glow accent inside bar */}
           <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#782222]/20 blur-3xl rounded-full pointer-events-none"></div>
@@ -176,11 +181,13 @@ const AllProducts = () => {
               </button>
             </div>
           )}
-        </div>
+        </section>
 
-        {/* ── Results Metadata ── */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end border-b border-white/10 pb-5 mb-10 gap-4">
-          <h2 className="text-2xl md:text-3xl font-serif text-white">{t('allProducts', 'exhibitionWall') || 'Exhibition'}</h2>
+        {/* ── Results Container ── */}
+        <section>
+          {/* ── Results Metadata ── */}
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end border-b border-white/10 pb-5 mb-10 gap-4">
+            <h2 className="text-2xl md:text-3xl font-serif text-white">{t('allProducts', 'exhibitionWall') || 'Exhibition'}</h2>
 
           <div className="flex items-center bg-white/5 border border-white/10 px-4 py-2 rounded-full backdrop-blur-md shadow-inner">
             <span className="w-2 h-2 rounded-full bg-[#22c55e] mr-2 animate-pulse"></span>
@@ -220,9 +227,10 @@ const AllProducts = () => {
             </div>
           )}
         </div>
+        </section>
 
       </div>
-    </div>
+    </main>
   );
 };
 

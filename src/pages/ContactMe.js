@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { useCustomToast } from '../components/ui/toast-context';
 import { User, Mail, Tag, MessageSquare, Send, MapPin, Clock, Loader2 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import SEO from '../components/SEO';
 
 const ContactMe = () => {
   const location = useLocation();
@@ -60,7 +61,11 @@ const ContactMe = () => {
   const inputClasses = "w-full pl-12 pr-4 py-4 rounded-xl bg-black/40 border border-white/5 text-white focus:outline-none focus:bg-[#030303] focus:border-[#782222]/50 focus:ring-1 focus:ring-[#c0392b]/30 transition-all placeholder:text-gray-600 font-light text-sm shadow-inner group-hover:border-white/10";
 
   return (
-    <div className="relative min-h-screen bg-[#030303] text-white font-sans overflow-hidden py-32">
+    <main className="relative min-h-screen bg-[#030303] text-white font-sans overflow-hidden py-32">
+      <SEO 
+        title="Contact Me"
+        description="Get in touch with Carmen for commissions, exhibitions, or purchase inquiries."
+      />
 
       {/* Cinematic Ambient Glows */}
       <div className="absolute top-[-5%] right-[-10%] w-[50vw] h-[50vw] bg-[#782222]/10 blur-[150px] rounded-full pointer-events-none z-0"></div>
@@ -72,7 +77,7 @@ const ContactMe = () => {
       <div className="max-w-[85rem] mx-auto px-6 lg:px-20 relative z-10">
 
         {/* ── Header ── */}
-        <div className="text-center mb-16 animate-fade-in flex flex-col items-center">
+        <header className="text-center mb-16 animate-fade-in flex flex-col items-center">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-8 h-px bg-gradient-to-r from-transparent to-[#c0392b]"></div>
             <span className="text-[#c0392b] font-extrabold tracking-[0.3em] uppercase text-[0.65rem] opacity-90">
@@ -86,12 +91,12 @@ const ContactMe = () => {
           <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto font-light leading-relaxed">
             {t('contact', 'heroSubtitle')}
           </p>
-        </div>
+        </header>
 
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-start justify-center max-w-7xl mx-auto">
 
           {/* ── Left Side: Contact Form (Glassmorphism) ── */}
-          <div className="w-full lg:w-3/5 bg-[#111]/40 border border-white/5 p-8 md:p-12 rounded-[2rem] shadow-[0_30px_60px_rgba(0,0,0,0.6)] backdrop-blur-2xl animate-fade-in delay-100 relative overflow-hidden group/card">
+          <section className="w-full lg:w-3/5 bg-[#111]/40 border border-white/5 p-8 md:p-12 rounded-[2rem] shadow-[0_30px_60px_rgba(0,0,0,0.6)] backdrop-blur-2xl animate-fade-in delay-100 relative overflow-hidden group/card">
             
             {/* Inner ambient glow */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-[#782222]/10 blur-[80px] rounded-full pointer-events-none opacity-50 group-hover/card:opacity-100 transition-opacity duration-1000"></div>
@@ -223,10 +228,10 @@ const ContactMe = () => {
               </div>
 
             </form>
-          </div>
+          </section>
 
           {/* ── Right Side: Commission Roadmap & Info ── */}
-          <div className="w-full lg:w-2/5 flex flex-col gap-10 animate-fade-in delay-200 lg:sticky lg:top-32">
+          <aside className="w-full lg:w-2/5 flex flex-col gap-10 animate-fade-in delay-200 lg:sticky lg:top-32">
 
             {/* The Commission Roadmap */}
             <div className="bg-[#111]/20 border border-white/5 rounded-3xl p-8 md:p-10 backdrop-blur-md">
@@ -323,11 +328,11 @@ const ContactMe = () => {
               </div>
             </div>
 
-          </div>
+          </aside>
         </div>
 
       </div>
-    </div>
+    </main>
   );
 };
 

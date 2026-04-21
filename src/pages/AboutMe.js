@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Palette, Brush, Eye, Mail, ArrowRight } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
+import SEO from "../components/SEO";
 
 const AboutMe = () => {
   const { t } = useLanguage();
@@ -11,7 +12,11 @@ const AboutMe = () => {
   }, []);
 
   return (
-    <div className="bg-[#030303] min-h-screen text-white font-sans overflow-hidden relative">
+    <main className="bg-[#030303] min-h-screen text-white font-sans overflow-hidden relative">
+      <SEO 
+        title="About Me"
+        description="Learn about the master artist behind Carmen's unique creations."
+      />
 
       {/* Cinematic Ambient Glows */}
       <div className="absolute top-[10%] left-[-20%] w-[60vw] h-[60vw] bg-[#782222]/10 blur-[140px] rounded-full pointer-events-none z-0"></div>
@@ -36,6 +41,8 @@ const AboutMe = () => {
               <img
                 src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=1200&h=1600&fit=crop"
                 alt="The Artist Studio"
+                fetchpriority="high"
+                loading="eager"
                 className="w-full h-full object-cover object-center filter grayscale-[60%] contrast-110 group-hover:grayscale-0 transition-all duration-[20s] ease-out group-hover:scale-110"
               />
               {/* Vertical Text overlay for desktop */}
@@ -182,7 +189,7 @@ const AboutMe = () => {
         </div>
       </section>
 
-    </div>
+    </main>
   );
 };
 

@@ -4,6 +4,7 @@ import { db } from "../firebase";
 import { collection, onSnapshot } from "firebase/firestore";
 import '../assets/styles/details.css';
 import { useLanguage } from '../context/LanguageContext';
+import SEO from '../components/SEO';
 
 const Details = () => {
   const { id } = useParams();
@@ -11,6 +12,7 @@ const Details = () => {
   const { t } = useLanguage();
   const [data, setData] = useState('');
   const [activeImage, setActiveImage] = useState('');
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     const unsub = onSnapshot(collection(db, "products"),
@@ -29,6 +31,7 @@ const Details = () => {
         if (foundItem) {
           setActiveImage(foundItem.img);
         }
+        setIsLoaded(true);
       },
       (error) => {
         console.error(error);
@@ -40,9 +43,10 @@ const Details = () => {
     }
   }, [productName, id]);
 
-  if (!id) {
+  if (!data && isLoaded) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-12 text-center">
+        <SEO title="Not Found" description="The artwork you are looking for does not exist." />
         <h1 className="text-4xl font-bold text-foreground mb-4">{t('productDetails', 'notFoundTitle')}</h1>
         <p className="text-muted-foreground mb-8">{t('productDetails', 'notFoundDesc')}</p>
         <Link to="/products" className="text-primary hover:underline">
@@ -52,8 +56,35 @@ const Details = () => {
     );
   }
 
+  // Schema generation
+  const productSchema = data ? {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": data.name,
+    "image": data.img,
+    "description": data.description || `Buy ${data.name} masterpiece by Carmen.`,
+    "brand": {
+      "@type": "Brand",
+      "name": "Carmen Arts"
+    },
+    "offers": {
+      "@type": "Offer",
+      "url": window.location.href,
+      "priceCurrency": "TRY",
+      "price": data.price,
+      "itemCondition": "https://schema.org/NewCondition",
+      "availability": data.status === true ? "https://schema.org/SoldOut" : "https://schema.org/InStock"
+    }
+  } : null;
+
   return (
-    <div className="max-w-7xl mx-auto px-4 pt-12 font-sans text-white">
+    <article className="max-w-7xl mx-auto px-4 pt-12 font-sans text-white">
+      <SEO 
+        title={data?.name || "Artwork Details"} 
+        description={data?.description || "Discover this unique masterpiece by Carmen."} 
+        ogImage={data?.img}
+        schema={productSchema}
+      />
       {/* Breadcrumb */}
       <nav className="mb-4 mt-12">
         <Link to="/products" className="text-white hover:underline">
@@ -68,6 +99,8 @@ const Details = () => {
             <img
               src={activeImage || data?.img}
               alt={data?.name}
+              fetchpriority="high"
+              loading="eager"
               className="w-full h-full object-contain transition-opacity duration-300"
             />
           </div>
@@ -83,7 +116,7 @@ const Details = () => {
                     : 'border-transparent opacity-60 hover:opacity-100 hover:border-primary/50'
                     }`}
                 >
-                  <img src={imgUrl} alt={`${data?.name} thumbnail ${idx + 1}`} className="w-full h-full object-cover" />
+                  <img src={imgUrl} alt={`${data?.name} thumbnail ${idx + 1}`} loading="lazy" className="w-full h-full object-cover" />
                 </div>
               ))}
             </div>
@@ -136,7 +169,7 @@ const Details = () => {
         </div>
       </div>
 
-    </div>
+    </article>
   );
 };
 

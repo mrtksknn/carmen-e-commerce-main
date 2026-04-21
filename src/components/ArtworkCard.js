@@ -13,11 +13,12 @@ const ArtworkCard = ({ artwork, showPrice = true }) => {
       {/* Outer hover shadow injector via pseudo-element simulation */}
       <div className="absolute inset-0 pointer-events-none group-hover:shadow-[0_24px_60px_rgba(0,0,0,0.6),0_0_0_1px_rgba(120,34,34,0.15)] transition-shadow duration-500 rounded-[1.25rem] z-30"></div>
 
-      {/* Image Wrapper */}
-      <div className="relative w-full aspect-[4/5] sm:aspect-[3/4] overflow-hidden bg-[#111]">
+      {/* Image Wrapper (Semantic Article body) */}
+      <article className="relative w-full aspect-[4/5] sm:aspect-[3/4] overflow-hidden bg-[#111]">
         <img
           src={artwork.img}
           alt={artwork.name}
+          loading="lazy"
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-[800ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.07]"
         />
 
@@ -82,7 +83,7 @@ const ArtworkCard = ({ artwork, showPrice = true }) => {
             <path d="M5 12h14M12 5l7 7-7 7" />
           </svg>
         </div>
-      </div>
+      </article>
     </Link>
   );
 };

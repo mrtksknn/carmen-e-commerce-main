@@ -5,6 +5,7 @@ import { db } from "../firebase";
 import { collection, onSnapshot } from "firebase/firestore";
 import SubscriptionArea from '../components/SubscriptionArea';
 import { useLanguage } from '../context/LanguageContext';
+import SEO from '../components/SEO';
 
 const Landing = () => {
   const { t } = useLanguage();
@@ -44,8 +45,22 @@ const Landing = () => {
   const heroPiece = products.length > 0 ? products[0] : null;
   const galleryPieces = products.length > 1 ? products.slice(1, 4) : [];
 
+  const orgSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Carmen E-Commerce",
+    "url": window.location.origin,
+    "logo": `${window.location.origin}/logo.png`,
+    "description": "Unique hand-crafted models, figures and arts by Carmen."
+  };
+
   return (
-    <div className="landing-container bg-[#030303] text-white font-sans overflow-hidden">
+    <main className="landing-container bg-[#030303] text-white font-sans overflow-hidden">
+      <SEO 
+        title="Home"
+        description="Welcome to Carmen E-Commerce, featuring unique hand-crafted models, figures and arts."
+        schema={orgSchema}
+      />
 
       {/* Hero Section */}
       <section className="relative w-full min-h-screen pt-24 pb-16 z-10 overflow-hidden flex items-center">
@@ -119,6 +134,8 @@ const Landing = () => {
                 <img
                   src={heroPiece.img}
                   alt={heroPiece.name}
+                  fetchpriority="high"
+                  loading="eager"
                   className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-[18s] ease-out group-hover:scale-110"
                 />
 
@@ -249,7 +266,7 @@ const Landing = () => {
                 className={`gallery-card gallery-item-${index} ${index === 0 ? 'min-h-[420px] md:min-h-[520px]' : 'min-h-[240px] md:min-h-[248px]'}`}
               >
                 {/* Artwork image */}
-                <img src={artwork.img} alt={artwork.name} />
+                <img src={artwork.img} alt={artwork.name} loading="lazy" />
 
                 {/* Overlays */}
                 <div className="gallery-card-overlay"></div>
@@ -354,6 +371,7 @@ const Landing = () => {
               <img
                 src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=1200&h=800&fit=crop"
                 alt="Artist at work"
+                loading="lazy"
               />
 
               {/* Gradient overlay */}
@@ -381,7 +399,7 @@ const Landing = () => {
         </div>
       </section>
 
-    </div>
+    </main>
   );
 };
 

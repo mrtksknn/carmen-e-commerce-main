@@ -143,17 +143,57 @@ const Admin = () => {
     setEditingCollection(null);
   };
 
+  const generateSitemap = () => {
+    let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
+    xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
+    
+    // Projenizin Github Pages homepage adresi
+    const baseUrl = "https://mrtksknn.github.io/carmen-e-commerce-main"; 
+    
+    // Statik Sayfalar
+    const staticRoutes = ["", "/products", "/collections", "/about", "/contact"];
+    staticRoutes.forEach(route => {
+      xml += `  <url>\n    <loc>${baseUrl}${route}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>${route === "" ? "1.0" : "0.8"}</priority>\n  </url>\n`;
+    });
+
+    // Dinamik Eser/Ürün Sayfaları
+    products.forEach(product => {
+      xml += `  <url>\n    <loc>${baseUrl}/product/${product.id}</loc>\n    <changefreq>monthly</changefreq>\n    <priority>0.6</priority>\n  </url>\n`;
+    });
+
+    xml += `</urlset>`;
+
+    // Tarayıcı üzerinden dosyayı dinamik olarak indirtiyoruz
+    const blob = new Blob([xml], { type: "application/xml" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "sitemap.xml";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   // Prevent rendering content before auth
   if (!isAuthenticated) return null;
 
   return (
     <div className="flex flex-col items-center px-4 mt-8 pb-12">
       {/* Header */}
-      <div className="text-center my-6">
+      <div className="text-center my-6 relative w-full flex flex-col items-center">
         <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 font-serif">Admin Dashboard</h1>
-        <p className="text-xl text-gray-400 font-sans">
+        <p className="text-xl text-gray-400 font-sans mb-6">
           Manage your artworks and collections
         </p>
+        
+        <button 
+          onClick={generateSitemap}
+          className="bg-green-600/20 text-green-500 border border-green-600/50 px-6 py-2 rounded-lg text-sm font-medium hover:bg-green-600 hover:text-white transition-all shadow-[0_4px_20px_rgba(34,197,94,0.2)] md:absolute right-0 top-1/2 md:-translate-y-1/2 flex items-center gap-2"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          Sitemap İndir
+        </button>
       </div>
 
       {/* Tabs */}

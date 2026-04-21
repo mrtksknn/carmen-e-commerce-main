@@ -5,6 +5,7 @@ import { db } from "../firebase";
 import { collection, onSnapshot } from "firebase/firestore";
 import ArtworkCard from '../components/ArtworkCard';
 import { useLanguage } from '../context/LanguageContext';
+import SEO from '../components/SEO';
 
 const Collections = () => {
   const { t } = useLanguage();
@@ -73,7 +74,11 @@ const Collections = () => {
   }, []);
 
   return (
-    <div className="collections-container bg-[#030303] min-h-screen text-white font-sans overflow-hidden relative">
+    <main className="collections-container bg-[#030303] min-h-screen text-white font-sans overflow-hidden relative">
+      <SEO 
+        title="Collections"
+        description="Explore curated archives and collections of Carmen's masterworks."
+      />
 
       {/* Cinematic Ambient Glows */}
       <div className="absolute top-[-5%] right-[-10%] w-[55vw] h-[55vw] bg-[#782222]/10 blur-[130px] rounded-full pointer-events-none z-0"></div>
@@ -83,7 +88,7 @@ const Collections = () => {
       <div className="absolute inset-0 pointer-events-none z-0 opacity-20" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.85\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\' opacity=\'0.2\'/%3E%3C/svg%3E")' }}></div>
 
       {/* ── Header Section ── */}
-      <section className="relative pt-32 pb-16 px-6 lg:px-20 z-10 text-center flex flex-col items-center">
+      <header className="relative pt-32 pb-16 px-6 lg:px-20 z-10 text-center flex flex-col items-center">
         {/* Eyebrow */}
         <div className="flex items-center gap-3 mb-6 animate-fade-in">
           <div className="w-10 h-px bg-gradient-to-r from-transparent to-[#c0392b]"></div>
@@ -106,7 +111,7 @@ const Collections = () => {
         <p className="text-base md:text-lg text-gray-400 max-w-2xl mx-auto font-light leading-relaxed animate-fade-in delay-150">
           {t('collections', 'heroSubtitle')}
         </p>
-      </section>
+      </header>
 
       {/* ── Collection "Rooms" Carousel ── */}
       <section className="relative z-20 px-6 lg:px-20 mb-20">
@@ -151,6 +156,7 @@ const Collections = () => {
                   <img
                     src={col.cover}
                     alt={col.name}
+                    loading="lazy"
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-[800ms] hover:scale-110"
                   />
                   {/* Dark Overlay gradients */}
@@ -244,7 +250,7 @@ const Collections = () => {
         </div>
       </section>
 
-    </div>
+    </main>
   );
 };
 
