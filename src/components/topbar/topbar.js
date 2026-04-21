@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Home, Image, FolderOpen, Info, Contact, Menu, X } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
+import Logo from '../ui/Logo';
 
 const Topbar = () => {
   const location = useLocation();
@@ -29,10 +30,11 @@ const Topbar = () => {
       <div className="w-full max-w-7xl px-4 flex items-center justify-between">
         <Link
           to="/"
-          className="text-white text-3xl text-primary font-bold no-underline font-serif tracking-wider"
+          className="flex items-center no-underline transition-transform duration-300 hover:scale-105"
           onClick={handleLinkClick}
+          aria-label="Carmen Art Home"
         >
-          PieceOfOblivion
+          <Logo className="text-gray-200 hover:text-white transition-colors duration-300" />
         </Link>
 
         {/* Desktop Menu */}
