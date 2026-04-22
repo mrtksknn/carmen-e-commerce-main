@@ -1,14 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { useCustomToast } from "../ui/toast-context";
-import { db } from '../../firebase';
-import {
-    collection,
-    addDoc,
-    doc,
-    updateDoc,
-    serverTimestamp,
-} from 'firebase/firestore';
+import { addCollection, updateCollection } from '../../services/firebaseService';
 
 const CollectionForm = ({ collectionItem, onClose, onSave }) => {
     const toast = useCustomToast();
@@ -41,13 +34,10 @@ const CollectionForm = ({ collectionItem, onClose, onSave }) => {
             };
 
             if (collectionItem?.id) {
-                await updateDoc(doc(db, 'collections', collectionItem.id), collectionData);
+                await updateCollection(collectionItem.id, collectionData);
                 toast({ type: "success", message: `${formData.name} koleksiyonu başarıyla güncellendi.` });
             } else {
-                await addDoc(collection(db, 'collections'), {
-                    ...collectionData,
-                    timeStamp: serverTimestamp(),
-                });
+                await addCollection(collectionData);
                 toast({ type: "success", message: `${formData.name} koleksiyonu başarıyla oluşturuldu.` });
             }
 

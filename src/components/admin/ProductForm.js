@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "../ui/card";
-import { db } from "../../firebase";
-import { collection, onSnapshot, addDoc, updateDoc, doc, serverTimestamp } from "firebase/firestore";
 import { Type, DollarSign, Maximize, Palette, Layers, AlignLeft, ImagePlus, CheckCircle2, X } from "lucide-react";
+import { addProduct, updateProduct, subscribeToCollections } from "../../services/firebaseService";
 
 const ProductForm = ({ product, onClose }) => {
   const [collectionList, setCollectionsList] = useState([]);
@@ -29,16 +28,13 @@ const ProductForm = ({ product, onClose }) => {
 
   // Load collections
   useEffect(() => {
-    const unsub = onSnapshot(collection(db, "collections"), (snapshot) => {
+    const unsub = subscribeToCollections((data) => {
       const collections = new Set();
-
-      snapshot.forEach((doc) => {
-        const collectionName = doc.data().name;
-        if (typeof collectionName === 'string' && collectionName.trim() !== '') {
-          collections.add(collectionName.trim());
+      data.forEach((item) => {
+        if (typeof item.name === 'string' && item.name.trim() !== '') {
+          collections.add(item.name.trim());
         }
       });
-
       setCollectionsList([...collections]);
     });
 
@@ -111,7 +107,7 @@ const ProductForm = ({ product, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { title, price } = formData;
-    if (!title || !price) return; // Note: collections is no longer strictly required
+    if (!title || !price) return;
 
     setIsSubmitting(true);
     try {
@@ -130,18 +126,15 @@ const ProductForm = ({ product, onClose }) => {
         img2: imgUrl2 || "",
         img3: imgUrl3 || "",
         price: formData.price,
-        collections: formData.collections, // This may be an empty string now and that's okay
+        collections: formData.collections,
         dimensions: formData.dimensions,
         material: formData.material
       };
 
       if (product?.id) {
-        await updateDoc(doc(db, "products", product.id), productData);
+        await updateProduct(product.id, productData);
       } else {
-        await addDoc(collection(db, "products"), {
-          ...productData,
-          timeStamp: serverTimestamp()
-        });
+        await addProduct(productData);
       }
 
       onClose();
@@ -310,7 +303,6 @@ const ProductForm = ({ product, onClose }) => {
                 </label>
                 <select
                   id="collections"
-                  // Removed required flag so collection is truly optional
                   value={formData.collections}
                   onChange={(e) => handleChange("collections", e.target.value)}
                   className="w-full px-4 py-3 border border-gray-800 rounded-xl bg-[#141414] text-white focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all font-sans appearance-none shadow-inner"

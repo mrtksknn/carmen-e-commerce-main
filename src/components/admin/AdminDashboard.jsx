@@ -8,8 +8,6 @@ import CollectionList from "./CollectionList";
 import { Plus, Download } from "lucide-react";
 import { APP_CONFIG } from "../../lib/constants";
 import { deleteProduct, updateProduct, deleteCollection } from "../../services/firebaseService";
-import { deleteField, doc, updateDoc } from "firebase/firestore";
-import { db } from "../../firebase";
 
 const AdminDashboard = ({ products, collections }) => {
   const [showProductForm, setShowProductForm] = useState(false);
@@ -34,12 +32,9 @@ const AdminDashboard = ({ products, collections }) => {
 
   const handleToggleStatus = async (product) => {
     try {
-      const productRef = doc(db, "products", product.id);
-      if (product.status) {
-        await updateDoc(productRef, { status: deleteField() });
-      } else {
-        await updateDoc(productRef, { status: true });
-      }
+      // For toggle, we need to pass the updated status
+      const newStatus = !product.status;
+      await updateProduct(product.id, { status: newStatus || null });
     } catch (err) {
       console.error("Toggle status error:", err);
     }
