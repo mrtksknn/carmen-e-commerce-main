@@ -8,7 +8,6 @@ import { Plus, Download, Mail, Key, LogIn, Database } from "lucide-react";
 
 import { db } from "../firebase";
 import { collection, onSnapshot, deleteDoc, doc, updateDoc, deleteField } from "firebase/firestore";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 
 import "../assets/styles/upload.css";
 import CollectionList from "../components/admin/CollectionList";
@@ -17,7 +16,6 @@ const Admin = () => {
   // Authentication state
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAuthChecking, setIsAuthChecking] = useState(true);
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
   const [isLoggingIn, setIsLoggingIn] = useState(false);
@@ -34,34 +32,25 @@ const Admin = () => {
 
   // Auth: Check login state
   useEffect(() => {
-    const auth = getAuth();
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setIsAuthenticated(true);
-      } else {
-        setIsAuthenticated(false);
-      }
-      setIsAuthChecking(false);
-    });
-    return () => unsubscribe();
+    const isAuth = sessionStorage.getItem("adminAuth") === "true";
+    setIsAuthenticated(isAuth);
+    setIsAuthChecking(false);
   }, []);
 
-  const handleLogin = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
     setLoginError("");
     setIsLoggingIn(true);
-    const auth = getAuth();
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-    } catch (err) {
-      if (err.code === "auth/invalid-credential" || err.code === "auth/user-not-found" || err.code === "auth/wrong-password") {
-        setLoginError("Invalid email or password.");
+    
+    setTimeout(() => {
+      if (password === process.env.REACT_APP_ADMIN_PASSWORD) {
+        setIsAuthenticated(true);
+        sessionStorage.setItem("adminAuth", "true");
       } else {
-        setLoginError("Failed to login. Please try again.");
+        setLoginError("Hatalı şifre.");
       }
-    } finally {
       setIsLoggingIn(false);
-    }
+    }, 500);
   };
 
   // Fetch products realtime
@@ -208,7 +197,7 @@ const Admin = () => {
               </div>
               <CardTitle className="text-3xl font-serif text-white tracking-wider">Admin Portal</CardTitle>
               <CardDescription className="text-gray-400 font-sans text-sm px-4">
-                Enter your credentials to access the management dashboard
+                Enter the admin password to access the management dashboard
               </CardDescription>
             </CardHeader>
 
@@ -224,20 +213,6 @@ const Admin = () => {
                 )}
 
                 <div className="space-y-4">
-                  <div className="relative group">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500 group-focus-within:text-primary transition-colors">
-                      <Mail size={18} />
-                    </div>
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="Email Address"
-                      className="w-full pl-10 pr-4 py-3.5 bg-[#171717] border border-gray-800 rounded-xl focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 text-white placeholder-gray-600 transition-all font-sans text-sm shadow-inner"
-                      required
-                    />
-                  </div>
-
                   <div className="relative group">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500 group-focus-within:text-primary transition-colors">
                       <Key size={18} />

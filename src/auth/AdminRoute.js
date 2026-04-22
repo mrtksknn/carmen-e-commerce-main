@@ -1,45 +1,24 @@
 import { useEffect, useState } from "react";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import { Navigate } from "react-router-dom";
 
 const AdminRoute = ({ children }) => {
   const [isAuthorized, setIsAuthorized] = useState(null);
 
   useEffect(() => {
-    const auth = getAuth();
-
-    const authenticate = async () => {
-      const email = prompt("Giriş için e-posta adresinizi girin:");
-      const password = prompt("Şifrenizi girin:");
-
-      if (!email || !password) {
-        alert("E-posta ve şifre gerekli.");
-        return setIsAuthorized(false);
-      }
-
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-        setIsAuthorized(true);
-      } catch {
-        alert("Giriş başarısız. Ana sayfaya yönlendiriliyorsunuz.");
-        setIsAuthorized(false);
-      }
-    };
-
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setIsAuthorized(true);
-      } else {
-        authenticate();
-      }
-    });
-
-    return () => unsubscribe();
+    // SessionStorage'dan kontrol et
+    const authStatus = sessionStorage.getItem("adminAuth") === "true";
+    setIsAuthorized(authStatus);
   }, []);
 
-  if (isAuthorized === null) return null; // Optionally show a loader
+  // Yükleniyor durumu (isteğe bağlı)
+  if (isAuthorized === null) return null;
 
-  return isAuthorized ? children : <Navigate to="/" replace />;
+  // Eğer yetkili değilse, Admin sayfasının kendi içindeki login ekranını göstermesi için 
+  // children'ı (Admin bileşenini) render etmeye devam edebiliriz ya da 
+  // Admin bileşeni zaten kendi içinde bu kontrolü yaptığı için AdminRoute'u basitleştirebiliriz.
+  // Ancak kullanıcı "yönlendirileyim" dediği için burada children render edilmeli, 
+  // Admin bileşeni içindeki state ile login işlemi yapılacak.
+  return children;
 };
 
 export default AdminRoute;
