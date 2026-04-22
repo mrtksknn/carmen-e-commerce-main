@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Satisfy&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Alex+Brush&display=swap');
 
 @tailwind base;
 
 .satisfy-regular {
-  font-family: "Satisfy", cursive;
+  font-family: "Alex Brush", cursive;
   font-weight: 400;
   font-style: normal;
 }
@@ -30,3 +30,49 @@
 }
 
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. */
+
+@layer utilities {
+  .logo-text-glow {
+    text-shadow: 0 0 15px rgba(242, 104, 104, 0.4);
+  }
+}
+
+@keyframes logo-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+@keyframes logo-shimmer {
+  0% { stop-opacity: 0.4; stop-color: #782222; }
+  50% { stop-opacity: 1; stop-color: #f26868; }
+  100% { stop-opacity: 0.4; stop-color: #782222; }
+}
+
+@keyframes brush-draw {
+  from { stroke-dashoffset: 400; }
+  to { stroke-dashoffset: 0; }
+}
+
+.animate-shimmer {
+  animation: logo-shimmer 3s ease-in-out infinite;
+}
+
+.animate-draw {
+  stroke-dasharray: 400;
+  animation: brush-draw 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.logo-animate-float {
+  animation: logo-float 4s ease-in-out infinite;
+}
+
+
