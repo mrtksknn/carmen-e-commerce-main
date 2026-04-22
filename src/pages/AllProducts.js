@@ -1,38 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { db } from "../firebase";
 import ArtworkCard from '../components/ArtworkCard';
-import { collection, onSnapshot } from "firebase/firestore";
 import { Search, SlidersHorizontal, ImageOff, X } from "lucide-react";
 import { useLanguage } from '../context/LanguageContext';
+import { useProducts } from '../hooks/useProducts';
 import SEO from '../components/SEO';
 
 const AllProducts = () => {
   const { t } = useLanguage();
+  const { products, loading } = useProducts();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('newest');
 
-  const [products, setProducts] = useState([]);
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  // Fetch from Firebase
   useEffect(() => {
     window.scrollTo(0, 0);
-    const unsub = onSnapshot(collection(db, "products"),
-      (snapshot) => {
-        let list = [];
-        snapshot.docs.forEach((doc) => {
-          list.push({ id: doc.id, ...doc.data() });
-        });
-        setProducts(list);
-        setIsLoaded(true);
-      },
-      (error) => {
-        console.error(error);
-      }
-    );
-
-    return () => unsub();
   }, []);
 
   // Filter and Sort Processing
@@ -207,7 +188,7 @@ const AllProducts = () => {
           ))}
 
           {/* ── Empty State / Not Found ── */}
-          {isLoaded && filteredArtworks.length === 0 && (
+          {!loading && filteredArtworks.length === 0 && (
             <div className="col-span-full flex flex-col items-center justify-center py-24 px-4 text-center border border-white/5 bg-white/[0.02] rounded-[2rem] mt-4 animate-fade-in">
               <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-6 shadow-inner ring-1 ring-white/10 text-gray-600">
                 <ImageOff size={28} />
