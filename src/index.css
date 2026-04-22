@@ -58,8 +58,9 @@
 }
 
 @keyframes brush-draw {
-  from { stroke-dashoffset: 400; }
-  to { stroke-dashoffset: 0; }
+  0% { stroke-dashoffset: 400; }
+  10% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: 0; }
 }
 
 .animate-shimmer {
@@ -68,8 +69,9 @@
 
 .animate-draw {
   stroke-dasharray: 400;
-  animation: brush-draw 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: brush-draw 30s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
+
 
 .logo-animate-float {
   animation: logo-float 4s ease-in-out infinite;

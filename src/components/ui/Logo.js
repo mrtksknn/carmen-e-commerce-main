@@ -45,8 +45,8 @@ const Logo = ({ className = '', iconSize = 44, ...props }) => {
             strokeLinecap="round"
             strokeOpacity="0.8"
             className="drop-shadow-md animate-draw"
-            style={{ animationDelay: '0.4s' }}
           />
+
 
           {/* Center Point */}
           <circle cx="30" cy="50" r="4" fill="white" className="animate-pulse shadow-primary" />
