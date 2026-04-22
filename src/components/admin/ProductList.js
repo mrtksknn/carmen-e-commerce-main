@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Edit2, Trash2, CheckCircle2, XCircle } from "lucide-react";
 
 const ProductList = ({ products, onEdit, onDelete, onToggleStatus }) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -39,17 +40,17 @@ const ProductList = ({ products, onEdit, onDelete, onToggleStatus }) => {
                   key={product.id}
                   className="hover:bg-primary/5 transition-colors group"
                 >
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 text-left">
                     <img
                       src={product.img}
                       alt={product.name}
                       className="w-16 h-12 object-cover rounded-md shadow-sm group-hover:shadow-primary/20 transition-all"
                     />
                   </td>
-                  <td className="px-6 py-4 font-medium text-white">{product.name}</td>
-                  <td className="px-6 py-4 text-gray-300">{product.collections ? <span>{product.collections}</span> : '--'}</td>
-                  <td className="px-6 py-4 text-gray-300">{product.price}</td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 text-left font-medium text-white">{product.name}</td>
+                  <td className="px-6 py-4 text-left text-gray-300">{product.collections ? <span>{product.collections}</span> : '--'}</td>
+                  <td className="px-6 py-4 text-left text-gray-300">{product.price}</td>
+                  <td className="px-6 py-4 text-left">
                     <span
                       className={`inline-flex items-center justify-center rounded-full px-3 py-1 text-xs font-medium border ${
                         product.status 
@@ -60,43 +61,30 @@ const ProductList = ({ products, onEdit, onDelete, onToggleStatus }) => {
                       {product.status ? "Sold" : "New"}
                     </span>
                   </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-2">
+                  <td className="px-6 py-4 text-left">
+                    <div className="flex items-center justify-start gap-3">
                       <button
-                        className="border border-primary/20 px-3 py-1.5 rounded-md hover:bg-primary/20 text-xs text-gray-300 hover:text-white transition-colors whitespace-nowrap"
+                        className="p-1.5 rounded-md border border-transparent hover:border-primary/20 hover:bg-primary/10 text-gray-400 hover:text-white transition-all shadow-sm hover:shadow"
+                        title={product.status ? "Unmark Sold" : "Mark as Sold"}
                         onClick={() => onToggleStatus(product)}
                       >
-                        {product.status ? "Unmark Sold" : "Mark as Sold"}
+                        {product.status ? <XCircle size={18} /> : <CheckCircle2 size={18} />}
                       </button>
 
                       <button
-                        className="border border-primary/20 px-3 py-1.5 rounded-md hover:bg-primary/20 text-xs text-gray-300 hover:text-white flex items-center gap-1.5 transition-colors"
+                        className="p-1.5 rounded-md border border-transparent hover:border-blue-500/20 hover:bg-blue-500/10 text-gray-400 hover:text-blue-400 transition-all shadow-sm hover:shadow"
+                        title="Edit Product"
                         onClick={() => onEdit(product)}
                       >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="12"
-                          height="12"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M12 20h9" />
-                          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-                        </svg>
-                        Edit
+                        <Edit2 size={18} />
                       </button>
 
                       <button
-                        className="border border-primary/20 px-3 py-1.5 rounded-md hover:bg-red-500/20 hover:border-red-500/30 text-xs text-gray-300 hover:text-red-400 flex items-center gap-1.5 transition-colors"
+                        className="p-1.5 rounded-md border border-transparent hover:border-red-500/20 hover:bg-red-500/10 text-gray-400 hover:text-red-400 transition-all shadow-sm hover:shadow"
+                        title="Delete Product"
                         onClick={() => onDelete(product.id)}
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                        Delete
+                        <Trash2 size={18} />
                       </button>
                     </div>
                   </td>
