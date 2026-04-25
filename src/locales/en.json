@@ -145,5 +145,11 @@
     "priceLabel": "Price:",
     "inquireButton": "Inquire About This Piece",
     "inquireNote": "Contact me for availability and shipping information"
+  },
+  "notFound": {
+    "title": "A Vanished Masterpiece",
+    "subtitle": "The page you seek has either transitioned or become part of the infinite void. Perhaps it is time to return to the familiar rooms of the studio?",
+    "backHome": "Return to the Vault",
+    "errorCode": "Error 404"
   }
 }

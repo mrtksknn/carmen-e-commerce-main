@@ -145,5 +145,11 @@
     "priceLabel": "Fiyat:",
     "inquireButton": "Bu Eser Hakkında Soru Sor",
     "inquireNote": "Stok durumu ve kargo bilgisi için benimle iletişime geçin"
+  },
+  "notFound": {
+    "title": "Kaybolan Bir Başyapıt",
+    "subtitle": "Aradığınız sayfa ya taşındı ya da sonsuz bir boşluğun parçası oldu. Stüdyonun tanıdık odalarına geri dönmeye ne dersiniz?",
+    "backHome": "Kasaya Geri Dön",
+    "errorCode": "Hata 404"
   }
 }

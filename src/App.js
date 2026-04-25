@@ -20,6 +20,7 @@ import Admin from './pages/Admin';
 import AllProducts from './pages/AllProducts';
 import Collections from './pages/Collections';
 import ContactMe from './pages/ContactMe';
+import NotFound from './pages/NotFound';
 import AdminRoute from './auth/AdminRoute';
 
 const queryClient = new QueryClient();
@@ -49,6 +50,9 @@ function App() {
                     </AdminRoute>
                   }
                 />
+                
+                {/* 404 Catch-all */}
+                <Route path="*" element={<NotFound />} />
               </Routes>
             </Router>
           </HelmetProvider>
