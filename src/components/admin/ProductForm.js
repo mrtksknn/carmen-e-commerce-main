@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "../ui/card";
 import { Type, DollarSign, Maximize, Palette, Layers, AlignLeft, ImagePlus, CheckCircle2, X } from "lucide-react";
 import { addProduct, updateProduct, subscribeToCollections } from "../../services/firebaseService";
+import { convertToWebp } from "../../lib/imageUtils";
 
 const ProductForm = ({ product, onClose }) => {
   const [collectionList, setCollectionsList] = useState([]);
@@ -115,9 +116,18 @@ const ProductForm = ({ product, onClose }) => {
       let imgUrl2 = formData.img2;
       let imgUrl3 = formData.img3;
 
-      if (formData.imageFile) imgUrl = await uploadImageObj(formData.imageFile);
-      if (formData.imageFile2) imgUrl2 = await uploadImageObj(formData.imageFile2);
-      if (formData.imageFile3) imgUrl3 = await uploadImageObj(formData.imageFile3);
+      if (formData.imageFile) {
+        const webpFile = await convertToWebp(formData.imageFile);
+        imgUrl = await uploadImageObj(webpFile);
+      }
+      if (formData.imageFile2) {
+        const webpFile2 = await convertToWebp(formData.imageFile2);
+        imgUrl2 = await uploadImageObj(webpFile2);
+      }
+      if (formData.imageFile3) {
+        const webpFile3 = await convertToWebp(formData.imageFile3);
+        imgUrl3 = await uploadImageObj(webpFile3);
+      }
 
       const productData = {
         name: formData.title,

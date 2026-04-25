@@ -146,6 +146,7 @@ const SubscriptionArea = () => {
             <input
               type="email"
               placeholder={t('subscription', 'emailPlaceholder')}
+              aria-label="Email address for newsletter"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="flex h-12 w-full rounded-full bg-[#0a0a0a] border border-primary/30 text-white px-6 py-2 text-base placeholder:text-gray-600 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary disabled:opacity-50 transition-all"
@@ -170,6 +171,7 @@ const SubscriptionArea = () => {
               <input
                 type="text"
                 placeholder={t('subscription', 'codePlaceholder')}
+                aria-label="Verification code"
                 inputMode="numeric"
                 value={enteredCode}
                 onChange={(e) => setEnteredCode(e.target.value)}

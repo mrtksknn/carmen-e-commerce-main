@@ -10,10 +10,13 @@ const Layout = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Topbar />
+      <header>
+        <Topbar />
+      </header>
 
-      <Outlet />
-
+      <main>
+        <Outlet />
+      </main>
     </div>
   )
 };

@@ -18,5 +18,5 @@ export const ROUTES = {
 };
 
 export const IMAGES = {
-  ARTIST_AT_WORK: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=1200&h=800&fit=crop"
+  ARTIST_AT_WORK: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=1200&h=800&fit=crop&fm=webp"
 };

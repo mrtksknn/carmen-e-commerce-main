@@ -102,11 +102,13 @@ const AllProducts = () => {
                 placeholder={t('allProducts', 'searchPlaceholder') || 'Search masterworks...'}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                aria-label="Search masterworks"
                 className="w-full pl-12 pr-12 py-3.5 rounded-xl bg-black/40 border border-white/5 text-white focus:outline-none focus:bg-[#030303] focus:border-[#782222]/50 focus:ring-1 focus:ring-[#c0392b]/30 transition-all placeholder:text-gray-600 font-light text-sm"
               />
               {searchTerm && (
                 <button
                   onClick={() => setSearchTerm('')}
+                  aria-label="Clear search"
                   className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 hover:text-[#c0392b] transition-colors"
                 >
                   <X size={16} />
@@ -125,6 +127,7 @@ const AllProducts = () => {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
+                aria-label="Sort products"
                 className="w-full pl-12 pr-10 py-3.5 rounded-xl bg-black/40 border border-white/5 text-white focus:outline-none focus:bg-[#030303] focus:border-[#782222]/50 focus:ring-1 focus:ring-[#c0392b]/30 transition-all cursor-pointer font-light appearance-none text-sm group-hover:border-white/10"
               >
                 <option value="newest" className="bg-[#121212] py-2">{t('allProducts', 'sortNewest')}</option>

@@ -68,7 +68,7 @@ const Hero = ({ t, heroPiece }) => {
               <div className="hero-glow-ring"></div>
               <img
                 src={heroPiece.img || ""}
-                alt={heroPiece.name || "Product"}
+                alt={`Masterpiece: ${heroPiece.name}`}
                 fetchpriority="high"
                 loading="eager"
                 // Aşağıdaki class'a geçici olarak z-index ekleyip animasyonu devredışı bırakarak test edebiliriz
