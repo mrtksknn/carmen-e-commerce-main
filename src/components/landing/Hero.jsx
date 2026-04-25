@@ -62,16 +62,17 @@ const Hero = ({ t, heroPiece }) => {
               to={`/product/${heroPiece.id}`}
               className="hero-image-frame group shadow-2xl block h-full"
             >
-              {/* Glow ring (shown on hover via CSS) */}
-              <div className="hero-glow-ring"></div>
+              {/* Görselin gelip gelmediğini anlamak için geçici bir log ekleyebilirsin */}
+              {console.log("Hero Image URL:", heroPiece.img)}
 
-              {/* Artwork image */}
+              <div className="hero-glow-ring"></div>
               <img
-                src={heroPiece.img}
-                alt={heroPiece.name}
+                src={heroPiece.img || ""}
+                alt={heroPiece.name || "Product"}
                 fetchpriority="high"
                 loading="eager"
-                className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-[18s] ease-out group-hover:scale-110"
+                // Aşağıdaki class'a geçici olarak z-index ekleyip animasyonu devredışı bırakarak test edebiliriz
+                className="absolute inset-0 w-full h-full object-cover object-center z-20"
               />
 
               {/* Gradient overlays */}

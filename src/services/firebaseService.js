@@ -14,17 +14,17 @@ import {
 /**
  * Generic subscription to a collection
  */
-export const subscribeToCollection = (collectionName, callback, errorCallback, orderField = "timeStamp", direction = "desc") => {
+export const subscribeToCollection = (collectionName, callback, errorCallback) => {
   const colRef = collection(db, collectionName);
-  const q = query(colRef, orderBy(orderField, direction));
 
   return onSnapshot(
-    q,
+    colRef,
     (snapshot) => {
       const data = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
+      console.log(`Firebase Connection Success: ${collectionName} items:`, data.length);
       callback(data);
     },
     (error) => {
