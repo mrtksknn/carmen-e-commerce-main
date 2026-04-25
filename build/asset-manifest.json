@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/carmen-e-commerce-main/static/css/main.000badaa.css",
-    "main.js": "/carmen-e-commerce-main/static/js/main.ad24dc14.js",
+    "main.js": "/carmen-e-commerce-main/static/js/main.2b96a20a.js",
     "static/media/material-icons-two-tone.woff": "/carmen-e-commerce-main/static/media/material-icons-two-tone.3baa5b8f3469222b822d.woff",
     "static/media/material-icons-two-tone.woff2": "/carmen-e-commerce-main/static/media/material-icons-two-tone.4ef4218c522f1eb6b5b1.woff2",
     "static/media/material-icons-round.woff": "/carmen-e-commerce-main/static/media/material-icons-round.5d681e2edae8c60630db.woff",
@@ -14,10 +14,10 @@
     "static/media/material-icons.woff2": "/carmen-e-commerce-main/static/media/material-icons.0c35d18bf06992036b69.woff2",
     "index.html": "/carmen-e-commerce-main/index.html",
     "main.000badaa.css.map": "/carmen-e-commerce-main/static/css/main.000badaa.css.map",
-    "main.ad24dc14.js.map": "/carmen-e-commerce-main/static/js/main.ad24dc14.js.map"
+    "main.2b96a20a.js.map": "/carmen-e-commerce-main/static/js/main.2b96a20a.js.map"
   },
   "entrypoints": [
     "static/css/main.000badaa.css",
-    "static/js/main.ad24dc14.js"
+    "static/js/main.2b96a20a.js"
   ]
 }
