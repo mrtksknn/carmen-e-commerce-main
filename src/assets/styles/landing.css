@@ -114,6 +114,15 @@
   animation: lineGrow 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
 }
 
+@media (max-width: 768px) {
+  /* Disable expensive clip-path animations on mobile */
+  .hero-image-animate {
+    animation: heroFadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
+    clip-path: none !important;
+    min-height: 420px; /* Stabilize CLS */
+  }
+}
+
 /* Shimmer gradient text */
 .hero-shimmer-text {
   background: linear-gradient(
@@ -226,6 +235,13 @@
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 1rem;
   box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+
+@media (max-width: 768px) {
+  .hero-floating-badge {
+    backdrop-filter: blur(4px); /* Much lighter for mobile */
+    -webkit-backdrop-filter: blur(4px);
+  }
 }
 
 /* Scroll indicator */
