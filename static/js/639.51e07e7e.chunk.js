@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkcarmen_e_commerce=self.webpackChunkcarmen_e_commerce||[]).push([[639],{8639:(e,t,c)=>{c.r(t),c.d(t,{default:()=>s});var n=c(5043);const s=e=>{let{children:t}=e;const[c,s]=(0,n.useState)(null);return(0,n.useEffect)((()=>{const e="true"===sessionStorage.getItem("adminAuth");s(e)}),[]),null===c?null:t}}}]);
+//# sourceMappingURL=639.51e07e7e.chunk.js.map
