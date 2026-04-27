@@ -1,7 +1,19 @@
 {
   "files": {
-    "main.css": "/carmen-e-commerce-main/static/css/main.000badaa.css",
-    "main.js": "/carmen-e-commerce-main/static/js/main.97b67c77.js",
+    "main.css": "/carmen-e-commerce-main/static/css/main.8e57e252.css",
+    "main.js": "/carmen-e-commerce-main/static/js/main.db35fc07.js",
+    "static/js/205.65968b4a.chunk.js": "/carmen-e-commerce-main/static/js/205.65968b4a.chunk.js",
+    "static/css/746.7b7381c8.chunk.css": "/carmen-e-commerce-main/static/css/746.7b7381c8.chunk.css",
+    "static/js/746.716e4950.chunk.js": "/carmen-e-commerce-main/static/js/746.716e4950.chunk.js",
+    "static/css/274.959f7022.chunk.css": "/carmen-e-commerce-main/static/css/274.959f7022.chunk.css",
+    "static/js/274.997cdca8.chunk.js": "/carmen-e-commerce-main/static/js/274.997cdca8.chunk.js",
+    "static/js/139.f470ee27.chunk.js": "/carmen-e-commerce-main/static/js/139.f470ee27.chunk.js",
+    "static/js/850.96f9d1f0.chunk.js": "/carmen-e-commerce-main/static/js/850.96f9d1f0.chunk.js",
+    "static/js/64.e053abab.chunk.js": "/carmen-e-commerce-main/static/js/64.e053abab.chunk.js",
+    "static/js/701.147f6cfc.chunk.js": "/carmen-e-commerce-main/static/js/701.147f6cfc.chunk.js",
+    "static/js/639.51e07e7e.chunk.js": "/carmen-e-commerce-main/static/js/639.51e07e7e.chunk.js",
+    "static/js/684.76ae42b9.chunk.js": "/carmen-e-commerce-main/static/js/684.76ae42b9.chunk.js",
+    "static/js/880.daefe5cf.chunk.js": "/carmen-e-commerce-main/static/js/880.daefe5cf.chunk.js",
     "static/media/material-icons-two-tone.woff": "/carmen-e-commerce-main/static/media/material-icons-two-tone.3baa5b8f3469222b822d.woff",
     "static/media/material-icons-two-tone.woff2": "/carmen-e-commerce-main/static/media/material-icons-two-tone.4ef4218c522f1eb6b5b1.woff2",
     "static/media/material-icons-round.woff": "/carmen-e-commerce-main/static/media/material-icons-round.5d681e2edae8c60630db.woff",
@@ -13,11 +25,23 @@
     "static/media/material-icons-sharp.woff2": "/carmen-e-commerce-main/static/media/material-icons-sharp.219aa9140e099e6c72ed.woff2",
     "static/media/material-icons.woff2": "/carmen-e-commerce-main/static/media/material-icons.0c35d18bf06992036b69.woff2",
     "index.html": "/carmen-e-commerce-main/index.html",
-    "main.000badaa.css.map": "/carmen-e-commerce-main/static/css/main.000badaa.css.map",
-    "main.97b67c77.js.map": "/carmen-e-commerce-main/static/js/main.97b67c77.js.map"
+    "main.8e57e252.css.map": "/carmen-e-commerce-main/static/css/main.8e57e252.css.map",
+    "main.db35fc07.js.map": "/carmen-e-commerce-main/static/js/main.db35fc07.js.map",
+    "205.65968b4a.chunk.js.map": "/carmen-e-commerce-main/static/js/205.65968b4a.chunk.js.map",
+    "746.7b7381c8.chunk.css.map": "/carmen-e-commerce-main/static/css/746.7b7381c8.chunk.css.map",
+    "746.716e4950.chunk.js.map": "/carmen-e-commerce-main/static/js/746.716e4950.chunk.js.map",
+    "274.959f7022.chunk.css.map": "/carmen-e-commerce-main/static/css/274.959f7022.chunk.css.map",
+    "274.997cdca8.chunk.js.map": "/carmen-e-commerce-main/static/js/274.997cdca8.chunk.js.map",
+    "139.f470ee27.chunk.js.map": "/carmen-e-commerce-main/static/js/139.f470ee27.chunk.js.map",
+    "850.96f9d1f0.chunk.js.map": "/carmen-e-commerce-main/static/js/850.96f9d1f0.chunk.js.map",
+    "64.e053abab.chunk.js.map": "/carmen-e-commerce-main/static/js/64.e053abab.chunk.js.map",
+    "701.147f6cfc.chunk.js.map": "/carmen-e-commerce-main/static/js/701.147f6cfc.chunk.js.map",
+    "639.51e07e7e.chunk.js.map": "/carmen-e-commerce-main/static/js/639.51e07e7e.chunk.js.map",
+    "684.76ae42b9.chunk.js.map": "/carmen-e-commerce-main/static/js/684.76ae42b9.chunk.js.map",
+    "880.daefe5cf.chunk.js.map": "/carmen-e-commerce-main/static/js/880.daefe5cf.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.000badaa.css",
-    "static/js/main.97b67c77.js"
+    "static/css/main.8e57e252.css",
+    "static/js/main.db35fc07.js"
   ]
 }
