@@ -163,5 +163,8 @@
     "aboutDesc": "Learn about Carmen, the artist behind the masterworks. Over a decade of devotion to fine arts, capturing emotions on canvas.",
     "contactTitle": "Contact & Commissions",
     "contactDesc": "Get in touch with Carmen for artwork purchases, custom commissions, or exhibition opportunities. Studio open for dialogue."
+  },
+  "common": {
+    "artworkAlt": "Artwork: "
   }
 }

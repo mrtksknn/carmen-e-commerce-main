@@ -163,5 +163,8 @@
     "aboutDesc": "Başyapıtların arkasındaki sanatçı Carmen hakkında bilgi edinin. On yılı aşkın güzel sanatlara adanmışlık, tuvalde duyguları yakalama.",
     "contactTitle": "İletişim ve Özel Siparişler",
     "contactDesc": "Eser satın alma, özel sipariş veya sergi fırsatları için Carmen ile iletişime geçin. Stüdyo diyaloğa açıktır."
+  },
+  "common": {
+    "artworkAlt": "Sanat Eseri: "
   }
 }

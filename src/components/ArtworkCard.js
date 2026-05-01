@@ -1,8 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 const ArtworkCard = ({ artwork, showPrice = true }) => {
+  const { t } = useLanguage();
+
   return (
     <Link
       to={`/product/${artwork.id}`}
@@ -12,8 +15,10 @@ const ArtworkCard = ({ artwork, showPrice = true }) => {
       <figure className="relative w-full aspect-[4/5] overflow-hidden m-0">
         <img
           src={artwork.img}
-          alt={`Sanat eseri: ${artwork.name}`}
+          alt={`${t('common', 'artworkAlt')}${artwork.name}`}
           loading="lazy"
+          width="400"
+          height="500"
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-[15s] ease-out group-hover:scale-110 will-change-transform"
         />
 
