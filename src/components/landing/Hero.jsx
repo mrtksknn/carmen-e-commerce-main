@@ -115,6 +115,7 @@ const Hero = ({ t, heroPiece }) => {
                 src={heroPiece.img || ""}
                 alt={`Masterpiece: ${heroPiece.name}`}
                 fetchpriority="high"
+                decoding="async"
                 className="absolute inset-0 w-full h-full object-cover object-center z-0 transition-transform duration-[15s] group-hover:scale-110 ease-out"
               />
 
