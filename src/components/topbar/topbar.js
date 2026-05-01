@@ -41,7 +41,7 @@ const Topbar = () => {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       className={`fixed top-0 w-full z-50 transition-all duration-500 h-[75px] flex items-center justify-center ${
-        scrolled ? 'bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-white/5 shadow-lg shadow-black/20' : 'bg-transparent border-b border-transparent'
+        scrolled ? 'bg-surface/80 backdrop-blur-xl border-b border-white/5 shadow-lg shadow-black/20' : 'bg-transparent border-b border-transparent'
       }`}
     >
       <div className="w-full max-w-7xl px-6 lg:px-8 flex items-center justify-between">
@@ -69,13 +69,13 @@ const Topbar = () => {
                 }`}
               >
                 <span className="relative z-10 flex items-center space-x-2">
-                  <Icon size={16} strokeWidth={isActive ? 2 : 1.5} className={`transition-all duration-500 ${isActive ? 'text-[#a83229]' : 'group-hover:text-[#a83229]'}`} />
+                  <Icon size={16} strokeWidth={isActive ? 2 : 1.5} className={`transition-all duration-500 ${isActive ? 'text-primary' : 'group-hover:text-primary'}`} />
                   <span>{item.name}</span>
                 </span>
                 {isActive && (
                   <motion.div
                     layoutId="activeTabIndicator"
-                    className="absolute inset-0 bg-[#a83229]/10 border border-[#a83229]/30 rounded-full z-0"
+                    className="absolute inset-0 bg-primary/10 border border-primary/30 rounded-full z-0"
                     transition={{ type: "spring", stiffness: 400, damping: 30 }}
                   />
                 )}
@@ -89,7 +89,7 @@ const Topbar = () => {
           <button
             onClick={toggleLanguage}
             aria-label="Toggle language"
-            className="ml-2 flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-[11px] font-semibold tracking-widest text-gray-300 hover:text-white hover:border-[#a83229]/50 hover:bg-[#a83229]/10 transition-all duration-500"
+            className="ml-2 flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-[11px] font-semibold tracking-widest text-gray-300 hover:text-white hover:border-primary/50 hover:bg-primary/10 transition-all duration-500"
           >
             <span className={language === 'en' ? 'text-white' : 'text-gray-500'}>EN</span>
             <span className="text-white/20 font-light">|</span>
@@ -132,7 +132,7 @@ const Topbar = () => {
             animate={{ opacity: 1, backdropFilter: 'blur(24px)' }}
             exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
             transition={{ duration: 0.4 }}
-            className="md:hidden fixed top-[75px] left-0 w-full h-[calc(100vh-75px)] bg-[#0a0a0a]/95 border-t border-white/5 shadow-2xl z-40 overflow-y-auto"
+            className="md:hidden fixed top-[75px] left-0 w-full h-[calc(100vh-75px)] bg-surface/95 border-t border-white/5 shadow-2xl z-40 overflow-y-auto"
           >
             <div className="flex flex-col px-6 py-10 space-y-3">
               {navItems.map((item, i) => {
@@ -152,19 +152,19 @@ const Topbar = () => {
                       onClick={handleLinkClick}
                       className={`relative flex items-center justify-between px-5 py-4 rounded-2xl text-[15px] font-light tracking-wide transition-all duration-300 overflow-hidden ${
                         isActive
-                          ? 'text-white border border-[#a83229]/30 bg-[#a83229]/5'
+                          ? 'text-white border border-primary/30 bg-primary/5'
                           : 'text-gray-400 hover:bg-white/5 hover:text-white border border-transparent'
                       }`}
                     >
                       <div className="relative z-10 flex items-center space-x-4">
-                        <Icon size={20} strokeWidth={isActive ? 2 : 1.5} className={`transition-colors duration-300 ${isActive ? 'text-[#a83229]' : ''}`} />
+                        <Icon size={20} strokeWidth={isActive ? 2 : 1.5} className={`transition-colors duration-300 ${isActive ? 'text-primary' : ''}`} />
                         <span>{item.name}</span>
                       </div>
                       
                       {isActive && (
                         <motion.div 
                           layoutId="mobileActiveDot"
-                          className="w-1.5 h-1.5 rounded-full bg-[#a83229] relative z-10 shadow-[0_0_8px_rgba(168,50,41,0.8)]" 
+                          className="w-1.5 h-1.5 rounded-full bg-primary relative z-10 shadow-[0_0_8px_rgba(168,50,41,0.8)]" 
                         />
                       )}
                     </Link>
@@ -180,7 +180,7 @@ const Topbar = () => {
               transition={{ delay: 0.5, duration: 0.5 }}
               className="mt-8 pb-12 flex justify-center"
             >
-              <div className="h-[1px] w-24 bg-gradient-to-r from-transparent via-[#a83229]/40 to-transparent"></div>
+              <div className="h-[1px] w-24 bg-gradient-to-r from-transparent via-primary/40 to-transparent"></div>
             </motion.div>
           </motion.div>
         )}

@@ -74,15 +74,15 @@ const Collections = () => {
   }, []);
 
   return (
-    <main className="collections-container bg-[#030303] min-h-screen text-white font-sans overflow-hidden relative">
-      <SEO
-        title="Collections"
-        description="Explore curated archives and collections of Carmen's masterworks."
+    <main className="collections-container bg-background min-h-screen text-white font-sans overflow-hidden relative">
+      <SEO 
+        title={t('seo', 'collectionsTitle')}
+        description={t('seo', 'collectionsDesc')}
       />
 
       {/* Cinematic Ambient Glows */}
-      <div className="absolute top-[-5%] right-[-10%] w-[55vw] h-[55vw] bg-[#a83229]/10 blur-[130px] rounded-full pointer-events-none z-0"></div>
-      <div className="absolute bottom-[20%] left-[-10%] w-[45vw] h-[45vw] bg-[#a83229]/5 blur-[120px] rounded-full pointer-events-none z-0"></div>
+      <div className="absolute top-[-5%] right-[-10%] w-[55vw] h-[55vw] bg-primary/10 blur-[130px] rounded-full pointer-events-none z-0"></div>
+      <div className="absolute bottom-[20%] left-[-10%] w-[45vw] h-[45vw] bg-primary/5 blur-[120px] rounded-full pointer-events-none z-0"></div>
 
       {/* Noise Texture Overlay for Premium Vibe */}
       <div className="absolute inset-0 pointer-events-none z-0 opacity-20" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.85\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\' opacity=\'0.2\'/%3E%3C/svg%3E")' }}></div>
@@ -91,11 +91,11 @@ const Collections = () => {
       <header className="relative pt-32 pb-16 px-6 lg:px-20 z-10 text-center flex flex-col items-center">
         {/* Eyebrow */}
         <div className="flex items-center gap-3 mb-6 animate-fade-in">
-          <div className="w-10 h-px bg-gradient-to-r from-transparent to-[#a83229]"></div>
-          <span className="text-[0.65rem] font-extrabold tracking-[0.4em] uppercase text-[#a83229]">
+          <div className="w-10 h-px bg-gradient-to-r from-transparent to-primary"></div>
+          <span className="text-[0.65rem] font-extrabold tracking-[0.4em] uppercase text-primary">
             {t('collections', 'curatedArchive') || 'Curated Archive'}
           </span>
-          <div className="w-10 h-px bg-gradient-to-l from-transparent to-[#a83229]"></div>
+          <div className="w-10 h-px bg-gradient-to-l from-transparent to-primary"></div>
         </div>
 
         {/* Title */}
@@ -124,13 +124,13 @@ const Collections = () => {
               <div
                 onClick={() => setSelectedCategory('All')}
                 className={`flex-[0_0_auto] w-[280px] md:w-[340px] h-[190px] md:h-[240px] rounded-[2rem] relative cursor-pointer overflow-hidden transition-all duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${selectedCategory === 'All'
-                  ? 'ring-1 ring-[#a83229] shadow-[0_15px_40px_rgba(168,50,41,0.4)] scale-[1.03] z-10'
+                  ? 'ring-1 ring-primary shadow-[0_15px_40px_rgba(168,50,41,0.4)] scale-[1.03] z-10'
                   : 'ring-1 ring-white/10 hover:ring-white/20 hover:scale-[1.01] opacity-60 hover:opacity-100 z-0'
                   }`}
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-[#121212] to-[#040404] z-0"></div>
                 <div className="absolute inset-0 z-10 flex flex-col items-center justify-center p-6 text-center border border-white/5 rounded-[2rem]">
-                  <div className={`w-12 h-12 flex items-center justify-center rounded-full mb-4 transition-all duration-500 ${selectedCategory === 'All' ? 'bg-[#a83229]/20 text-[#a83229] shadow-[0_0_20px_rgba(168,50,41,0.3)]' : 'bg-white/5 text-gray-400'}`}>
+                  <div className={`w-12 h-12 flex items-center justify-center rounded-full mb-4 transition-all duration-500 ${selectedCategory === 'All' ? 'bg-primary/20 text-primary shadow-[0_0_20px_rgba(168,50,41,0.3)]' : 'bg-white/5 text-gray-400'}`}>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6"></path></svg>
                   </div>
                   <h3 className={`text-xl font-serif font-bold tracking-widest uppercase transition-colors duration-500 ${selectedCategory === 'All' ? 'text-white drop-shadow-md' : 'text-gray-300'}`}>
@@ -148,7 +148,7 @@ const Collections = () => {
                   key={col.name}
                   onClick={() => setSelectedCategory(col.name)}
                   className={`flex-[0_0_auto] w-[280px] md:w-[340px] h-[190px] md:h-[240px] rounded-[2rem] relative cursor-pointer overflow-hidden transition-all duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${selectedCategory === col.name
-                    ? 'ring-1 ring-[#a83229] shadow-[0_15px_40px_rgba(168,50,41,0.4)] scale-[1.03] z-10'
+                    ? 'ring-1 ring-primary shadow-[0_15px_40px_rgba(168,50,41,0.4)] scale-[1.03] z-10'
                     : 'ring-1 ring-white/10 hover:ring-white/20 hover:scale-[1.01] opacity-60 hover:opacity-100 z-0'
                     }`}
                 >
@@ -163,7 +163,7 @@ const Collections = () => {
                   <div className="absolute inset-0 bg-gradient-to-t from-[#020202] via-[#020202]/50 to-transparent opacity-95 z-10 transition-opacity duration-500 hover:opacity-80"></div>
 
                   {/* Active Red Tint */}
-                  <div className={`absolute inset-0 z-10 transition-all duration-500 pointer-events-none ${selectedCategory === col.name ? 'bg-gradient-to-br from-[#a83229]/30 to-transparent mix-blend-overlay' : 'bg-transparent'}`}></div>
+                  <div className={`absolute inset-0 z-10 transition-all duration-500 pointer-events-none ${selectedCategory === col.name ? 'bg-gradient-to-br from-primary/30 to-transparent mix-blend-overlay' : 'bg-transparent'}`}></div>
 
                   {/* Content Glass Panel */}
                   <div className="absolute bottom-0 left-0 right-0 z-20 p-5 transform transition-transform duration-500">
@@ -184,14 +184,14 @@ const Collections = () => {
             <>
               <button
                 onClick={scrollPrev}
-                className="absolute left-[-20px] md:left-[-30px] top-1/2 -translate-y-1/2 w-12 md:w-14 h-12 md:h-14 flex items-center justify-center rounded-full bg-black/50 border border-white/10 text-white backdrop-blur-lg opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 ease-out z-30 shadow-[0_10px_30px_rgba(0,0,0,0.8)] hover:border-[#a83229]/50 hover:bg-[#a83229]/80"
+                className="absolute left-[-20px] md:left-[-30px] top-1/2 -translate-y-1/2 w-12 md:w-14 h-12 md:h-14 flex items-center justify-center rounded-full bg-black/50 border border-white/10 text-white backdrop-blur-lg opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 ease-out z-30 shadow-[0_10px_30px_rgba(0,0,0,0.8)] hover:border-primary/50 hover:bg-primary/80"
                 aria-label="Previous Collection"
               >
                 <ChevronLeft size={24} />
               </button>
               <button
                 onClick={scrollNext}
-                className="absolute right-[-20px] md:right-[-30px] top-1/2 -translate-y-1/2 w-12 md:w-14 h-12 md:h-14 flex items-center justify-center rounded-full bg-black/50 border border-white/10 text-white backdrop-blur-lg opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 ease-out z-30 shadow-[0_10px_30px_rgba(0,0,0,0.8)] hover:border-[#a83229]/50 hover:bg-[#a83229]/80"
+                className="absolute right-[-20px] md:right-[-30px] top-1/2 -translate-y-1/2 w-12 md:w-14 h-12 md:h-14 flex items-center justify-center rounded-full bg-black/50 border border-white/10 text-white backdrop-blur-lg opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 ease-out z-30 shadow-[0_10px_30px_rgba(0,0,0,0.8)] hover:border-primary/50 hover:bg-primary/80"
                 aria-label="Next Collection"
               >
                 <ChevronRight size={24} />
@@ -236,7 +236,7 @@ const Collections = () => {
             {filteredArtworks.length === 0 && (
               <div className="col-span-full flex flex-col items-center justify-center py-32 text-center border border-white/5 bg-white/[0.02] rounded-[2rem]">
                 <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(168,50,41,0.15)]">
-                  <span className="text-[#a83229] text-2xl font-serif">!</span>
+                  <span className="text-primary text-2xl font-serif">!</span>
                 </div>
                 <p className="text-xl font-serif text-white mb-2">{t('collections', 'emptyTitle') || 'The Vault is empty'}</p>
                 <p className="text-sm text-gray-500 max-w-md">{t('collections', 'emptyDesc') || 'No masterworks found in this collection at the moment.'}</p>

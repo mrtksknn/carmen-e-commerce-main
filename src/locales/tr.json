@@ -151,5 +151,17 @@
     "subtitle": "Aradığınız sayfa ya taşındı ya da sonsuz bir boşluğun parçası oldu. Stüdyonun tanıdık odalarına geri dönmeye ne dersiniz?",
     "backHome": "Kasaya Geri Dön",
     "errorCode": "Hata 404"
+  },
+  "seo": {
+    "homeTitle": "Carmen Art | El Yapımı Özgün Sanat Eserleri",
+    "homeDesc": "Carmen'in el yapımı özgün tablolarını, çizimlerini ve sanat eserlerini keşfedin. Dünya genelinde kargo ile özgün parçaları satın alın.",
+    "productsTitle": "Tüm Eserler",
+    "productsDesc": "Carmen'in el yapımı tablolar ve sanat eserlerinin tam koleksiyonuna göz atın. Fiyat, isim veya en yeniye göre filtreleyin.",
+    "collectionsTitle": "Koleksiyonlar",
+    "collectionsDesc": "Carmen'in küratörlüğünü yaptığı sanat koleksiyonlarını keşfedin. Her oda, ayrı bir duygusal yolculuğu ve estetik vizyonu temsil eder.",
+    "aboutTitle": "Sanatçı Hakkında",
+    "aboutDesc": "Başyapıtların arkasındaki sanatçı Carmen hakkında bilgi edinin. On yılı aşkın güzel sanatlara adanmışlık, tuvalde duyguları yakalama.",
+    "contactTitle": "İletişim ve Özel Siparişler",
+    "contactDesc": "Eser satın alma, özel sipariş veya sergi fırsatları için Carmen ile iletişime geçin. Stüdyo diyaloğa açıktır."
   }
 }

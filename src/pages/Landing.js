@@ -34,9 +34,10 @@ const Landing = () => {
   };
 
   return (
-    <main className="landing-container bg-[#030303] text-white font-sans overflow-hidden">
+    <main className="landing-container bg-background text-white font-sans overflow-hidden">
       <SEO
-        description="Carmen Art ile size özel el yapımı çizimler, resimler ve sanat eserlerini keşfedin. Benzersiz tasarımlar için hemen inceleyin."
+        title={t('seo', 'homeTitle')}
+        description={t('seo', 'homeDesc')}
         keywords={APP_CONFIG.KEYWORDS}
         schema={orgSchema}
       />

@@ -116,17 +116,17 @@ const SubscriptionArea = () => {
   };
 
   return (
-    <section className="py-24 bg-[#030303] relative z-20 overflow-hidden">
+    <section className="py-24 bg-background relative z-20 overflow-hidden">
       {/* Subtle top separator */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 max-w-3xl h-[1px] bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
 
       <div className="max-w-3xl mx-auto px-6 text-center relative z-10">
-        
+
         {/* Animated Icon */}
         <div className="flex justify-center mb-8">
-          <div className="bg-[#a83229]/5 border border-[#a83229]/20 p-4 rounded-full backdrop-blur-sm">
-            {step === 1 && <Mail className="h-6 w-6 text-[#a83229]" strokeWidth={1.5} />}
-            {step === 2 && <ShieldCheck className="h-6 w-6 text-[#a83229]" strokeWidth={1.5} />}
+          <div className="bg-primary/5 border border-primary/20 p-4 rounded-full backdrop-blur-sm">
+            {step === 1 && <Mail className="h-6 w-6 text-primary" strokeWidth={1.5} />}
+            {step === 2 && <ShieldCheck className="h-6 w-6 text-primary" strokeWidth={1.5} />}
             {step === 3 && <Mail className="h-6 w-6 text-green-500" strokeWidth={1.5} />}
           </div>
         </div>
@@ -148,7 +148,7 @@ const SubscriptionArea = () => {
         {step === 1 && (
           <form
             onSubmit={handleSendCode}
-            className="flex flex-col sm:flex-row items-center gap-4 max-w-lg mx-auto w-full"
+            className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 max-w-lg mx-auto w-full"
           >
             <input
               type="email"
@@ -156,13 +156,13 @@ const SubscriptionArea = () => {
               aria-label="Email address for newsletter"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="flex-1 h-14 w-full rounded-full bg-white/5 backdrop-blur-md border border-white/10 text-white px-6 text-sm font-light placeholder:text-gray-500 focus:outline-none focus:ring-1 focus:ring-[#a83229] focus:border-[#a83229] disabled:opacity-50 transition-all"
+              className="h-14 w-full rounded-full bg-white/5 backdrop-blur-md border border-white/10 text-white px-6 text-sm font-light placeholder:text-gray-500 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary disabled:opacity-50 transition-all min-w-0"
               disabled={isLoading}
             />
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full sm:w-auto h-14 text-white bg-[#a83229] px-8 rounded-full text-xs font-bold tracking-widest uppercase hover:bg-white hover:text-[#a83229] transition-colors duration-500 flex items-center justify-center whitespace-nowrap"
+              className="h-14 text-white bg-primary px-8 rounded-full text-xs font-bold tracking-widest uppercase hover:bg-white hover:text-primary transition-colors duration-500 flex items-center justify-center whitespace-nowrap w-full sm:w-auto shrink-0"
             >
               {isLoading ? t('subscription', 'subscribing') : t('subscription', 'subscribeButton')}
             </button>
@@ -182,7 +182,7 @@ const SubscriptionArea = () => {
               value={enteredCode}
               onChange={(e) => setEnteredCode(e.target.value)}
               maxLength={6}
-              className="flex h-14 w-full rounded-full text-center tracking-[0.5em] text-lg bg-white/5 backdrop-blur-md border border-white/10 text-white px-6 font-mono placeholder:text-gray-600 focus:outline-none focus:ring-1 focus:ring-[#a83229] focus:border-[#a83229] disabled:opacity-50 transition-all"
+              className="flex h-14 w-full rounded-full text-center tracking-[0.5em] text-lg bg-white/5 backdrop-blur-md border border-white/10 text-white px-6 font-mono placeholder:text-gray-600 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary disabled:opacity-50 transition-all"
               disabled={isLoading}
             />
 
@@ -191,14 +191,14 @@ const SubscriptionArea = () => {
                 type="button"
                 onClick={goBack}
                 disabled={isLoading}
-                className="flex flex-1 h-12 items-center justify-center gap-2 rounded-full border border-white/20 text-white/70 hover:text-white hover:border-white transition-all text-[10px] font-bold tracking-widest uppercase order-2 sm:order-1"
+                className="flex flex-1 h-12 items-center justify-center gap-2 rounded-full border border-white/20 text-white/70 hover:text-white hover:border-white transition-all text-xs font-bold tracking-widest uppercase order-2 sm:order-1"
               >
                 <ArrowLeft size={14} /> {t('subscription', 'editEmail')}
               </button>
               <button
                 type="submit"
                 disabled={isLoading}
-                className="flex flex-1 h-12 items-center justify-center rounded-full bg-[#a83229] text-white hover:bg-white hover:text-[#a83229] transition-all text-[10px] font-bold tracking-widest uppercase order-1 sm:order-2"
+                className="flex flex-1 h-12 items-center justify-center rounded-full bg-primary text-white hover:bg-white hover:text-primary transition-all text-xs font-bold tracking-widest uppercase order-1 sm:order-2"
               >
                 {isLoading ? t('subscription', 'verifying') : t('subscription', 'verifyButton')}
               </button>

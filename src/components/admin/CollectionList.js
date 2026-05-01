@@ -33,7 +33,7 @@ const CollectionList = ({ products, allProducts, onEdit, onDelete }) => {
 
   return (
     <div className="space-y-4">
-      <div className="rounded-xl border border-primary/20 bg-[#0a0a0a] overflow-hidden shadow-lg">
+      <div className="rounded-xl border border-primary/20 bg-surface overflow-hidden shadow-lg">
         <table className="w-full">
           <thead>
             <tr className="bg-primary/5">
@@ -101,14 +101,14 @@ const CollectionList = ({ products, allProducts, onEdit, onDelete }) => {
             disabled={currentPage === 1}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
               currentPage === 1
-                ? "opacity-50 cursor-not-allowed bg-[#0a0a0a] text-gray-500 border border-primary/10"
-                : "bg-[#0a0a0a] text-gray-300 border border-primary/20 hover:bg-primary/20 hover:text-white"
+                ? "opacity-50 cursor-not-allowed bg-surface text-gray-500 border border-primary/10"
+                : "bg-surface text-gray-300 border border-primary/20 hover:bg-primary/20 hover:text-white"
             }`}
           >
             Prev
           </button>
 
-          <div className="flex bg-[#0a0a0a] rounded-lg border border-primary/20 p-1">
+          <div className="flex bg-surface rounded-lg border border-primary/20 p-1">
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
               <button
                 key={page}
@@ -129,8 +129,8 @@ const CollectionList = ({ products, allProducts, onEdit, onDelete }) => {
             disabled={currentPage === totalPages}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
               currentPage === totalPages
-                ? "opacity-50 cursor-not-allowed bg-[#0a0a0a] text-gray-500 border border-primary/10"
-                : "bg-[#0a0a0a] text-gray-300 border border-primary/20 hover:bg-primary/20 hover:text-white"
+                ? "opacity-50 cursor-not-allowed bg-surface text-gray-500 border border-primary/10"
+                : "bg-surface text-gray-300 border border-primary/20 hover:bg-primary/20 hover:text-white"
             }`}
           >
             Next

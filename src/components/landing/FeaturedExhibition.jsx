@@ -19,9 +19,9 @@ const FeaturedExhibition = ({ t, galleryPieces }) => {
   };
 
   return (
-    <section className="relative bg-[#030303] py-24 lg:pt-8 lg:pb-16 px-6 z-20 overflow-hidden">
+    <section className="relative bg-background py-24 lg:pt-8 lg:pb-16 px-6 z-20 overflow-hidden">
       {/* Ambient background blur */}
-      <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-[#a83229]/5 rounded-full blur-[150px] pointer-events-none"></div>
+      <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[150px] pointer-events-none"></div>
 
       <div className="max-w-7xl mx-auto relative z-10">
 
@@ -40,13 +40,13 @@ const FeaturedExhibition = ({ t, galleryPieces }) => {
               className="font-serif font-light text-white leading-[1.05] tracking-tight text-[2.5rem] md:text-[3.5rem] lg:text-[4.5rem]"
             >
               {t('landing', 'featuredTitle') || 'Featured Exhibition'}
-              <span className="text-[#a83229]">.</span>
+              <span className="text-primary">.</span>
             </motion.h2>
 
             {/* Subtitle */}
             <motion.p
               variants={item}
-              className="text-gray-400 text-base md:text-lg font-light mt-6 leading-relaxed tracking-wide border-l border-[#a83229]/30 pl-5"
+              className="text-gray-400 text-base md:text-lg font-light mt-6 leading-relaxed tracking-wide border-l border-primary/30 pl-5"
             >
               {t('landing', 'featuredSubtitle') || 'Discover the most monumental pieces curated exclusively for our digital gallery viewers.'}
             </motion.p>
@@ -79,7 +79,7 @@ const FeaturedExhibition = ({ t, galleryPieces }) => {
               <motion.div
                 key={artwork.id}
                 variants={item}
-                className={`${isFeatured ? 'md:col-span-2 md:row-span-2 h-[450px] md:h-[600px] lg:h-[700px]' : 'col-span-1 h-[350px] md:h-[284px] lg:h-[334px]'} relative rounded-[2rem] overflow-hidden group shadow-[0_0_30px_rgba(0,0,0,0.5)] border border-white/5 bg-[#0a0a0a]`}
+                className={`${isFeatured ? 'md:col-span-2 md:row-span-2 h-[450px] md:h-[600px] lg:h-[700px]' : 'col-span-1 h-[350px] md:h-[284px] lg:h-[334px]'} relative rounded-[2rem] overflow-hidden group shadow-[0_0_30px_rgba(0,0,0,0.5)] border border-white/5 bg-surface`}
               >
                 <Link to={`/product/${artwork.id}`} className="absolute inset-0 block w-full h-full">
                   {/* Image with Ken Burns effect */}
@@ -91,8 +91,8 @@ const FeaturedExhibition = ({ t, galleryPieces }) => {
                   />
 
                   {/* Dynamic Dark & Color Overlays */}
-                  <div className={`absolute inset-0 bg-gradient-to-t ${isFeatured ? 'from-[#030303] via-[#030303]/30' : 'from-[#030303] via-black/10'} to-transparent z-10 opacity-90 group-hover:opacity-80 transition-opacity duration-700`}></div>
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#a83229]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-10 mix-blend-overlay"></div>
+                  <div className={`absolute inset-0 bg-gradient-to-t ${isFeatured ? 'from-background via-background/30' : 'from-background via-black/10'} to-transparent z-10 opacity-90 group-hover:opacity-80 transition-opacity duration-700`}></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-10 mix-blend-overlay"></div>
 
                   {/* Top Badge Overlay (Price Only) */}
                   <div className="absolute top-6 left-6 right-6 flex justify-end items-start z-20">
@@ -111,12 +111,12 @@ const FeaturedExhibition = ({ t, galleryPieces }) => {
 
                   {/* Bottom Info Panel (Glassmorphism Bento inside frame) */}
                   <div className={`absolute bottom-0 left-0 w-full z-20 p-4 sm:p-6 lg:p-8`}>
-                    <div className={`rounded-[1.5rem] bg-black/40 backdrop-blur-2xl border border-white/10 flex flex-row items-center justify-between overflow-hidden relative group-hover:bg-[#a83229]/10 transition-colors duration-700 gap-4 sm:gap-6 ${isFeatured ? 'p-5 sm:p-8' : 'p-4 sm:p-6'}`}>
+                    <div className={`rounded-[1.5rem] bg-black/40 backdrop-blur-2xl border border-white/10 flex flex-row items-center justify-between overflow-hidden relative group-hover:bg-primary/10 transition-colors duration-700 gap-4 sm:gap-6 ${isFeatured ? 'p-5 sm:p-8' : 'p-4 sm:p-6'}`}>
                       {/* Highlight line on top */}
                       <div className="absolute top-0 left-8 right-8 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-40"></div>
 
                       <div className="flex-1 min-w-0 z-10">
-                        <p className="text-[#a83229] text-[9px] font-bold tracking-[0.3em] uppercase mb-1 sm:mb-2 drop-shadow-md">
+                        <p className="text-primary text-[9px] font-bold tracking-[0.3em] uppercase mb-1 sm:mb-2 drop-shadow-md">
                           {artwork.collections || t('landing', 'featuredSelection') || 'Curated'}
                         </p>
                         <h3 className={`font-serif text-white leading-tight font-light truncate drop-shadow-md ${isFeatured ? 'text-2xl sm:text-4xl lg:text-5xl' : 'text-lg sm:text-2xl'}`}>
@@ -131,7 +131,7 @@ const FeaturedExhibition = ({ t, galleryPieces }) => {
                       </div>
 
                       {/* Arrow Discover Button */}
-                      <div className={`flex-shrink-0 flex items-center justify-center text-white transition-all duration-500 z-10 ${isFeatured ? 'w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-[#a83229] shadow-[0_0_20px_rgba(168,50,41,0.5)] group-hover:scale-110 group-hover:bg-white group-hover:text-[#a83229]' : 'flex w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-white/20 bg-white/5 group-hover:border-[#a83229] group-hover:bg-[#a83229]'}`}>
+                      <div className={`flex-shrink-0 flex items-center justify-center text-white transition-all duration-500 z-10 ${isFeatured ? 'w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-primary shadow-[0_0_20px_rgba(168,50,41,0.5)] group-hover:scale-110 group-hover:bg-white group-hover:text-primary' : 'flex w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-white/20 bg-white/5 group-hover:border-primary group-hover:bg-primary'}`}>
                         <ArrowRight className={`-rotate-45 group-hover:rotate-0 transition-transform duration-500 ${isFeatured ? 'w-4 h-4 sm:w-5 sm:h-5' : 'w-4 h-4'}`} />
                       </div>
 

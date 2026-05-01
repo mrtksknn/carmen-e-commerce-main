@@ -122,7 +122,7 @@ const AdminDashboard = ({ products, collections }) => {
 
       <Tabs defaultValue="products" className="w-full max-w-7xl z-10 mt-2">
         <div className="flex justify-center md:justify-start mb-8 px-4">
-          <TabsList className="inline-flex items-center p-1.5 bg-[#0a0a0a]/80 backdrop-blur-xl rounded-xl border border-white/10 shadow-lg">
+          <TabsList className="inline-flex items-center p-1.5 bg-surface/80 backdrop-blur-xl rounded-xl border border-white/10 shadow-lg">
             <TabsTrigger
               className="text-gray-400 rounded-lg px-8 py-2.5 font-medium transition-all duration-300 data-[state=active]:bg-primary/90 data-[state=active]:text-white data-[state=active]:shadow-lg"
               value="products"
@@ -161,7 +161,7 @@ const AdminDashboard = ({ products, collections }) => {
 
             <CardContent className="p-8">
               {showProductForm ? (
-                <div className="animate-fade-in bg-[#0a0a0a] border-white/5">
+                <div className="animate-fade-in bg-surface border-white/5">
                   <ProductForm
                     product={editingProduct}
                     onClose={handleCloseProductForm}
@@ -205,7 +205,7 @@ const AdminDashboard = ({ products, collections }) => {
 
             <CardContent className="p-8">
               {showCollectionForm ? (
-                <div className="animate-fade-in bg-[#0a0a0a] rounded-2xl p-6 border border-white/5">
+                <div className="animate-fade-in bg-surface rounded-2xl p-6 border border-white/5">
                   <CollectionForm
                     collectionItem={editingCollection}
                     onClose={handleCloseCollectionForm}

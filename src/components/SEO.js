@@ -8,12 +8,16 @@ const SEO = ({
   ogImage,
   canonicalUrl,
   type = 'website',
-  schema
+  schema,
+  lang = 'en',
 }) => {
   const siteName = "Carmen Art";
   const fullTitle = title ? `${title} | ${siteName}` : siteName;
   const defaultDescription = "Unique hand-crafted models, figures and arts by Carmen.";
-  const defaultImage = "/logo.png"; // İsterseniz varsayılan bir görsel URL'si ekleyebilirsiniz.
+  const defaultImage = "/logo.png";
+
+  // Auto-resolve canonical URL from current page if not explicitly provided
+  const resolvedCanonical = canonicalUrl || (typeof window !== 'undefined' ? window.location.href : '');
 
   return (
     <Helmet>
@@ -22,22 +26,22 @@ const SEO = ({
       <meta name="description" content={description || defaultDescription} />
       {keywords && <meta name="keywords" content={keywords} />}
 
-      {/* OpenGraph (Facebook, LinkedIn, vs.) */}
+      {/* Canonical */}
+      {resolvedCanonical && <link rel="canonical" href={resolvedCanonical} />}
+
+      {/* OpenGraph */}
       <meta property="og:site_name" content={siteName} />
       <meta property="og:type" content={type} />
       <meta property="og:title" content={fullTitle} />
       <meta property="og:description" content={description || defaultDescription} />
       <meta property="og:image" content={ogImage || defaultImage} />
-      {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
+      {resolvedCanonical && <meta property="og:url" content={resolvedCanonical} />}
 
       {/* Twitter Card */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description || defaultDescription} />
       <meta name="twitter:image" content={ogImage || defaultImage} />
-
-      {/* Canonical */}
-      {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
 
       {/* JSON-LD Structured Data Schema */}
       {schema && (

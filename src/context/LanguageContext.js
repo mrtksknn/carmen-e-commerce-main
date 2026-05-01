@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import en from '../locales/en.json';
 import tr from '../locales/tr.json';
 
@@ -8,6 +8,11 @@ const LanguageContext = createContext();
 
 export const LanguageProvider = ({ children }) => {
   const [language, setLanguage] = useState('en');
+
+  // Sync <html lang="..."> with current language
+  useEffect(() => {
+    document.documentElement.lang = language;
+  }, [language]);
 
   const toggleLanguage = () => {
     setLanguage((prev) => (prev === 'en' ? 'tr' : 'en'));

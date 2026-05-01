@@ -8,7 +8,9 @@ import {
   deleteDoc, 
   serverTimestamp,
   query,
-  orderBy
+  orderBy,
+  getDocs,
+  getDoc
 } from "firebase/firestore";
 
 /**
@@ -24,7 +26,6 @@ export const subscribeToCollection = (collectionName, callback, errorCallback) =
         id: doc.id,
         ...doc.data(),
       }));
-      console.log(`Firebase Connection Success: ${collectionName} items:`, data.length);
       callback(data);
     },
     (error) => {
@@ -39,6 +40,21 @@ export const subscribeToCollection = (collectionName, callback, errorCallback) =
  */
 export const subscribeToProducts = (callback, errorCallback) => {
   return subscribeToCollection("products", callback, errorCallback);
+};
+
+export const getProducts = async () => {
+  const colRef = collection(db, "products");
+  const snapshot = await getDocs(colRef);
+  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+};
+
+export const getProduct = async (id) => {
+  const docRef = doc(db, "products", id);
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    return { id: docSnap.id, ...docSnap.data() };
+  }
+  return null;
 };
 
 export const addProduct = async (productData) => {

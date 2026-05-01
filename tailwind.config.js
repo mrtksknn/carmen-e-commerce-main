@@ -8,11 +8,15 @@ module.exports = {
       colors: {
         primary: {
           light: '#f26868',
-          DEFAULT: '#782222',
+          DEFAULT: '#a83229',
           hover: '#952b2b',
         },
         background: {
+          DEFAULT: '#030303',
           dark: '#000000e3',
+        },
+        surface: {
+          DEFAULT: '#0a0a0a',
         }
       },
       fontFamily: {

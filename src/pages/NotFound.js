@@ -7,7 +7,7 @@ const NotFound = () => {
     const { t } = useLanguage();
 
     return (
-        <div className="min-h-screen bg-[#030303] text-white flex flex-col items-center justify-center relative overflow-hidden px-6">
+        <div className="min-h-screen bg-background text-white flex flex-col items-center justify-center relative overflow-hidden px-6">
             {/* Background Aesthetic Elements */}
             <div className="absolute inset-0 z-0 opacity-10 pointer-events-none select-none">
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[40vw] font-serif font-black tracking-tighter leading-none italic">

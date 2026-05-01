@@ -26,15 +26,15 @@ const AboutMe = () => {
   }, []);
 
   return (
-    <main className="bg-[#030303] min-h-screen text-white font-sans overflow-hidden relative selection:bg-[#a83229] selection:text-white">
+    <main className="bg-background min-h-screen text-white font-sans overflow-hidden relative selection:bg-primary selection:text-white">
       <SEO 
-        title="About Me"
-        description="Learn about the master artist behind Carmen's unique creations."
+        title={t('seo', 'aboutTitle')}
+        description={t('seo', 'aboutDesc')}
       />
 
       {/* Cinematic Ambient Glows */}
-      <div className="absolute top-[10%] left-[-20%] w-[60vw] h-[60vw] bg-[#a83229]/10 blur-[150px] rounded-full pointer-events-none z-0"></div>
-      <div className="fixed bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-[#a83229]/5 blur-[120px] rounded-full pointer-events-none z-0"></div>
+      <div className="absolute top-[10%] left-[-20%] w-[60vw] h-[60vw] bg-primary/10 blur-[150px] rounded-full pointer-events-none z-0"></div>
+      <div className="fixed bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-primary/5 blur-[120px] rounded-full pointer-events-none z-0"></div>
 
       {/* Noise Texture Overlay for Premium Vibe */}
       <div className="absolute inset-0 pointer-events-none z-0 opacity-20" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.85\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\' opacity=\'0.2\'/%3E%3C/svg%3E")' }}></div>
@@ -50,10 +50,10 @@ const AboutMe = () => {
 
           {/* Left Side: Photography */}
           <motion.div variants={fadeInUp} className="lg:w-1/2 relative min-h-[50vh] lg:min-h-[80vh] w-full p-6 lg:p-0 group flex items-center justify-center">
-            <div className="w-full h-[60vh] lg:h-full lg:max-h-[800px] relative rounded-[2rem] lg:rounded-[3rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/5 bg-[#0a0a0a]">
-              <div className="absolute inset-0 bg-gradient-to-t from-[#030303] via-transparent to-transparent z-10 opacity-80"></div>
+            <div className="w-full h-[60vh] lg:h-full lg:max-h-[800px] relative rounded-[2rem] lg:rounded-[3rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/5 bg-surface">
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent z-10 opacity-80"></div>
               
-              <div className="absolute inset-0 bg-gradient-to-tr from-[#a83229]/20 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 mix-blend-overlay pointer-events-none"></div>
+              <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 mix-blend-overlay pointer-events-none"></div>
 
               <img
                 src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=1200&h=1600&fit=crop"
@@ -72,15 +72,15 @@ const AboutMe = () => {
           {/* Right Side: Manifesto & Bio */}
           <motion.div variants={staggerContainer} className="lg:w-1/2 flex flex-col justify-center px-6 sm:px-12 lg:px-8 py-0 relative z-10">
             <motion.div variants={fadeInUp} className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-px bg-gradient-to-r from-transparent to-[#a83229]"></div>
-              <span className="text-[#a83229] font-extrabold tracking-[0.3em] uppercase text-[9px] opacity-90 drop-shadow-[0_0_15px_rgba(168,50,41,0.5)]">
+              <div className="w-10 h-px bg-gradient-to-r from-transparent to-primary"></div>
+              <span className="text-primary font-extrabold tracking-[0.3em] uppercase text-[9px] opacity-90 drop-shadow-[0_0_15px_rgba(168,50,41,0.5)]">
                 {t('about', 'mastermindLabel') || 'The Mastermind'}
               </span>
             </motion.div>
 
             <motion.h1 variants={fadeInUp} className="text-4xl md:text-6xl lg:text-[5rem] font-black mb-8 font-serif leading-[1.05] tracking-tight">
               {t('about', 'heroTitle')} <br className="hidden md:block" />
-              <span className="italic font-light text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-300 to-[#a83229]/60">
+              <span className="italic font-light text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-300 to-primary/60">
                 {t('about', 'heroTitleHighlight')}
               </span>
             </motion.h1>
@@ -95,11 +95,11 @@ const AboutMe = () => {
             {/* Social Proof / Stats Area */}
             <motion.div variants={fadeInUp} className="grid grid-cols-2 gap-8 mt-12 border-t border-white/5 pt-10 max-w-sm">
               <div className="flex flex-col">
-                <span className="text-4xl md:text-5xl font-serif text-white leading-none mb-2"><span className="text-[#a83229]">+</span>12</span>
+                <span className="text-4xl md:text-5xl font-serif text-white leading-none mb-2"><span className="text-primary">+</span>12</span>
                 <span className="text-[10px] text-white/40 uppercase tracking-widest font-bold">{t('about', 'yearsCreating')}</span>
               </div>
               <div className="flex flex-col">
-                <span className="text-4xl md:text-5xl font-serif text-white leading-none mb-2"><span className="text-[#a83229]">+</span>300</span>
+                <span className="text-4xl md:text-5xl font-serif text-white leading-none mb-2"><span className="text-primary">+</span>300</span>
                 <span className="text-[10px] text-white/40 uppercase tracking-widest font-bold">{t('about', 'originalPieces')}</span>
               </div>
             </motion.div>
@@ -131,11 +131,11 @@ const AboutMe = () => {
           className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8"
         >
           {/* Card 1 */}
-          <motion.div variants={fadeInUp} className="group bg-[#0a0a0a]/50 border border-white/5 p-8 lg:p-10 rounded-[2rem] backdrop-blur-3xl hover:bg-[#a83229]/5 hover:border-[#a83229]/40 hover:shadow-[0_20px_40px_rgba(168,50,41,0.15)] transition-all duration-500 relative overflow-hidden flex flex-col">
-            <div className="absolute top-0 right-0 p-8 opacity-[0.02] text-white group-hover:scale-[1.8] group-hover:text-[#a83229] transition-transform duration-[1s] ease-out pointer-events-none">
+          <motion.div variants={fadeInUp} className="group bg-surface/50 border border-white/5 p-8 lg:p-10 rounded-[2rem] backdrop-blur-3xl hover:bg-primary/5 hover:border-primary/40 hover:shadow-[0_20px_40px_rgba(168,50,41,0.15)] transition-all duration-500 relative overflow-hidden flex flex-col">
+            <div className="absolute top-0 right-0 p-8 opacity-[0.02] text-white group-hover:scale-[1.8] group-hover:text-primary transition-transform duration-[1s] ease-out pointer-events-none">
               <Eye size={120} />
             </div>
-            <div className="w-12 h-12 bg-white/5 rounded-full border border-white/10 flex items-center justify-center mb-8 text-gray-400 group-hover:bg-[#a83229] group-hover:border-[#a83229] group-hover:text-white transition-all duration-500 shadow-inner">
+            <div className="w-12 h-12 bg-white/5 rounded-full border border-white/10 flex items-center justify-center mb-8 text-gray-400 group-hover:bg-primary group-hover:border-primary group-hover:text-white transition-all duration-500 shadow-inner">
               <Eye size={20} />
             </div>
             <h3 className="text-xl md:text-2xl font-serif text-white mb-4 z-10">{t('about', 'observationTitle')}</h3>
@@ -145,11 +145,11 @@ const AboutMe = () => {
           </motion.div>
 
           {/* Card 2 (Elevated) */}
-          <motion.div variants={fadeInUp} className="group bg-[#0a0a0a]/50 border border-white/5 p-8 lg:p-10 rounded-[2rem] backdrop-blur-3xl hover:bg-[#a83229]/5 hover:border-[#a83229]/40 hover:shadow-[0_20px_40px_rgba(168,50,41,0.15)] transition-all duration-500 relative overflow-hidden flex flex-col md:-translate-y-6">
-            <div className="absolute top-0 right-0 p-8 opacity-[0.02] text-white group-hover:scale-[1.8] group-hover:text-[#a83229] transition-transform duration-[1s] ease-out pointer-events-none">
+          <motion.div variants={fadeInUp} className="group bg-surface/50 border border-white/5 p-8 lg:p-10 rounded-[2rem] backdrop-blur-3xl hover:bg-primary/5 hover:border-primary/40 hover:shadow-[0_20px_40px_rgba(168,50,41,0.15)] transition-all duration-500 relative overflow-hidden flex flex-col md:-translate-y-6">
+            <div className="absolute top-0 right-0 p-8 opacity-[0.02] text-white group-hover:scale-[1.8] group-hover:text-primary transition-transform duration-[1s] ease-out pointer-events-none">
               <Palette size={120} />
             </div>
-            <div className="w-12 h-12 bg-white/5 rounded-full border border-white/10 flex items-center justify-center mb-8 text-gray-400 group-hover:bg-[#a83229] group-hover:border-[#a83229] group-hover:text-white transition-all duration-500 shadow-inner">
+            <div className="w-12 h-12 bg-white/5 rounded-full border border-white/10 flex items-center justify-center mb-8 text-gray-400 group-hover:bg-primary group-hover:border-primary group-hover:text-white transition-all duration-500 shadow-inner">
               <Palette size={20} />
             </div>
             <h3 className="text-xl md:text-2xl font-serif text-white mb-4 z-10">{t('about', 'colorMappingTitle')}</h3>
@@ -159,11 +159,11 @@ const AboutMe = () => {
           </motion.div>
 
           {/* Card 3 */}
-          <motion.div variants={fadeInUp} className="group bg-[#0a0a0a]/50 border border-white/5 p-8 lg:p-10 rounded-[2rem] backdrop-blur-3xl hover:bg-[#a83229]/5 hover:border-[#a83229]/40 hover:shadow-[0_20px_40px_rgba(168,50,41,0.15)] transition-all duration-500 relative overflow-hidden flex flex-col">
-            <div className="absolute top-0 right-0 p-8 opacity-[0.02] text-white group-hover:scale-[1.8] group-hover:text-[#a83229] transition-transform duration-[1s] ease-out pointer-events-none">
+          <motion.div variants={fadeInUp} className="group bg-surface/50 border border-white/5 p-8 lg:p-10 rounded-[2rem] backdrop-blur-3xl hover:bg-primary/5 hover:border-primary/40 hover:shadow-[0_20px_40px_rgba(168,50,41,0.15)] transition-all duration-500 relative overflow-hidden flex flex-col">
+            <div className="absolute top-0 right-0 p-8 opacity-[0.02] text-white group-hover:scale-[1.8] group-hover:text-primary transition-transform duration-[1s] ease-out pointer-events-none">
               <Brush size={120} />
             </div>
-            <div className="w-12 h-12 bg-white/5 rounded-full border border-white/10 flex items-center justify-center mb-8 text-gray-400 group-hover:bg-[#a83229] group-hover:border-[#a83229] group-hover:text-white transition-all duration-500 shadow-inner">
+            <div className="w-12 h-12 bg-white/5 rounded-full border border-white/10 flex items-center justify-center mb-8 text-gray-400 group-hover:bg-primary group-hover:border-primary group-hover:text-white transition-all duration-500 shadow-inner">
               <Brush size={20} />
             </div>
             <h3 className="text-xl md:text-2xl font-serif text-white mb-4 z-10">{t('about', 'executionTitle')}</h3>
@@ -193,7 +193,7 @@ const AboutMe = () => {
           {/* Content */}
           <div className="relative z-10 p-10 md:p-16 lg:p-20 text-center flex flex-col items-center">
 
-            <div className="w-16 h-16 bg-[#0a0a0a] rounded-full flex items-center justify-center mb-6 border border-white/5 text-[#a83229] group-hover:border-[#a83229]/40 group-hover:bg-[#a83229]/10 transition-all duration-500 shadow-[0_0_30px_rgba(168,50,41,0.15)]">
+            <div className="w-16 h-16 bg-surface rounded-full flex items-center justify-center mb-6 border border-white/5 text-primary group-hover:border-primary/40 group-hover:bg-primary/10 transition-all duration-500 shadow-[0_0_30px_rgba(168,50,41,0.15)]">
               <Mail size={24} />
             </div>
 
@@ -208,10 +208,10 @@ const AboutMe = () => {
             {/* Subtle Luxury Action Button */}
             <Link
               to="/contact"
-              className="w-full sm:w-auto flex items-center justify-between sm:justify-center p-4 sm:px-8 sm:py-5 rounded-2xl bg-white/5 border border-white/10 text-white hover:bg-[#a83229] hover:border-[#a83229] transition-all duration-500 group/btn shadow-[0_10px_20px_rgba(0,0,0,0.4)] hover:shadow-[0_15px_30px_rgba(168,50,41,0.4)] gap-6"
+              className="w-full sm:w-auto flex items-center justify-between sm:justify-center p-4 sm:px-8 sm:py-5 rounded-2xl bg-white/5 border border-white/10 text-white hover:bg-primary hover:border-primary transition-all duration-500 group/btn shadow-[0_10px_20px_rgba(0,0,0,0.4)] hover:shadow-[0_15px_30px_rgba(168,50,41,0.4)] gap-6"
             >
               <span className="uppercase tracking-[0.2em] text-[11px] font-bold pl-2">{t('about', 'commissionCta') || 'Acquire Work'}</span>
-              <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover/btn:bg-white group-hover/btn:text-[#a83229] transition-all duration-500">
+              <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover/btn:bg-white group-hover/btn:text-primary transition-all duration-500">
                 <ArrowRight size={14} className="-rotate-45 group-hover/btn:rotate-0 transition-transform duration-500" />
               </div>
             </Link>

@@ -50,7 +50,7 @@ const CollectionForm = ({ collectionItem, onClose, onSave }) => {
     };
 
     return (
-        <Card className="bg-[#0a0a0a] border-none shadow-none w-full max-w-4xl">
+        <Card className="bg-surface border-none shadow-none w-full max-w-4xl">
             <CardHeader className="px-0 pt-0">
                 <CardTitle className="text-2xl font-serif text-white">{collectionItem ? "Update Collection" : "Create New Collection"}</CardTitle>
             </CardHeader>
