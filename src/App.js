@@ -26,7 +26,17 @@ const ContactMe = lazy(() => import('./pages/ContactMe'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const AdminRoute = lazy(() => import('./auth/AdminRoute'));
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 30 * 60 * 1000, // 30 minutes
+      refetchOnWindowFocus: false, // Prevent redundant fetches on tab switch
+      refetchOnReconnect: false,
+      retry: 1,
+    },
+  },
+});
 
 function App() {
   return (
