@@ -1,1 +1,0 @@
-import{n as e,s as t}from"./react-dom-DAuY1aU8.js";var n=t(e()),r=({children:e})=>{let[t,r]=(0,n.useState)(null);return(0,n.useEffect)(()=>{r(sessionStorage.getItem(`adminAuth`)===`true`)},[]),t===null?null:e};export{r as default};

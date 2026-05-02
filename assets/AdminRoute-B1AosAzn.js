@@ -1,0 +1,1 @@
+import{a as e}from"./rolldown-runtime-BYbx6iT9.js";import{nt as t}from"./ui-vendor-CfyXFlqU.js";var n=e(t()),r=({children:e})=>{let[t,r]=(0,n.useState)(null);return(0,n.useEffect)(()=>{r(sessionStorage.getItem(`adminAuth`)===`true`)},[]),t===null?null:e};export{r as default};
