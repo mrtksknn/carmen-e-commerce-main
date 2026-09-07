@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import emailjs from 'emailjs-com';
+import emailjs from '@emailjs/browser';
 import { Mail, ShieldCheck, ArrowLeft } from "lucide-react";
 import { useCustomToast } from "../components/ui/toast-context";
 import { db } from "../firebase";

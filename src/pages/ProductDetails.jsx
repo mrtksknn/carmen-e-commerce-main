@@ -3,17 +3,18 @@ import { useParams, Link } from 'react-router-dom';
 import { useProduct } from "../hooks/useProduct";
 import '../assets/styles/details.css';
 import { useLanguage } from '../context/LanguageContext';
+import { useInquiry } from '../context/InquiryContext';
 import SEO from '../components/SEO';
-import { Ruler, Palette, Tag, ArrowLeft, ArrowRight, Loader2, Sparkles, X } from 'lucide-react';
+import { Ruler, Palette, Tag, ArrowLeft, ArrowRight, Loader2, Sparkles, X, Maximize2, Plus, Check } from 'lucide-react';
 import * as Dialog from '@radix-ui/react-dialog';
+import ConciergeModal from '../components/landing/ConciergeModal';
 
 const Details = () => {
   const { id, productName } = useParams();
   const { t } = useLanguage();
+  const { addToInquiry, removeFromInquiry, isInInquiry } = useInquiry();
   const { product: data, loading: isLoading, error } = useProduct(id);
   const [activeImage, setActiveImage] = useState('');
-  const [zoomStyle, setZoomStyle] = useState({ display: 'none' });
-  const [isZoomed, setIsZoomed] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const isLoaded = !isLoading;
 
@@ -29,22 +30,7 @@ const Details = () => {
     }
   }, [data, activeImage]);
 
-  const handleMouseMove = (e) => {
-    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - left) / width) * 100;
-    const y = ((e.clientY - top) / height) * 100;
-    setZoomStyle({
-      display: 'block',
-      transformOrigin: `${x}% ${y}%`,
-      transform: 'scale(2.2)',
-    });
-    setIsZoomed(true);
-  };
 
-  const handleMouseLeave = () => {
-    setZoomStyle({ display: 'none' });
-    setIsZoomed(false);
-  };
 
   if (!isLoaded) return (
     <div className="min-h-screen bg-background flex items-center justify-center">
@@ -111,83 +97,38 @@ const Details = () => {
           {/* ── LEFT: Cinematic Gallery (Bento Layout) ── */}
           <div className="lg:col-span-6 flex flex-col items-center gap-8 w-full">
 
-            {/* Main Image Frame - Dynamic Size Hugging Border */}
+            {/* Main Display Area */}
             <div className="relative group w-full flex justify-center items-center max-h-[75vh] perspective-1000">
-              <Dialog.Root open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <Dialog.Trigger asChild>
-                  {/* Tight wrapper that hugs the image */}
-                  <figure 
-                    className={`relative inline-flex rounded-[2rem] lg:rounded-[2.5rem] bg-background border shadow-[0_30px_60px_rgba(0,0,0,0.8)] overflow-hidden transition-all duration-700 m-0 ${isZoomed ? 'border-primary/60 cursor-zoom-in' : 'border-white/10 group-hover:border-primary/40 cursor-zoom-in'}`}
-                    onMouseMove={handleMouseMove}
-                    onMouseLeave={handleMouseLeave}
-                    role="button"
-                    aria-label={`${data?.name} detaylı inceleme alanı`}
-                    tabIndex={0}
-                    onFocus={() => setIsZoomed(true)}
-                    onBlur={() => setIsZoomed(false)}
-                  >
-                    {/* Base Image */}
-                    <img
-                      src={activeImage || data?.img}
-                      alt={data?.name}
-                      fetchpriority="high"
-                      loading="eager"
-                      className={`max-h-[75vh] max-w-full w-auto object-contain transition-all duration-500 z-0 ${isZoomed ? 'opacity-0 scale-[1.03]' : 'opacity-100 group-hover:scale-[1.03] duration-[15s] ease-out'}`}
-                    />
-                    
-                    {/* Zoom Magniyfing Overlay (Absolute so it doesn't break aspect ratio) */}
-                    <img
-                      aria-hidden="true"
-                      src={activeImage || data?.img}
-                      alt={`${data?.name} zoomed`}
-                      className="absolute inset-0 w-full h-full object-contain pointer-events-none transition-transform duration-[50ms] hidden lg:block"
-                      style={zoomStyle}
-                    />
-                    
-                    {/* Overlays */}
-                    <div className={`absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent z-10 pointer-events-none transition-opacity duration-500 ${isZoomed ? 'opacity-0' : 'opacity-50'}`}></div>
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-10 mix-blend-overlay pointer-events-none"></div>
-                    <figcaption className="sr-only">Resmin üzerine gelerek veya tıklayarak detaylara yakından bakabilirsiniz.</figcaption>
-                  </figure>
-                </Dialog.Trigger>
-                
-                {/* Lightbox Dialog Portal */}
-                <Dialog.Portal>
-                  <Dialog.Overlay className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 animate-in fade-in duration-300" />
-                  <Dialog.Content className="fixed inset-0 z-50 flex items-center justify-center p-4 outline-none animate-in fade-in zoom-in-95 duration-300">
-                    <Dialog.Title className="sr-only">{data?.name || "Detaylı Görünüm"}</Dialog.Title>
-                    <Dialog.Description className="sr-only">Eserin tam ekran detaylı incelemesi.</Dialog.Description>
-                    <Dialog.Close className="absolute top-4 right-4 md:top-6 md:right-6 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center text-white transition-all z-50 outline-none focus:ring-2 focus:ring-primary">
-                      <X size={24} />
-                      <span className="sr-only">Kapat</span>
-                    </Dialog.Close>
-                    <img 
-                      src={activeImage || data?.img} 
-                      alt={data?.name} 
-                      className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
-                    />
-                  </Dialog.Content>
-                </Dialog.Portal>
-              </Dialog.Root>
+              <div 
+                className="relative rounded-[2.5rem] overflow-hidden border border-white/10 bg-white/[0.02] backdrop-blur-3xl shadow-[0_40px_100px_rgba(0,0,0,0.6)] group-hover:border-primary/30 transition-all duration-700 w-full cursor-pointer"
+                style={{ height: "615px" }}
+                onClick={() => setIsDialogOpen(true)}
+              >
+                <img
+                  src={activeImage || data?.img}
+                  alt={data?.name}
+                  className="max-w-full h-auto object-contain mx-auto transition-all duration-700 scale-100 group-hover:scale-[1.02]"
+                />
+              </div>
             </div>
 
-            {/* Thumbnails Row */}
-            {(data?.img2 || data?.img3) && (
-              <div className="flex justify-center gap-4 py-2 w-full overflow-x-auto scrollbar-hide">
-                {[data?.img, data?.img2, data?.img3].filter(Boolean).map((imgUrl, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setActiveImage(imgUrl)}
-                    className={`relative w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 cursor-pointer rounded-2xl overflow-hidden border transition-all duration-300 group ${(activeImage || data?.img) === imgUrl
-                      ? 'border-primary shadow-[0_0_25px_rgba(168,50,41,0.4)] opacity-100 scale-105'
-                      : 'border-white/10 opacity-60 hover:opacity-100 hover:border-white/30 hover:scale-100'
-                      }`}
-                  >
-                    <img src={imgUrl} alt={`${data?.name} thumbnail ${idx + 1}`} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                  </button>
-                ))}
-              </div>
-            )}
+            {/* ── Thumbnails Row ── */}
+            <div className="flex justify-center gap-3 sm:gap-4 py-2 w-full overflow-x-auto scrollbar-hide animate-fade-in delay-300">
+              
+              {/* Product Image Thumbnails */}
+              {[data?.img, data?.img2, data?.img3].filter(Boolean).map((imgUrl, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setActiveImage(imgUrl)}
+                  className={`relative w-16 h-16 sm:w-20 sm:h-20 flex-shrink-0 cursor-pointer rounded-xl sm:rounded-2xl overflow-hidden border transition-all duration-500 group ${(activeImage || data?.img) === imgUrl
+                    ? 'border-primary shadow-[0_0_20px_rgba(168,50,41,0.3)] opacity-100 scale-105'
+                    : 'border-white/10 opacity-50 hover:opacity-100 hover:border-white/30'
+                    }`}
+                >
+                  <img src={imgUrl} alt={`${data?.name} thumb ${idx + 1}`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* ── RIGHT: Artwork Information ── */}
@@ -256,22 +197,39 @@ const Details = () => {
                 </div>
               </dl>
 
-              {/* Action Button Inside Panel */}
-              <Link
-                to="/contact"
-                state={{ subject: `Inquiry about ${data?.name}` }}
-                className="w-full flex items-center justify-between mt-8 p-4 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-primary hover:border-primary transition-all duration-500 group shadow-lg hover:shadow-[0_15px_30px_rgba(168,50,41,0.4)]"
-              >
-                <span className="uppercase tracking-[0.2em] text-xs font-bold pl-2">{t('productDetails', 'inquireButton') || 'Acquire Work'}</span>
-                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-primary transition-all duration-500">
-                  <ArrowRight size={14} className="-rotate-45 group-hover:rotate-0 transition-transform duration-500" />
-                </div>
-              </Link>
+              {/* Action Buttons: Concierge Modal & Multi-Inquiry */}
+              <div className="flex flex-col sm:flex-row gap-4 mt-8">
+                <ConciergeModal artwork={data} t={t}>
+                  <button
+                    className="flex-1 flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-primary hover:border-primary transition-all duration-500 group shadow-lg hover:shadow-[0_15px_30px_rgba(168,50,41,0.4)]"
+                  >
+                    <span className="uppercase tracking-[0.2em] text-[10px] font-bold pl-2">{t('productDetails', 'inquireButton')}</span>
+                    <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-primary transition-all duration-500">
+                      <ArrowRight size={14} className="-rotate-45 group-hover:rotate-0 transition-transform duration-500" />
+                    </div>
+                  </button>
+                </ConciergeModal>
+
+                <button
+                  onClick={() => isInInquiry(data?.id) ? removeFromInquiry(data?.id) : addToInquiry(data)}
+                  className={`flex items-center justify-center gap-3 p-4 rounded-xl border transition-all duration-500 group ${
+                    isInInquiry(data?.id) 
+                    ? 'bg-primary/20 border-primary text-primary' 
+                    : 'bg-white/5 border-white/10 text-white hover:border-white/30'
+                  }`}
+                  title={isInInquiry(data?.id) ? 'Listeden Çıkar' : 'Taleplerime Ekle'}
+                >
+                  {isInInquiry(data?.id) ? <Check size={18} /> : <Plus size={18} className="group-hover:rotate-90 transition-transform" />}
+                  <span className="uppercase tracking-[0.2em] text-[10px] font-bold sm:hidden lg:block">
+                    {isInInquiry(data?.id) ? (t('productDetails', 'inList') || 'LİSTEDE') : (t('productDetails', 'addToList') || 'LİSTEYE EKLE')}
+                  </span>
+                </button>
+              </div>
 
             </div>
 
-            <p className="text-xs text-gray-400 tracking-widest font-medium text-center uppercase">
-              {t('productDetails', 'inquireNote') || 'Secure global shipping & certification included.'}
+            <p className="text-xs text-gray-400 tracking-widest font-medium text-center uppercase leading-relaxed px-4">
+              {t('productDetails', 'inquireNote')}
             </p>
 
           </div>

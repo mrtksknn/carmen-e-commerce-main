@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import React from 'react';
 // Components
 import Topbar from '../components/topbar/topbar';
+import InquiryFloatingBar from '../components/landing/InquiryFloatingBar';
 // Css
 import '../assets/styles/layout.css';
 
@@ -17,6 +18,8 @@ const Layout = () => {
       <main>
         <Outlet />
       </main>
+
+      <InquiryFloatingBar />
     </div>
   )
 };

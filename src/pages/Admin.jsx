@@ -32,7 +32,7 @@ const Admin = () => {
   if (!isAuthenticated) {
     return (
       <AdminLogin 
-        onLogin={login} 
+        onLogin={(email, password) => login(email, password)} 
         loginError={loginError} 
         isLoggingIn={isLoggingIn} 
       />

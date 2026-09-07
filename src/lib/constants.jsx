@@ -1,7 +1,7 @@
 export const APP_CONFIG = {
   NAME: "Carmen E-Commerce",
   BASE_URL: "https://mrtksknn.github.io/carmen-e-commerce-main",
-  LOGO_URL: "/logo.png",
+  LOGO_URL: "/logo.svg",
   DESCRIPTION: "Unique hand-crafted models, figures and arts by Carmen.",
   KEYWORDS: "el yapımı çizim, özel tasarım resim, sanat eserleri, carmen e-commerce",
   SITEMAP_BASE_URL: "https://mrtksknn.github.io/carmen-e-commerce-main"

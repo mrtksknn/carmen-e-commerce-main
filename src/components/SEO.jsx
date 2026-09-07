@@ -14,7 +14,7 @@ const SEO = ({
   const siteName = "Carmen Art";
   const fullTitle = title ? `${title} | ${siteName}` : siteName;
   const defaultDescription = "Unique hand-crafted models, figures and arts by Carmen.";
-  const defaultImage = "/logo.png";
+  const defaultImage = "/logo.svg";
 
   // Auto-resolve canonical URL from current page if not explicitly provided
   const resolvedCanonical = canonicalUrl || (typeof window !== 'undefined' ? window.location.href : '');

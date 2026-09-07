@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
-import { Key, LogIn, Database } from "lucide-react";
+import { Key, LogIn, Database, Mail } from "lucide-react";
 
 const AdminLogin = ({ onLogin, loginError, isLoggingIn }) => {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onLogin(password);
+    onLogin(email, password);
   };
 
   return (
@@ -26,7 +27,7 @@ const AdminLogin = ({ onLogin, loginError, isLoggingIn }) => {
             </div>
             <CardTitle className="text-3xl font-serif text-white tracking-wider">Admin Portal</CardTitle>
             <CardDescription className="text-gray-400 font-sans text-sm px-4">
-              Enter the admin password to access the management dashboard
+              Enter your admin credentials to access the management dashboard
             </CardDescription>
           </CardHeader>
 
@@ -42,6 +43,22 @@ const AdminLogin = ({ onLogin, loginError, isLoggingIn }) => {
               )}
 
               <div className="space-y-4">
+                {/* Email Field */}
+                <div className="relative group">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500 group-focus-within:text-primary transition-colors">
+                    <Mail size={18} />
+                  </div>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Admin Email"
+                    className="w-full pl-10 pr-4 py-3.5 bg-[#171717] border border-gray-800 rounded-xl focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 text-white placeholder-gray-600 transition-all font-sans text-sm shadow-inner"
+                    required
+                  />
+                </div>
+
+                {/* Password Field */}
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500 group-focus-within:text-primary transition-colors">
                     <Key size={18} />

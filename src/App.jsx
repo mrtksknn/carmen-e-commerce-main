@@ -6,6 +6,7 @@ import { HelmetProvider } from 'react-helmet-async';
 
 // Language
 import { LanguageProvider } from "./context/LanguageContext";
+import { InquiryProvider } from "./context/InquiryContext";
 
 // Toast System
 import { ToastProvider } from "./components/ui/toast-context";
@@ -23,6 +24,7 @@ const Admin = lazy(() => import('./pages/Admin'));
 const AllProducts = lazy(() => import('./pages/AllProducts'));
 const Collections = lazy(() => import('./pages/Collections'));
 const ContactMe = lazy(() => import('./pages/ContactMe'));
+const VerifyCertificate = lazy(() => import('./pages/VerifyCertificate'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const AdminRoute = lazy(() => import('./auth/AdminRoute'));
 
@@ -42,36 +44,39 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
-        <ToastProvider>
-          <CustomToaster />
-          <HelmetProvider>
-            <Router basename={import.meta.env.BASE_URL}>
-              <Suspense fallback={<LoadingFallback />}>
-                <Routes>
-                  <Route path="/" element={<Layout />}>
-                    <Route index element={<Landing />} />
-                    <Route path="products" element={<AllProducts />} />
-                    <Route path="collections" element={<Collections />} />
-                    <Route path="about" element={<AboutMe />} />
-                    <Route path="contact" element={<ContactMe />} />
-                    <Route path="product/:id" element={<Details />} />
-                  </Route>
-                  <Route
-                    path="/admin"
-                    element={
-                      <AdminRoute>
-                        <Admin />
-                      </AdminRoute>
-                    }
-                  />
-                  
-                  {/* 404 Catch-all */}
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </Suspense>
-            </Router>
-          </HelmetProvider>
-        </ToastProvider>
+        <InquiryProvider>
+          <ToastProvider>
+            <CustomToaster />
+            <HelmetProvider>
+              <Router basename={import.meta.env.BASE_URL}>
+                <Suspense fallback={<LoadingFallback />}>
+                  <Routes>
+                    <Route path="/" element={<Layout />}>
+                      <Route index element={<Landing />} />
+                      <Route path="products" element={<AllProducts />} />
+                      <Route path="collections" element={<Collections />} />
+                      <Route path="about" element={<AboutMe />} />
+                      <Route path="contact" element={<ContactMe />} />
+                      <Route path="product/:id" element={<Details />} />
+                      <Route path="verify/:certId" element={<VerifyCertificate />} />
+                    </Route>
+                    <Route
+                      path="/admin"
+                      element={
+                        <AdminRoute>
+                          <Admin />
+                        </AdminRoute>
+                      }
+                    />
+                    
+                    {/* 404 Catch-all */}
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </Suspense>
+              </Router>
+            </HelmetProvider>
+          </ToastProvider>
+        </InquiryProvider>
       </LanguageProvider>
     </QueryClientProvider>
   );

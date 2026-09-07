@@ -1,4 +1,9 @@
-import { db } from "../firebase";
+import { db, auth } from "../firebase";
+import { 
+  signInWithEmailAndPassword, 
+  signOut, 
+  onAuthStateChanged 
+} from "firebase/auth";
 import { 
   collection, 
   onSnapshot, 
@@ -94,4 +99,79 @@ export const updateCollection = async (id, collectionData) => {
 
 export const deleteCollection = async (id) => {
   return await deleteDoc(doc(db, "collections", id));
+};
+
+/**
+ * Inquiries Services
+ */
+export const subscribeToInquiries = (callback, errorCallback) => {
+  const colRef = collection(db, "inquiries");
+  const q = query(colRef, orderBy("timeStamp", "desc"));
+
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const data = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      callback(data);
+    },
+    (error) => {
+      console.error(`Error subscribing to inquiries:`, error);
+      if (errorCallback) errorCallback(error);
+    }
+  );
+};
+
+export const addInquiry = async (inquiryData) => {
+  return await addDoc(collection(db, "inquiries"), {
+    ...inquiryData,
+    status: 'pending',
+    timeStamp: serverTimestamp(),
+  });
+};
+
+export const deleteInquiry = async (id) => {
+  return await deleteDoc(doc(db, "inquiries", id));
+};
+
+/**
+ * Certificate Services
+ */
+export const generateCertificate = async (certData) => {
+  const docRef = await addDoc(collection(db, "certificates"), {
+    ...certData,
+    createdAt: serverTimestamp(),
+  });
+  return docRef.id;
+};
+
+export const verifyCertificate = async (certId) => {
+  const docRef = doc(db, "certificates", certId);
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    return { id: docSnap.id, ...docSnap.data() };
+  }
+  return null;
+};
+
+export const updateInquiryStatus = async (id, status) => {
+  const inquiryRef = doc(db, "inquiries", id);
+  return await updateDoc(inquiryRef, { status });
+};
+
+/**
+ * Auth Services
+ */
+export const loginAdmin = async (email, password) => {
+  return await signInWithEmailAndPassword(auth, email, password);
+};
+
+export const logoutAdmin = async () => {
+  return await signOut(auth);
+};
+
+export const subscribeToAuth = (callback) => {
+  return onAuthStateChanged(auth, callback);
 };
