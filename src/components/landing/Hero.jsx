@@ -1,190 +1,149 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import { ArrowRight, ArrowUpRight } from 'lucide-react';
+import { MaskLine, FadeUp, Unveil, ArtworkImage, EASE_OUT } from '../motion/Reveal';
 
 const Hero = ({ t, heroPiece }) => {
-  // Setup Framer Motion variants for staggered elegant entrance
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-        delayChildren: 0.3,
-      },
-    },
-  };
+  const reduce = useReducedMotion();
+  const sectionRef = useRef(null);
 
-  const itemVariants = {
-    hidden: { y: 30, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
-    },
-  };
+  // As the visitor scrolls on, the copy recedes and the painting drifts back
+  // into the wall, handing the stage to the exhibition below.
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start start', 'end start'] });
+  const copyY = useTransform(scrollYProgress, [0, 1], [0, -90]);
+  const copyOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+  const frameY = useTransform(scrollYProgress, [0, 1], [0, 60]);
+  const frameScale = useTransform(scrollYProgress, [0, 1], [1, 0.94]);
 
   return (
-    <section className="relative w-full min-h-screen pt-24 pb-16 z-10 flex items-center bg-background overflow-hidden">
-      {/* Absolute Ambient Glows - gives a museum lighting feel */}
-      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[150px] mix-blend-screen pointer-events-none"></div>
-      <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-primary/10 rounded-full blur-[120px] mix-blend-screen pointer-events-none"></div>
+    <section
+      ref={sectionRef}
+      className="relative w-full min-h-[100svh] pt-28 pb-16 lg:pt-24 z-10 flex items-center bg-background overflow-hidden"
+    >
+      {/* Single gallery light falling on the wall behind the work */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 pointer-events-none bg-[radial-gradient(60%_55%_at_72%_45%,rgba(175,54,44,0.10),transparent_70%)]"
+      />
 
-      {/* Subtle modern dot-grid pattern overlay */}
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdHRlcm4gaWQ9InNtYWxsR3JpZCIgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNMTAgMEwwIDBMMCAxMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwgMjU1LCAyNTUsIDAuMDMpIiBzdHJva2Utd2lkdGg9IjAuNSIvPjwvcGF0dGVybj48cmVjdCB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIGZpbGw9InVybCgjc21hbGxHcmlkKSIvPjxwYXRoIGQ9Ik00MCAwTDAgMEwwIDQwIiBmaWxsPSJub25lIiBzdHJva2U9InJnYmEoMjU1LCAyNTUsIDI1NSwgMC4wNSkiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-40 mix-blend-overlay pointer-events-none z-0"></div>
+      <div className="relative w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between px-6 lg:px-8 gap-14 lg:gap-16">
 
-      {/* Main Container */}
-      <div className="w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between px-6 lg:px-8 gap-12 lg:gap-12 z-10">
-
-        {/* ── LEFT: Typography & Storytelling ── */}
+        {/* ── Copy ── */}
         <motion.div
-          className="w-full lg:w-[45%] flex flex-col justify-center"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
+          className="w-full lg:w-[44%] flex flex-col justify-center"
+          style={reduce ? undefined : { y: copyY, opacity: copyOpacity }}
         >
-          {/* Eyebrow badge */}
-          <motion.div variants={itemVariants} className="flex items-center gap-4 mb-8">
-            <div className="h-[1px] w-12 bg-primary"></div>
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/20 bg-primary/10 backdrop-blur-md">
-              <Sparkles size={12} className="text-primary" />
-              <span className="text-[9px] font-bold tracking-[0.3em] uppercase text-white/90">
-                {t('landing', 'exhibitionBadge') || 'Curated Exhibition'}
-              </span>
-            </div>
-          </motion.div>
-
-          {/* Main heading */}
-          <motion.h1
-            variants={itemVariants}
-            className="font-serif font-light leading-[1.05] tracking-[-0.02em] mb-6 text-[2.75rem] md:text-[4.5rem] lg:text-[5rem] text-white"
-          >
-            {t('landing', 'heroTitle')}
-            <br />
-            <span className="hero-shimmer-text italic font-light">
+          <h1 className="font-serif font-light leading-[1.02] tracking-[-0.02em] mb-8 text-[3rem] sm:text-[4rem] md:text-[4.75rem] lg:text-[5.5rem] text-white text-balance">
+            <MaskLine delay={0.35}>{t('landing', 'heroTitle')}</MaskLine>
+            <MaskLine delay={0.5} className="italic text-primary-light">
               {t('landing', 'heroTitleItalic')}
-            </span>
-          </motion.h1>
+            </MaskLine>
+          </h1>
 
-          {/* Subtitle */}
-          <motion.p
-            variants={itemVariants}
-            className="text-base md:text-lg text-gray-400 font-light leading-relaxed max-w-md mb-10 tracking-wide border-l border-white/10 pl-5"
-          >
-            {t('landing', 'heroSubtitle')}
-          </motion.p>
+          <FadeUp delay={0.8}>
+            <p className="text-base md:text-lg text-white/60 font-light leading-relaxed max-w-md mb-12">
+              {t('landing', 'heroSubtitle')}
+            </p>
+          </FadeUp>
 
-          {/* CTA Links */}
-          <motion.div variants={itemVariants} className="flex flex-row items-center flex-wrap gap-4 sm:gap-6 mt-3">
+          <FadeUp delay={0.95} className="flex flex-row items-center flex-wrap gap-x-8 gap-y-4">
             <Link
               to="/collections"
-              className="group relative flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-3.5 sm:py-4 bg-white text-black rounded-full overflow-hidden transition-transform hover:scale-105 duration-500"
+              className="group relative inline-flex items-center gap-3 pl-8 pr-7 py-4 bg-white text-black rounded-full overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-light focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
-              <div className="absolute inset-0 bg-primary translate-y-[100%] group-hover:translate-y-0 transition-transform duration-500 ease-in-out"></div>
-              <span className="relative z-10 text-[10px] sm:text-xs font-bold tracking-widest uppercase transition-colors group-hover:text-white">
-                {t('landing', 'heroCtaPrimary') || 'Enter Gallery'}
+              <span
+                aria-hidden="true"
+                className="absolute inset-0 bg-primary origin-bottom scale-y-0 group-hover:scale-y-100 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
+              />
+              <span className="relative z-10 text-xs font-semibold tracking-[0.18em] uppercase transition-colors duration-500 group-hover:text-white">
+                {t('landing', 'heroCtaPrimary')}
               </span>
-              <ArrowRight className="relative z-10 transition-colors group-hover:text-white w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <ArrowRight className="relative z-10 w-4 h-4 transition-all duration-500 group-hover:text-white group-hover:translate-x-1" />
             </Link>
 
             <Link
               to="/about"
-              className="group flex items-center gap-2 sm:gap-3 px-1.5 sm:px-4 py-3.5 sm:py-4 text-[10px] sm:text-xs font-semibold tracking-widest uppercase text-white/50 hover:text-white transition-colors"
+              className="group relative inline-flex items-center py-2 text-xs font-semibold tracking-[0.18em] uppercase text-white/60 hover:text-white transition-colors duration-500 focus-visible:outline-none focus-visible:text-white"
             >
-              <div className="w-5 sm:w-10 h-[1px] bg-white/20 group-hover:bg-primary transition-colors duration-500"></div>
-              {t('landing', 'heroCtaSecondary') || 'The Mastermind'}
+              {t('landing', 'heroCtaSecondary')}
+              <span
+                aria-hidden="true"
+                className="absolute left-0 right-0 -bottom-0.5 h-px bg-white/25 overflow-hidden"
+              >
+                <span className="absolute inset-0 bg-primary-light origin-left scale-x-0 group-hover:scale-x-100 group-focus-visible:scale-x-100 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" />
+              </span>
             </Link>
-          </motion.div>
+          </FadeUp>
         </motion.div>
 
-        {/* ── RIGHT: Dynamic Masterpiece Frame (Bento Style & Glassmorphism) ── */}
+        {/* ── The work ── */}
         <motion.div
-          className="w-full lg:w-[50%] relative h-[400px] sm:h-[500px] lg:h-[75vh] max-h-[700px] mt-4 lg:mt-0"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.2, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          className="w-full lg:w-[52%] relative"
+          style={reduce ? undefined : { y: frameY, scale: frameScale }}
         >
           {heroPiece ? (
-            <Link
-              to={`/product/${heroPiece.id}`}
-              className="relative block w-full h-full rounded-[2rem] overflow-hidden group shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-white/10"
-            >
-              {/* Image with extreme slow Ken Burns pan effect */}
-              <motion.img
-                src={heroPiece.img || ""}
-                alt={`Masterpiece: ${heroPiece.name}`}
-                fetchpriority="high"
-                decoding="async"
-                className="absolute inset-0 w-full h-full object-cover object-center z-0 transition-transform duration-[15s] group-hover:scale-110 ease-out"
-              />
+            <Unveil delay={0.1} duration={1.5} className="relative w-full h-[440px] sm:h-[540px] lg:h-[74vh] max-h-[720px]">
+              <Link
+                to={`/product/${heroPiece.id}`}
+                className="group absolute inset-0 block overflow-hidden rounded-[3px] bg-surface shadow-[0_50px_100px_-30px_rgba(0,0,0,0.9)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-light focus-visible:ring-offset-4 focus-visible:ring-offset-background"
+              >
+                <ArtworkImage
+                  src={heroPiece.img || ''}
+                  alt={heroPiece.name}
+                  delay={0.1}
+                  drift={5}
+                  fetchpriority="high"
+                  decoding="async"
+                  imgClassName="transition-transform duration-[1600ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
+                />
 
-              {/* Dynamic Gradients for depth */}
-              <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/90 z-10"></div>
-              <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-10 mix-blend-overlay"></div>
+                {/* Legibility for the caption only; the painting stays untinted */}
+                <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
+                <div aria-hidden="true" className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-[3px]" />
 
-              {/* Top Glass Pill & Price Badge */}
-              <div className="absolute top-6 left-6 right-6 flex justify-between items-start z-20">
-                <div className="px-5 py-2.5 rounded-full bg-black/40 backdrop-blur-md border border-white/10 flex items-center gap-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
-                  <span className="text-[10px] font-bold tracking-[0.25em] uppercase text-white/90">
-                    {heroPiece.collections || t('landing', 'latestDrop') || 'Highlight'}
-                  </span>
-                </div>
-                
-                {/* ── Price Badge (top-right) ── */}
-                {heroPiece.price && (
-                  <div className="px-4 py-2 rounded-xl bg-black/40 backdrop-blur-md border border-white/10 flex flex-col items-end">
-                    <span className="text-[8px] tracking-widest uppercase text-white/60 mb-0.5">
-                      {t('landing', 'startingAt') || 'Price'}
-                    </span>
-                    <span className="text-sm font-bold text-white tabular-nums tracking-wide">
-                      {heroPiece.price}₺
-                    </span>
-                  </div>
-                )}
-              </div>
-
-              {/* Bottom Glassmorphism Section (Bento Card Feel) */}
-              <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-6 z-20">
-                <div className="p-4 sm:p-8 rounded-[1.5rem] bg-black/30 backdrop-blur-xl border border-white/10 flex flex-row items-end justify-between gap-4 sm:gap-6 overflow-hidden relative group-hover:bg-primary/10 transition-colors duration-700">
-                  {/* Subtle highlight line at top of inner card */}
-                  <div className="absolute top-0 left-8 right-8 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-50"></div>
-
-                  <div className="flex-1 min-w-0 z-10">
-                    <p className="text-primary text-[9px] font-bold tracking-[0.3em] uppercase mb-1 sm:mb-3 drop-shadow-md">
-                      {t('landing', 'featured') || 'Featured Work'}
-                    </p>
-                    <h2 className="text-xl sm:text-3xl md:text-4xl font-serif text-white leading-tight font-light truncate drop-shadow-lg">
+                {/* Wall label */}
+                <motion.div
+                  className="absolute inset-x-0 bottom-0 p-6 sm:p-8 flex items-end justify-between gap-6"
+                  initial={{ opacity: 0, y: reduce ? 0 : 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.9, delay: 1.35, ease: EASE_OUT }}
+                >
+                  <div className="min-w-0">
+                    {heroPiece.collections && (
+                      <p className="text-[11px] font-medium tracking-[0.22em] uppercase text-white/60 mb-2">
+                        {heroPiece.collections}
+                      </p>
+                    )}
+                    <h2 className="font-serif font-light text-white text-2xl sm:text-4xl leading-tight line-clamp-2 text-balance">
                       {heroPiece.name}
                     </h2>
+                    {heroPiece.material && (
+                      <p className="mt-2 text-sm text-white/70">{heroPiece.material}</p>
+                    )}
                   </div>
 
-                  {/* Elegant Discover Button */}
-                  <div className="flex-shrink-0 w-10 h-10 sm:w-14 sm:h-14 rounded-full flex items-center justify-center text-white bg-primary shadow-[0_0_20px_rgba(168,50,41,0.5)] group-hover:scale-110 group-hover:bg-white group-hover:text-primary transition-all duration-500 z-10 cursor-pointer">
-                    <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 -rotate-45 group-hover:rotate-0 transition-transform duration-500" />
-                  </div>
-                </div>
-              </div>
-            </Link>
+                  <span className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-full border border-white/30 flex items-center justify-center text-white transition-all duration-500 group-hover:bg-primary group-hover:border-primary">
+                    <ArrowUpRight className="w-5 h-5 transition-transform duration-500 group-hover:rotate-45" strokeWidth={1.5} />
+                  </span>
+                </motion.div>
+              </Link>
+            </Unveil>
           ) : (
-            /* Loading / No Data Fallback focused on Art UX */
-            <div className="w-full h-full rounded-[2rem] bg-surface border border-white/5 flex flex-col items-center justify-center relative overflow-hidden shadow-2xl">
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent to-primary/5"></div>
-              <motion.div
-                animate={{ opacity: [0.3, 0.8, 0.3] }}
-                transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
-                className="flex flex-col items-center gap-5 relative z-10"
+            <div
+              className="w-full h-[440px] sm:h-[540px] lg:h-[74vh] max-h-[720px] rounded-[3px] bg-surface ring-1 ring-inset ring-white/5 flex items-center justify-center"
+              role="status"
+            >
+              <motion.span
+                className="text-white/40 font-serif italic text-lg"
+                animate={reduce ? undefined : { opacity: [0.3, 0.8, 0.3] }}
+                transition={{ repeat: Infinity, duration: 2.4, ease: 'easeInOut' }}
               >
-                <Sparkles className="text-primary" size={28} />
-                <span className="text-white/40 font-serif tracking-[0.3em] uppercase text-xs">
-                  {t('landing', 'curatingVault') || 'Curating Masterpiece...'}
-                </span>
-              </motion.div>
+                {t('landing', 'curatingVault')}
+              </motion.span>
             </div>
           )}
         </motion.div>
-
       </div>
     </section>
   );

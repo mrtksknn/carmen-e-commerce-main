@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { useInquiry } from '../../context/InquiryContext';
 import { useLanguage } from '../../context/LanguageContext';
-import { ShoppingBag, X, Send, Trash2, ArrowRight } from 'lucide-react';
+import { X, ArrowRight } from 'lucide-react';
 import * as Dialog from '@radix-ui/react-dialog';
 import ConciergeModal from './ConciergeModal';
+import { EASE_OUT } from '../motion/Reveal';
 
 const InquiryFloatingBar = () => {
+  const reduce = useReducedMotion();
   const { inquiryList, removeFromInquiry, clearInquiry } = useInquiry();
   const { t } = useLanguage();
   const [isListOpen, setIsListOpen] = useState(false);
@@ -24,99 +26,116 @@ const InquiryFloatingBar = () => {
 
   return (
     <>
-      {/* Floating Badge Button */}
+      {/* Floating list button: thumbnails of the chosen works */}
       <AnimatePresence>
         {inquiryList.length > 0 && !isListOpen && !isConciergeOpen && (
           <motion.div
-            initial={{ y: 100, opacity: 0 }}
+            initial={{ y: reduce ? 0 : 40, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 100, opacity: 0 }}
-            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[80]"
+            exit={{ y: reduce ? 0 : 40, opacity: 0 }}
+            transition={{ duration: 0.5, ease: EASE_OUT }}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[80]"
           >
             <button
+              type="button"
               onClick={() => setIsListOpen(true)}
-              className="bg-primary text-white px-6 py-4 rounded-full shadow-[0_15px_30px_rgba(168,50,41,0.4)] flex items-center gap-4 hover:scale-105 active:scale-95 transition-all group border border-white/20"
+              className="group flex items-center gap-4 pl-2 pr-6 py-2 rounded-full bg-[#111]/95 border border-white/15 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.8)] hover:border-white/35 transition-colors duration-500"
             >
-              <div className="relative">
-                <ShoppingBag size={20} />
-                <span className="absolute -top-2 -right-2 bg-white text-primary text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-lg">
-                  {inquiryList.length}
-                </span>
-              </div>
-              <span className="text-[10px] font-bold tracking-[0.2em] uppercase pr-2">
+              <span className="flex -space-x-2">
+                {inquiryList.slice(0, 3).map((item, i) => (
+                  <span key={item.id} className="w-9 h-9 rounded-full overflow-hidden ring-2 ring-[#111]" style={{ zIndex: 3 - i }}>
+                    <img src={item.img} alt="" className="w-full h-full object-cover" />
+                  </span>
+                ))}
+              </span>
+              <span className="text-xs font-semibold tracking-[0.18em] uppercase text-white">
                 {t('productDetails', 'multiInquiryLabel')}
               </span>
+              <span className="text-sm tabular-nums text-primary-light">{inquiryList.length}</span>
             </button>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* 1. Inquiry List Modal */}
+      {/* 1. Inquiry list */}
       <Dialog.Root open={isListOpen} onOpenChange={setIsListOpen}>
         <Dialog.Portal>
-          <Dialog.Overlay className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] animate-in fade-in duration-300" />
-          <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] max-w-xl z-[101] outline-none">
+          <Dialog.Overlay className="fixed inset-0 bg-black/80 z-[100]" />
+          <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100vw-2rem)] max-w-xl z-[101] outline-none">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="bg-[#0c0c0c] border border-white/10 rounded-[2.5rem] overflow-hidden shadow-2xl"
+              initial={{ opacity: 0, y: reduce ? 0 : 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45, ease: EASE_OUT }}
+              className="bg-[#0b0b0b] border border-white/10 rounded-[4px] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.9)]"
             >
-              {/* Header */}
-              <div className="p-8 border-b border-white/5 flex items-center justify-between bg-gradient-to-r from-primary/10 to-transparent">
+              <div className="px-6 sm:px-8 pt-8 pb-6 border-b border-white/10 flex items-start justify-between gap-6">
                 <div>
-                  <Dialog.Title className="text-xl font-serif text-white">{t('productDetails', 'inquiryCollectionTitle')}</Dialog.Title>
-                  <Dialog.Description className="text-xs text-gray-500 mt-1 uppercase tracking-widest">{inquiryList.length} {t('allProducts', 'masterworksCount')}</Dialog.Description>
+                  <Dialog.Title className="font-serif font-light text-2xl sm:text-3xl text-white">{t('productDetails', 'inquiryCollectionTitle')}</Dialog.Title>
+                  <Dialog.Description className="text-sm text-white/55 mt-1 tabular-nums">
+                    {inquiryList.length} {t('allProducts', 'masterworksCount')}
+                  </Dialog.Description>
                 </div>
-                <Dialog.Close className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-white transition-all">
-                  <X size={18} />
+                <Dialog.Close
+                  aria-label={t('productDetails', 'close')}
+                  className="w-10 h-10 flex-shrink-0 rounded-full border border-white/20 flex items-center justify-center text-white/70 hover:text-white hover:border-white/60 transition-colors"
+                >
+                  <X size={16} />
                 </Dialog.Close>
               </div>
 
-              {/* Items List */}
-              <div className="max-h-[50vh] overflow-y-auto p-6 space-y-4 scrollbar-hide">
-                <AnimatePresence>
+              <ul className="max-h-[50vh] overflow-y-auto px-6 sm:px-8 divide-y divide-white/10">
+                <AnimatePresence initial={false}>
                   {inquiryList.map((item) => (
-                    <motion.div
+                    <motion.li
                       key={item.id}
-                      layout
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 20 }}
-                      className="flex items-center gap-4 p-3 rounded-2xl bg-white/5 border border-white/5 group"
+                      layout={!reduce}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0, x: reduce ? 0 : 24 }}
+                      transition={{ duration: 0.3 }}
+                      className="flex items-center gap-4 py-4"
                     >
-                      <div className="w-16 h-16 rounded-xl overflow-hidden border border-white/10">
-                        <img src={item.img} alt={item.name} className="w-full h-full object-cover" />
-                      </div>
-                      <div className="flex-1">
-                        <h4 className="text-sm font-bold text-white mb-1">{item.name}</h4>
-                        <p className="text-[10px] text-gray-500 uppercase tracking-widest">{item.collections}</p>
-                      </div>
+                      <span className="w-14 h-16 flex-shrink-0 rounded-[2px] overflow-hidden ring-1 ring-white/10">
+                        <img src={item.img} alt="" className="w-full h-full object-cover" />
+                      </span>
+                      <span className="flex-1 min-w-0">
+                        <span className="block font-serif text-lg text-white leading-tight truncate">{item.name}</span>
+                        {item.collections && (
+                          <span className="block mt-1 text-[11px] tracking-[0.18em] uppercase text-white/45">{item.collections}</span>
+                        )}
+                      </span>
+                      {item.price && <span className="text-sm text-white/70 tabular-nums">{item.price} ₺</span>}
                       <button
+                        type="button"
                         onClick={() => removeFromInquiry(item.id)}
-                        className="p-2 text-gray-600 hover:text-red-500 transition-colors"
+                        aria-label={`${t('productDetails', 'removeFromList')}: ${item.name}`}
+                        className="w-9 h-9 flex-shrink-0 rounded-full flex items-center justify-center text-white/45 hover:text-white hover:bg-white/10 transition-colors"
                       >
-                        <Trash2 size={16} />
+                        <X size={15} />
                       </button>
-                    </motion.div>
+                    </motion.li>
                   ))}
                 </AnimatePresence>
-              </div>
+              </ul>
 
-              {/* Footer / Action */}
-              <div className="p-8 bg-white/[0.02] border-t border-white/5 flex flex-col gap-4">
+              <div className="px-6 sm:px-8 py-6 border-t border-white/10 flex flex-col-reverse sm:flex-row items-center gap-4">
                 <button
-                  onClick={handleStartConcierge}
-                  className="w-full bg-primary text-white py-4 rounded-xl font-bold uppercase tracking-[0.2em] text-[11px] flex items-center justify-center gap-3 hover:bg-primary-hover transition-all shadow-xl group"
-                >
-                  {t('productDetails', 'sendMultiInquiry')}
-                  <Send size={14} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                </button>
-                
-                <button
+                  type="button"
                   onClick={clearInquiry}
-                  className="text-[10px] text-gray-600 uppercase tracking-widest font-bold hover:text-white transition-colors"
+                  className="text-[11px] tracking-[0.18em] uppercase text-white/50 hover:text-white transition-colors"
                 >
-                  {t('allProducts', 'clearFilters')}
+                  {t('productDetails', 'clearList')}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleStartConcierge}
+                  className="group relative sm:ml-auto w-full sm:w-auto inline-flex items-center justify-center gap-3 px-7 py-4 rounded-full bg-white text-black overflow-hidden"
+                >
+                  <span aria-hidden="true" className="absolute inset-0 bg-primary origin-bottom scale-y-0 group-hover:scale-y-100 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" />
+                  <span className="relative z-10 text-xs font-semibold tracking-[0.18em] uppercase transition-colors duration-500 group-hover:text-white">
+                    {t('productDetails', 'sendMultiInquiry')}
+                  </span>
+                  <ArrowRight size={16} className="relative z-10 transition-all duration-500 group-hover:text-white group-hover:translate-x-1" />
                 </button>
               </div>
             </motion.div>
@@ -124,10 +143,10 @@ const InquiryFloatingBar = () => {
         </Dialog.Portal>
       </Dialog.Root>
 
-      {/* 2. Concierge Form Modal (Triggered by state) */}
-      <ConciergeModal 
-        artwork={{ name: 'Multiple Artworks', items: inquiryList }} 
-        t={t} 
+      {/* 2. Concierge form for the whole list */}
+      <ConciergeModal
+        artwork={{ name: 'Multiple Artworks', items: inquiryList }}
+        t={t}
         isMulti={true}
         open={isConciergeOpen}
         onOpenChange={setIsConciergeOpen}

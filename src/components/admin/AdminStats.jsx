@@ -1,56 +1,30 @@
 import React from "react";
-import { Package, ShoppingCart, MessageSquare, TrendingUp } from "lucide-react";
+import { useAdminT } from "./AdminUI";
 
 const AdminStats = ({ products, inquiries = [] }) => {
-  const totalArtworks = products.length;
-  const soldArtworks = products.filter(p => p.status === true).length;
-  const activeArtworks = totalArtworks - soldArtworks;
-  const totalInquiries = inquiries.length;
+  const at = useAdminT();
+  const total = products.length;
+  const sold = products.filter(p => p.status === true).length;
+  const available = total - sold;
+  const pending = inquiries.filter(i => i.status !== 'replied').length;
+  const rate = total > 0 ? Math.round((sold / total) * 100) : 0;
 
   const stats = [
-    {
-      label: "Total Artworks",
-      value: totalArtworks,
-      icon: Package,
-      color: "blue",
-      desc: `${activeArtworks} active on gallery`
-    },
-    {
-      label: "Sold Masterworks",
-      value: soldArtworks,
-      icon: ShoppingCart,
-      color: "green",
-      desc: "Success rate: " + (totalArtworks > 0 ? Math.round((soldArtworks / totalArtworks) * 100) : 0) + "%"
-    },
-    {
-      label: "Client Inquiries",
-      value: totalInquiries,
-      icon: MessageSquare,
-      color: "primary",
-      desc: "All-time concierge leads"
-    }
+    { label: at('statWorks'), value: total, note: at('statWorksNote', { n: available }) },
+    { label: at('statSold'), value: sold, note: at('statSoldNote', { n: rate }) },
+    { label: at('statInquiries'), value: inquiries.length, note: at('statInquiriesNote', { n: pending }), alert: pending > 0 },
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-      {stats.map((stat, idx) => (
-        <div 
-          key={idx} 
-          className="bg-[#0f0f0f]/50 backdrop-blur-xl border border-white/5 rounded-3xl p-6 hover:border-white/10 transition-all group"
-        >
-          <div className="flex items-center gap-4 mb-6">
-            <div className={`p-3 rounded-2xl bg-${stat.color === 'primary' ? 'primary' : stat.color + '-500'}/10 text-${stat.color === 'primary' ? 'primary' : stat.color + '-500'}`}>
-              <stat.icon size={20} />
-            </div>
-            <h4 className="text-gray-400 text-[11px] font-bold uppercase tracking-[0.2em]">{stat.label}</h4>
-          </div>
-          <div className="flex items-baseline gap-2 mt-1">
-            <span className="text-3xl font-serif text-white">{stat.value}</span>
-          </div>
-          <p className="text-[10px] text-gray-600 mt-2 font-medium">{stat.desc}</p>
+    <dl className="grid grid-cols-1 sm:grid-cols-3 border-y border-white/10 divide-y sm:divide-y-0 sm:divide-x divide-white/10 mb-10">
+      {stats.map((s) => (
+        <div key={s.label} className="py-6 sm:px-8 first:sm:pl-0">
+          <dt className="text-[12px] font-medium text-white/55">{s.label}</dt>
+          <dd className="mt-2 font-serif font-light text-5xl text-white lining-nums tabular-nums">{s.value}</dd>
+          <dd className={`mt-1 text-[13px] ${s.alert ? 'text-amber-200/90' : 'text-white/45'}`}>{s.note}</dd>
         </div>
       ))}
-    </div>
+    </dl>
   );
 };
 

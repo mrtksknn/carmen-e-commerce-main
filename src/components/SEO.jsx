@@ -11,9 +11,9 @@ const SEO = ({
   schema,
   lang = 'en',
 }) => {
-  const siteName = "Carmen Art";
+  const siteName = "Piece Of Oblivion";
   const fullTitle = title ? `${title} | ${siteName}` : siteName;
-  const defaultDescription = "Unique hand-crafted models, figures and arts by Carmen.";
+  const defaultDescription = "Original hand-made paintings and drawings by Beliz Keskin. One of a kind, certified, shipped worldwide.";
   const defaultImage = "/logo.svg";
 
   // Auto-resolve canonical URL from current page if not explicitly provided

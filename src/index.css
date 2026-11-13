@@ -25,6 +25,44 @@
   h6 {
     @apply font-serif;
   }
+
+  html {
+    color-scheme: dark;
+    scrollbar-color: #3a1512 #030303;
+  }
+
+  ::selection {
+    background-color: #af362c;
+    color: #fff;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #030303;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #2a1210;
+    border: 3px solid #030303;
+    border-radius: 999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #af362c;
+  }
+
+  :focus-visible {
+    outline: 2px solid #f26868;
+    outline-offset: 3px;
+  }
+
+  input,
+  textarea {
+    caret-color: #f26868;
+  }
 }
 
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. */

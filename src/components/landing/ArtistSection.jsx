@@ -1,114 +1,67 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-import { IMAGES } from '../../lib/constants';
+import StudioImg from '../../assets/images/studio.webP';
+import { FadeUp, Unveil, ArtworkImage, ScrollWords } from '../motion/Reveal';
 
 const ArtistSection = ({ t }) => {
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.2, delayChildren: 0.1 }
-    }
-  };
-
-  const item = {
-    hidden: { opacity: 0, y: 40 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
-  };
-
   return (
-    <section className="relative bg-background py-24 lg:py-32 px-6 z-20 overflow-hidden">
-      {/* Ambient background blur */}
-      <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[150px] pointer-events-none -translate-y-1/2"></div>
+    <section className="relative bg-background py-28 lg:py-40 px-6 z-20">
+      <div className="max-w-7xl mx-auto relative flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
 
-      <motion.div 
-        className="max-w-7xl mx-auto relative z-10 flex flex-col lg:flex-row items-center gap-16 lg:gap-24"
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, margin: "-100px" }}
-        variants={container}
-      >
-        
-        {/* ── LEFT: Content ── */}
+        {/* ── Statement ── */}
         <div className="flex-1 w-full flex flex-col justify-center">
-          {/* Eyebrow Label */}
-          <motion.div variants={item} className="flex items-center gap-4 mb-8">
-            <div className="h-[1px] w-12 bg-primary"></div>
-            <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-white/60">
-              {t('landing', 'artistSectionLabel') || 'The Mastermind'}
-            </span>
-          </motion.div>
+          <ScrollWords
+            text={t('landing', 'artistQuote')}
+            className="font-serif font-light text-white leading-[1.12] tracking-[-0.01em] text-[2.25rem] sm:text-5xl lg:text-[3.5rem] mb-10 text-balance"
+          />
 
-          {/* Main Title */}
-          <motion.div variants={item} className="mb-8 lg:mb-10">
-            <h2 className="font-serif font-light text-white leading-[1.1] tracking-tight text-4xl sm:text-5xl lg:text-[3.5rem]">
-              {t('landing', 'artistQuote') || 'Art is the profound silence that speaks to the soul.'}
-            </h2>
-          </motion.div>
+          <FadeUp inView>
+            <p className="text-white/60 text-base md:text-lg font-light leading-relaxed mb-12 max-w-xl">
+              {t('landing', 'artistBio')}
+            </p>
+          </FadeUp>
 
-          {/* Bio text */}
-          <motion.p 
-            variants={item}
-            className="text-gray-400 text-base md:text-lg font-light leading-relaxed mb-12 max-w-xl"
-          >
-            {t('landing', 'artistBio') || 'Carmen represents a new paradigm in digital artistry. Bringing forward classical techniques married seamlessly with evocative storytelling, each piece is crafted to exist not just as visual pleasure, but as a masterpiece living on the digital canvas.'}
-          </motion.p>
-
-          {/* CTA */}
-          <motion.div variants={item}>
-            <Link to="/about" className="inline-flex items-center gap-3 text-white hover:text-primary transition-colors duration-300 group">
-              <span className="uppercase tracking-widest text-xs font-bold">{t('landing', 'artistCta') || 'Discover More'}</span>
-              <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+          <FadeUp inView delay={0.15}>
+            <Link
+              to="/about"
+              className="group relative inline-flex items-center gap-3 py-2 text-xs font-semibold tracking-[0.18em] uppercase text-white hover:text-white transition-colors duration-500 focus-visible:outline-none"
+            >
+              <span>{t('landing', 'artistCta')}</span>
+              <ArrowRight size={14} className="transition-transform duration-500 group-hover:translate-x-1" />
+              <span aria-hidden="true" className="absolute left-0 right-0 bottom-0 h-px bg-white/15 overflow-hidden">
+                <span className="absolute inset-0 bg-primary-light origin-left scale-x-0 group-hover:scale-x-100 group-focus-visible:scale-x-100 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" />
+              </span>
             </Link>
-          </motion.div>
+          </FadeUp>
         </div>
 
-        {/* ── RIGHT: Cinematic Image ── */}
-        <motion.div 
-          variants={item}
-          className="flex-1 w-full lg:w-auto relative"
-        >
-          {/* Framed Image Container (Bento approach) */}
-          <div className="relative aspect-[4/5] sm:aspect-square lg:aspect-[4/5] rounded-[2.5rem] overflow-hidden group border border-white/10 bg-white/5 shadow-[0_0_40px_rgba(0,0,0,0.5)]">
-            
-            {/* The Image with subtle zoom */}
-            <img
-              src={IMAGES.ARTIST_AT_WORK}
-              alt="Artist at work"
-              loading="lazy"
-              className="absolute inset-0 w-full h-full object-cover object-center z-0 transition-transform duration-[20s] group-hover:scale-105 ease-out"
-            />
+        {/* ── Studio ── */}
+        <div className="flex-1 w-full">
+          <Unveil inView duration={1.4} className="relative aspect-[4/5] sm:aspect-square lg:aspect-[4/5]">
+            <figure className="absolute inset-0 overflow-hidden rounded-[3px] bg-surface shadow-[0_50px_100px_-30px_rgba(0,0,0,0.9)]">
+              <ArtworkImage
+                src={StudioImg}
+                alt={t('landing', 'artistSectionLabel')}
+                inView
+                drift={7}
+                loading="lazy"
+                decoding="async"
+                imgClassName="brightness-[0.85] contrast-[1.05]"
+              />
+              <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/80 to-transparent" />
+              <div aria-hidden="true" className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-[3px]" />
 
-            {/* Overlays */}
-            <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent z-10 opacity-90 group-hover:opacity-70 transition-opacity duration-700"></div>
-            <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-10 mix-blend-overlay"></div>
-
-            {/* Floating Signature Badge (Glassmorphism) */}
-            <div className="absolute bottom-6 left-6 sm:bottom-8 sm:left-8 z-20">
-              <div className="flex items-center gap-4 bg-black/40 backdrop-blur-md border border-white/10 p-3 sm:p-4 rounded-[1.5rem] shadow-xl">
-                {/* Avatar / Monogram */}
-                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-serif tracking-widest text-sm shadow-[0_0_15px_rgba(168,50,41,0.5)]">
-                  CM
-                </div>
-                {/* Details */}
-                <div className="flex flex-col pr-4">
-                  <div className="flex items-center gap-2">
-                    <span className="font-serif text-white text-lg leading-none">Carmen</span>
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse mt-0.5"></span>
-                  </div>
-                  <span className="text-[9px] uppercase tracking-widest text-white/50 font-bold mt-1">
-                    {t('landing', 'artistSectionLabel') || 'Visual Artist'}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </motion.div>
-
-      </motion.div>
+              <figcaption className="absolute left-6 bottom-6 sm:left-8 sm:bottom-8">
+                <span className="block font-serif text-white text-2xl leading-none">Beliz Keskin</span>
+                <span className="block mt-2 text-[11px] uppercase tracking-[0.22em] text-white/60 font-medium">
+                  {t('landing', 'artistSectionLabel')}
+                </span>
+              </figcaption>
+            </figure>
+          </Unveil>
+        </div>
+      </div>
     </section>
   );
 };

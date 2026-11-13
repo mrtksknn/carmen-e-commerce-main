@@ -9,7 +9,7 @@ const Topbar = () => {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { language, toggleLanguage, t } = useLanguage();
+  const { t } = useLanguage();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -49,7 +49,7 @@ const Topbar = () => {
           to="/"
           className="flex items-center no-underline relative group"
           onClick={handleLinkClick}
-          aria-label="Carmen Art Home"
+          aria-label="Piece Of Oblivion — Home"
         >
           <Logo className="text-gray-200 group-hover:text-white transition-colors duration-500 relative z-10" />
         </Link>
@@ -82,33 +82,10 @@ const Topbar = () => {
               </Link>
             );
           })}
-
-          <div className="w-[1px] h-5 bg-white/10 mx-3 hidden lg:block"></div>
-
-          {/* Language Toggle Button */}
-          <button
-            onClick={toggleLanguage}
-            aria-label="Toggle language"
-            className="ml-2 flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-[11px] font-semibold tracking-widest text-gray-300 hover:text-white hover:border-primary/50 hover:bg-primary/10 transition-all duration-500"
-          >
-            <span className={language === 'en' ? 'text-white' : 'text-gray-500'}>EN</span>
-            <span className="text-white/20 font-light">|</span>
-            <span className={language === 'tr' ? 'text-white' : 'text-gray-500'}>TR</span>
-          </button>
         </div>
 
-        {/* Mobile Right Side: Lang Toggle + Hamburger */}
+        {/* Mobile: menu button (language follows the device) */}
         <div className="flex md:hidden items-center gap-4">
-          <button
-            onClick={toggleLanguage}
-            aria-label="Toggle language"
-            className="flex items-center gap-1 px-2 py-1.5 rounded-full border border-white/10 bg-white/5 text-[10px] font-bold tracking-widest text-gray-300 hover:text-white transition-all duration-300"
-          >
-            <span className={language === 'en' ? 'text-white' : 'text-gray-500'}>EN</span>
-            <span className="text-white/20">|</span>
-            <span className={language === 'tr' ? 'text-white' : 'text-gray-500'}>TR</span>
-          </button>
-
           <button
             onClick={toggleMobileMenu}
             aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}

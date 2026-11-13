@@ -1,24 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { useProduct } from "../hooks/useProduct";
-import '../assets/styles/details.css';
-import { useLanguage } from '../context/LanguageContext';
-import { useInquiry } from '../context/InquiryContext';
-import SEO from '../components/SEO';
-import { Ruler, Palette, Tag, ArrowLeft, ArrowRight, Loader2, Sparkles, X, Maximize2, Plus, Check } from 'lucide-react';
+import { motion, useReducedMotion } from 'framer-motion';
 import * as Dialog from '@radix-ui/react-dialog';
+import { useProduct } from "../hooks/useProduct";
+import { useLanguage } from '../context/LanguageContext';
+import SEO from '../components/SEO';
+import { ArrowLeft, ArrowRight, X, Maximize2 } from 'lucide-react';
 import ConciergeModal from '../components/landing/ConciergeModal';
+import { MaskLine, FadeUp, Unveil, EASE_OUT } from '../components/motion/Reveal';
 
 const Details = () => {
-  const { id, productName } = useParams();
+  const { id } = useParams();
   const { t } = useLanguage();
-  const { addToInquiry, removeFromInquiry, isInInquiry } = useInquiry();
-  const { product: data, loading: isLoading, error } = useProduct(id);
+  const reduce = useReducedMotion();
+  const { product: data, loading: isLoading } = useProduct(id);
   const [activeImage, setActiveImage] = useState('');
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const isLoaded = !isLoading;
+  const [isViewerOpen, setIsViewerOpen] = useState(false);
 
-  // Scroll to top on mount
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -30,212 +28,230 @@ const Details = () => {
     }
   }, [data, activeImage]);
 
-
-
-  if (!isLoaded) return (
-    <div className="min-h-screen bg-background flex items-center justify-center">
-      <Loader2 className="w-8 h-8 text-primary animate-spin" />
+  if (isLoading) return (
+    <div className="min-h-screen bg-background flex items-center justify-center" role="status">
+      <motion.span
+        className="font-serif italic text-white/40 text-lg"
+        animate={reduce ? undefined : { opacity: [0.3, 0.8, 0.3] }}
+        transition={{ repeat: Infinity, duration: 2.4, ease: 'easeInOut' }}
+      >
+        {t('landing', 'curatingVault')}
+      </motion.span>
     </div>
   );
 
-  if (!data && isLoaded) return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4 py-24 text-center">
-      <SEO title="Not Found" description="The artwork you are looking for does not exist." />
-      <div className="bg-surface backdrop-blur-md border border-white/10 rounded-[2rem] p-12 shadow-2xl max-w-lg w-full">
-        <h1 className="text-4xl font-serif text-white mb-4">{t('productDetails', 'notFoundTitle') || 'Not Found'}</h1>
-        <p className="text-gray-400 mb-8 font-light">{t('productDetails', 'notFoundDesc') || 'This piece may have been removed or placed in a private collection.'}</p>
-        <Link to="/products" className="inline-flex items-center gap-3 text-xs font-bold tracking-[0.2em] uppercase text-white/50 hover:text-white transition-colors">
+  if (!data) return (
+    <div className="min-h-screen bg-background flex items-center justify-center px-6 py-24 text-center">
+      <SEO title={t('productDetails', 'notFoundTitle')} description={t('productDetails', 'notFoundDesc')} />
+      <div className="max-w-lg">
+        <h1 className="text-4xl md:text-5xl font-serif font-light text-white mb-4">{t('productDetails', 'notFoundTitle')}</h1>
+        <p className="text-white/60 mb-10 font-light">{t('productDetails', 'notFoundDesc')}</p>
+        <Link to="/products" className="inline-flex items-center gap-3 text-xs font-semibold tracking-[0.18em] uppercase text-white/70 hover:text-white transition-colors">
           <ArrowLeft size={16} />
-          {t('productDetails', 'backToProducts') || 'Collections'}
+          {t('productDetails', 'backToProducts')}
         </Link>
       </div>
     </div>
   );
 
-  const productSchema = data ? {
+  const isSold = data.status === true;
+  const images = [data.img, data.img2, data.img3].filter(Boolean);
+  const shown = activeImage || data.img;
+
+  // Prices are not published, so the work is described as an artwork rather than a priced product
+  const artworkSchema = {
     "@context": "https://schema.org/",
-    "@type": "Product",
+    "@type": "VisualArtwork",
     "name": data.name,
     "image": data.img,
-    "description": data.description || `Buy ${data.name} masterpiece by Carmen.`,
-    "brand": { "@type": "Brand", "name": "Carmen Arts" },
-    "offers": {
-      "@type": "Offer",
-      "url": window.location.href,
-      "priceCurrency": "TRY",
-      "price": data.price,
-      "itemCondition": "https://schema.org/NewCondition",
-      "availability": data.status === true ? "https://schema.org/SoldOut" : "https://schema.org/InStock"
-    }
-  } : null;
+    "description": data.description || `${data.name} — Beliz Keskin.`,
+    "creator": { "@type": "Person", "name": "Beliz Keskin" },
+    ...(data.material ? { "artMedium": data.material } : {}),
+    ...(data.dimensions ? { "size": data.dimensions } : {}),
+    "artEdition": 1,
+    "url": window.location.href
+  };
+
+  const specs = [
+    { label: t('productDetails', 'dimensionsLabel'), value: data.dimensions },
+    { label: t('productDetails', 'mediumLabel'), value: data.material },
+    ...(isSold ? [{ label: t('productDetails', 'statusLabel'), value: t('productDetails', 'sold') }] : []),
+  ].filter((s) => s.value);
+
+  // Purchase enquiries for payment plans and international buyers go to this address
+  const purchaseEmail = 'crnoktay@gmail.com';
+  const purchaseMailto = `mailto:${purchaseEmail}?subject=${encodeURIComponent(
+    (t('productDetails', 'paymentMailSubject') || '').replace('{name}', data.name)
+  )}`;
+  const [planBefore, planAfter] = (t('productDetails', 'paymentNotePlan') || '').split('{email}');
 
   return (
-    <main className="bg-background min-h-screen relative font-sans overflow-hidden py-16">
+    <main className="bg-background min-h-screen relative font-sans pt-28 lg:pt-32 pb-32">
       <SEO
-        title={data?.name || "Artwork Details"}
-        description={data?.description || "Discover this unique masterpiece by Carmen."}
-        ogImage={data?.img}
-        schema={productSchema}
+        title={data.name}
+        description={data.description || `${data.name} — Beliz Keskin.`}
+        ogImage={data.img}
+        schema={artworkSchema}
       />
 
-      {/* Ambient Glows */}
-      <div className="absolute top-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-primary/5 blur-[150px] rounded-full pointer-events-none z-0"></div>
-      <div className="absolute bottom-[20%] left-[-10%] w-[40vw] h-[40vw] bg-primary/5 blur-[120px] rounded-full pointer-events-none z-0"></div>
-
-      <article className="max-w-6xl mx-auto px-6 pt-10 lg:pt-10 relative z-10">
-
-        {/* Breadcrumbs */}
-        <nav className="mb-4">
-          <Link to="/products" className="inline-flex items-center gap-3 text-xs tracking-widest uppercase font-bold text-gray-400 hover:text-white transition-colors duration-300 group">
-            <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-            {t('productDetails', 'backToProducts') || 'Collections'}
+      <article className="max-w-7xl mx-auto px-6">
+        <FadeUp>
+          <Link
+            to="/products"
+            className="group inline-flex items-center gap-3 text-xs tracking-[0.18em] uppercase font-semibold text-white/60 hover:text-white transition-colors duration-300 mb-10"
+          >
+            <ArrowLeft size={16} className="transition-transform duration-500 group-hover:-translate-x-1" />
+            {t('productDetails', 'backToProducts')}
           </Link>
-        </nav>
+        </FadeUp>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
 
-          {/* ── LEFT: Cinematic Gallery (Bento Layout) ── */}
-          <div className="lg:col-span-6 flex flex-col items-center gap-8 w-full">
+          {/* ── The work ── */}
+          <div className="lg:col-span-7 w-full">
+            <Unveil delay={0.1} duration={1.4} className="relative w-full h-[62vh] sm:h-[70vh] lg:h-[78vh] max-h-[860px]">
+              {/* A faint wash of light on the wall so the black frame reads against the dark page */}
+              <div aria-hidden="true" className="absolute inset-0 bg-[radial-gradient(60%_55%_at_50%_45%,rgba(255,255,255,0.06),transparent_72%)]" />
 
-            {/* Main Display Area */}
-            <div className="relative group w-full flex justify-center items-center max-h-[75vh] perspective-1000">
-              <div 
-                className="relative rounded-[2.5rem] overflow-hidden border border-white/10 bg-white/[0.02] backdrop-blur-3xl shadow-[0_40px_100px_rgba(0,0,0,0.6)] group-hover:border-primary/30 transition-all duration-700 w-full cursor-pointer"
-                style={{ height: "615px" }}
-                onClick={() => setIsDialogOpen(true)}
-              >
-                <img
-                  src={activeImage || data?.img}
-                  alt={data?.name}
-                  className="max-w-full h-auto object-contain mx-auto transition-all duration-700 scale-100 group-hover:scale-[1.02]"
-                />
-              </div>
-            </div>
-
-            {/* ── Thumbnails Row ── */}
-            <div className="flex justify-center gap-3 sm:gap-4 py-2 w-full overflow-x-auto scrollbar-hide animate-fade-in delay-300">
-              
-              {/* Product Image Thumbnails */}
-              {[data?.img, data?.img2, data?.img3].filter(Boolean).map((imgUrl, idx) => (
+              <div className="absolute inset-0 flex items-center justify-center p-2 sm:p-4">
+                {/* Thin matte black frame that hugs the work at its own proportions */}
                 <button
-                  key={idx}
-                  onClick={() => setActiveImage(imgUrl)}
-                  className={`relative w-16 h-16 sm:w-20 sm:h-20 flex-shrink-0 cursor-pointer rounded-xl sm:rounded-2xl overflow-hidden border transition-all duration-500 group ${(activeImage || data?.img) === imgUrl
-                    ? 'border-primary shadow-[0_0_20px_rgba(168,50,41,0.3)] opacity-100 scale-105'
-                    : 'border-white/10 opacity-50 hover:opacity-100 hover:border-white/30'
-                    }`}
+                  type="button"
+                  onClick={() => setIsViewerOpen(true)}
+                  aria-label={t('productDetails', 'viewLarge')}
+                  className="group relative inline-flex p-[9px] sm:p-[12px] rounded-[1px] cursor-zoom-in bg-[linear-gradient(150deg,#2a2827_0%,#121110_38%,#070707_100%)] shadow-[0_0_0_1px_rgba(255,255,255,0.07),0_2px_0_rgba(255,255,255,0.04)_inset,0_40px_70px_-25px_rgba(0,0,0,0.95),0_12px_24px_-12px_rgba(0,0,0,0.8)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-light focus-visible:ring-offset-4 focus-visible:ring-offset-background"
                 >
-                  <img src={imgUrl} alt={`${data?.name} thumb ${idx + 1}`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                  <motion.img
+                    key={shown}
+                    src={shown}
+                    alt={data.name}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.6, ease: EASE_OUT }}
+                    className="block w-auto h-auto max-w-full max-h-[calc(62vh-50px)] sm:max-h-[calc(70vh-60px)] lg:max-h-[min(calc(78vh-60px),800px)] object-contain"
+                  />
+                  {/* Inner lip where the canvas meets the moulding */}
+                  <span aria-hidden="true" className="pointer-events-none absolute inset-[9px] sm:inset-[12px] shadow-[inset_0_0_0_1px_rgba(0,0,0,0.85),inset_0_3px_8px_rgba(0,0,0,0.45)]" />
+                  <span aria-hidden="true" className="absolute bottom-5 right-5 w-10 h-10 rounded-full bg-black/60 border border-white/20 flex items-center justify-center text-white/80 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-500">
+                    <Maximize2 size={15} strokeWidth={1.5} />
+                  </span>
                 </button>
-              ))}
-            </div>
+              </div>
+            </Unveil>
+
+            {images.length > 1 && (
+              <FadeUp delay={0.8} className="flex gap-3 mt-5">
+                {images.map((imgUrl, idx) => {
+                  const active = shown === imgUrl;
+                  return (
+                    <button
+                      key={imgUrl}
+                      type="button"
+                      onClick={() => setActiveImage(imgUrl)}
+                      aria-label={`${data.name} ${idx + 1}`}
+                      aria-pressed={active}
+                      className={`relative w-16 h-20 sm:w-20 sm:h-24 overflow-hidden rounded-[2px] transition-opacity duration-500 ${active ? 'opacity-100' : 'opacity-45 hover:opacity-85'}`}
+                    >
+                      <img src={imgUrl} alt="" className="w-full h-full object-cover" />
+                      <span aria-hidden="true" className={`absolute inset-x-0 bottom-0 h-px transition-colors duration-500 ${active ? 'bg-primary-light' : 'bg-transparent'}`} />
+                    </button>
+                  );
+                })}
+              </FadeUp>
+            )}
           </div>
 
-          {/* ── RIGHT: Artwork Information ── */}
-          <div className="lg:col-span-6 flex flex-col justify-center space-y-8 lg:sticky lg:top-28 w-full">
+          {/* ── Wall label ── */}
+          <div className="lg:col-span-5 w-full lg:sticky lg:top-32">
+            {data.collections && (
+              <FadeUp delay={0.3}>
+                <p className="text-[11px] font-medium tracking-[0.22em] uppercase text-white/50 mb-4">
+                  {data.collections}
+                </p>
+              </FadeUp>
+            )}
 
-            {/* Header / Title Area */}
-            <div className="space-y-5">
-              <div className="flex flex-wrap items-center gap-2">
-                {data.collections && (
-                  <span className="inline-flex items-center gap-1.5 bg-primary/20 border border-primary/40 text-primary px-3 py-1.5 rounded-lg text-xs font-bold tracking-[0.2em] uppercase shadow-[0_0_15px_rgba(168,50,41,0.2)]">
-                    <Sparkles className="w-3 h-3" />
-                    {data?.collections}
-                  </span>
-                )}
-                {data.status === true && (
-                  <span className="inline-flex items-center bg-red-500/20 border border-red-500/40 text-red-500 px-3 py-1.5 rounded-lg text-xs font-bold tracking-[0.2em] uppercase">
-                    Sold
-                  </span>
-                )}
-              </div>
+            <h1 className="font-serif font-light text-white tracking-[-0.015em] leading-[1.05] text-[2.5rem] sm:text-5xl lg:text-[3.5rem] text-balance">
+              <MaskLine delay={0.35}>{data.name}</MaskLine>
+            </h1>
 
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif text-white tracking-tight leading-[1.05] drop-shadow-lg">
-                {data?.name}
-              </h1>
+            <FadeUp delay={0.55}>
+              <p className="mt-3 font-serif italic text-lg text-white/60">Beliz Keskin</p>
 
-              <div className="w-16 h-[1px] bg-white/20"></div>
-
-              <p className="text-sm sm:text-base text-gray-400 font-light leading-relaxed max-w-lg">
-                {data?.description}
-              </p>
-            </div>
-
-            {/* Premium Details Panel */}
-            <div className="bg-surface backdrop-blur-xl border border-white/5 rounded-3xl p-6 sm:p-8 shadow-2xl relative group hover:border-primary/20 transition-colors duration-500">
-              <div className="absolute top-0 left-10 right-10 h-[1px] bg-gradient-to-r from-transparent via-primary/40 to-transparent"></div>
-
-              <h2 className="text-gray-400 text-xs uppercase font-bold tracking-[0.3em] mb-5">
-                {t('productDetails', 'productDetailsTitle') || 'Masterwork Specs'}
-              </h2>
-
-              <dl className="space-y-5">
-                <div className="flex items-center justify-between border-b border-white/5 pb-4">
-                  <dt className="flex items-center gap-3 text-gray-400 text-xs uppercase tracking-widest font-bold">
-                    <span className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-primary/30 transition-colors duration-500"><Ruler className="w-3 h-3 text-white/80" /></span>
-                    {t('productDetails', 'dimensionsLabel') || 'Dimensions'}
-                  </dt>
-                  <dd className="font-serif text-white text-base sm:text-lg drop-shadow-md text-right">{data?.dimensions}</dd>
-                </div>
-
-                <div className="flex items-center justify-between border-b border-white/5 pb-4">
-                  <dt className="flex items-center gap-3 text-gray-400 text-xs uppercase tracking-widest font-bold">
-                    <span className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-primary/30 transition-colors duration-500"><Palette className="w-3 h-3 text-white/80" /></span>
-                    {t('productDetails', 'mediumLabel') || 'Medium'}
-                  </dt>
-                  <dd className="font-serif text-white text-base sm:text-lg drop-shadow-md text-right max-w-[50%] leading-tight truncate">{data?.material}</dd>
-                </div>
-
-                <div className="flex items-center justify-between pt-2">
-                  <dt className="flex items-center gap-3 text-primary text-xs uppercase tracking-widest font-bold">
-                    <span className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center border border-primary/30 shadow-[0_0_15px_rgba(168,50,41,0.3)]"><Tag className="w-3 h-3 text-primary" /></span>
-                    {t('productDetails', 'priceLabel') || 'Price'}
-                  </dt>
-                  <dd className="font-sans font-black tracking-tight text-white text-2xl sm:text-3xl drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">
-                    {data?.price} <span className="text-primary text-lg font-bold ml-1">TL</span>
-                  </dd>
-                </div>
+              <dl className="mt-10 border-t border-white/10">
+                {specs.map((s) => (
+                  <div key={s.label} className="flex items-baseline justify-between gap-6 py-4 border-b border-white/10">
+                    <dt className="text-[11px] tracking-[0.18em] uppercase text-white/50">{s.label}</dt>
+                    <dd className="font-serif text-lg text-white text-right lining-nums">{s.value}</dd>
+                  </div>
+                ))}
               </dl>
 
-              {/* Action Buttons: Concierge Modal & Multi-Inquiry */}
-              <div className="flex flex-col sm:flex-row gap-4 mt-8">
+              {data.description && (
+                <p className="mt-8 text-base text-white/65 font-light leading-relaxed max-w-prose">
+                  {data.description}
+                </p>
+              )}
+
+              {/* Purchase note: payment plans and international buyers */}
+              <aside className="mt-8 pl-5 border-l border-primary-light/60">
+                <p className="text-[11px] tracking-[0.18em] uppercase text-white/50 mb-2">{t('productDetails', 'paymentNoteTitle')}</p>
+                <p className="text-sm text-white/70 leading-relaxed">
+                  {planBefore}
+                  <a
+                    href={purchaseMailto}
+                    className="text-white underline decoration-primary-light/70 underline-offset-4 hover:decoration-primary-light transition-colors whitespace-nowrap"
+                  >
+                    {purchaseEmail}
+                  </a>
+                  {planAfter}
+                </p>
+                <p className="mt-2 text-sm text-white/70 leading-relaxed">{t('productDetails', 'paymentNoteShipping')}</p>
+              </aside>
+
+              <div className="mt-10">
                 <ConciergeModal artwork={data} t={t}>
                   <button
-                    className="flex-1 flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-primary hover:border-primary transition-all duration-500 group shadow-lg hover:shadow-[0_15px_30px_rgba(168,50,41,0.4)]"
+                    type="button"
+                    className="group relative w-full sm:w-auto sm:min-w-[300px] whitespace-nowrap inline-flex items-center justify-between gap-4 pl-7 pr-5 py-4 rounded-full bg-white text-black overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-light focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   >
-                    <span className="uppercase tracking-[0.2em] text-[10px] font-bold pl-2">{t('productDetails', 'inquireButton')}</span>
-                    <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-primary transition-all duration-500">
-                      <ArrowRight size={14} className="-rotate-45 group-hover:rotate-0 transition-transform duration-500" />
-                    </div>
+                    <span aria-hidden="true" className="absolute inset-0 bg-primary origin-bottom scale-y-0 group-hover:scale-y-100 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" />
+                    <span className="relative z-10 text-xs font-semibold tracking-[0.18em] uppercase transition-colors duration-500 group-hover:text-white">
+                      {t('productDetails', 'inquireButton')}
+                    </span>
+                    <ArrowRight size={16} className="relative z-10 transition-all duration-500 group-hover:text-white group-hover:translate-x-1" />
                   </button>
                 </ConciergeModal>
-
-                <button
-                  onClick={() => isInInquiry(data?.id) ? removeFromInquiry(data?.id) : addToInquiry(data)}
-                  className={`flex items-center justify-center gap-3 p-4 rounded-xl border transition-all duration-500 group ${
-                    isInInquiry(data?.id) 
-                    ? 'bg-primary/20 border-primary text-primary' 
-                    : 'bg-white/5 border-white/10 text-white hover:border-white/30'
-                  }`}
-                  title={isInInquiry(data?.id) ? 'Listeden Çıkar' : 'Taleplerime Ekle'}
-                >
-                  {isInInquiry(data?.id) ? <Check size={18} /> : <Plus size={18} className="group-hover:rotate-90 transition-transform" />}
-                  <span className="uppercase tracking-[0.2em] text-[10px] font-bold sm:hidden lg:block">
-                    {isInInquiry(data?.id) ? (t('productDetails', 'inList') || 'LİSTEDE') : (t('productDetails', 'addToList') || 'LİSTEYE EKLE')}
-                  </span>
-                </button>
               </div>
-
-            </div>
-
-            <p className="text-xs text-gray-400 tracking-widest font-medium text-center uppercase leading-relaxed px-4">
-              {t('productDetails', 'inquireNote')}
-            </p>
-
+            </FadeUp>
           </div>
         </div>
-
       </article>
+
+      {/* Full-size viewer */}
+      <Dialog.Root open={isViewerOpen} onOpenChange={setIsViewerOpen}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 bg-black/95 z-[130]" />
+          <Dialog.Content className="fixed inset-0 z-[131] flex items-center justify-center p-4 sm:p-10 outline-none" onClick={() => setIsViewerOpen(false)}>
+            <Dialog.Title className="sr-only">{data.name}</Dialog.Title>
+            <Dialog.Description className="sr-only">{t('productDetails', 'viewLarge')}</Dialog.Description>
+            <motion.img
+              src={shown}
+              alt={data.name}
+              initial={{ opacity: 0, scale: reduce ? 1 : 0.97 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, ease: EASE_OUT }}
+              className="max-w-full max-h-full object-contain"
+            />
+            <Dialog.Close
+              aria-label={t('productDetails', 'close')}
+              className="absolute top-5 right-5 w-11 h-11 rounded-full border border-white/25 flex items-center justify-center text-white/80 hover:text-white hover:border-white/60 transition-colors"
+            >
+              <X size={18} />
+            </Dialog.Close>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
     </main>
   );
 };

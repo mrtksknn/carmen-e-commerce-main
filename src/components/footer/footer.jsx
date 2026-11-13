@@ -27,7 +27,7 @@ const Footer = () => {
 
             </div>
 
-            <span className='patent'>© 2024 Carmen Tüm Hakları Saklıdır.</span>
+            <span className='patent'>© {new Date().getFullYear()} Piece Of Oblivion · Beliz Keskin. Tüm hakları saklıdır.</span>
         </footer>
     );
   };

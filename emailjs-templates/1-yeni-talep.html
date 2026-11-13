@@ -1,0 +1,68 @@
+<!--
+  EmailJS şablonu: YENİ TALEP  →  stüdyoya gelir
+  Şablon kimliği (.env):  VITE_EMAILJS_TEMPLATE_ID   (şu an: template_isinyv5)
+
+  EmailJS panelinde:
+    Subject   :  Yeni talep · {{subject}}
+    To Email  :  {{to_email}}
+    From Name :  Piece Of Oblivion
+    Reply To  :  {{reply_to}}
+  Content alanında "Code" (</>) görünümüne geçip bu dosyanın aşağıdaki
+  <table> bloğunun TAMAMINI yapıştırın.
+
+  Site şu değişkenleri gönderir:
+    to_email, from_name, from_email, reply_to, subject,
+    interest, location, artworks, message
+-->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f6f2ec;padding:32px 16px;font-family:Georgia,'Times New Roman',serif;color:#16120f;">
+  <tr>
+    <td align="center">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border:1px solid #e4dcd1;">
+        <tr>
+          <td style="padding:28px 32px 8px;">
+            <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#6f665d;">Piece Of Oblivion · Yeni talep</p>
+            <h1 style="margin:12px 0 0;font-size:26px;font-weight:normal;line-height:1.25;">{{subject}}</h1>
+            <div style="width:40px;height:2px;background:#af362c;margin:18px 0 0;"></div>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:20px 32px 4px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.5;">
+              <tr>
+                <td style="padding:6px 0;width:110px;color:#6f665d;">Gönderen</td>
+                <td style="padding:6px 0;">{{from_name}}</td>
+              </tr>
+              <tr>
+                <td style="padding:6px 0;color:#6f665d;">E-posta</td>
+                <td style="padding:6px 0;"><a href="mailto:{{from_email}}" style="color:#af362c;">{{from_email}}</a></td>
+              </tr>
+              <tr>
+                <td style="padding:6px 0;color:#6f665d;">Konu</td>
+                <td style="padding:6px 0;">{{interest}}</td>
+              </tr>
+              <tr>
+                <td style="padding:6px 0;color:#6f665d;">Eser(ler)</td>
+                <td style="padding:6px 0;">{{artworks}}</td>
+              </tr>
+              <tr>
+                <td style="padding:6px 0;color:#6f665d;">Konum</td>
+                <td style="padding:6px 0;">{{location}}</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:16px 32px 28px;">
+            <p style="margin:0 0 8px;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#6f665d;">Mesaj</p>
+            <p style="margin:0;font-size:16px;line-height:1.6;white-space:pre-line;">{{message}}</p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:16px 32px 24px;border-top:1px solid #e4dcd1;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#6f665d;">
+            Bu e-postayı yanıtladığınızda cevap doğrudan gönderene gider. Talep, admin panelindeki "Talepler" sekmesinde de kayıtlıdır.
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>

@@ -15,7 +15,8 @@ import {
   query,
   orderBy,
   getDocs,
-  getDoc
+  getDoc,
+  setDoc
 } from "firebase/firestore";
 
 /**
@@ -159,6 +160,32 @@ export const verifyCertificate = async (certId) => {
 export const updateInquiryStatus = async (id, status) => {
   const inquiryRef = doc(db, "inquiries", id);
   return await updateDoc(inquiryRef, { status });
+};
+
+/**
+ * Site settings (single document: settings/site)
+ * notifyEmail: the address new enquiries are emailed to.
+ */
+const settingsRef = () => doc(db, "settings", "site");
+
+export const getSiteSettings = async () => {
+  const snap = await getDoc(settingsRef());
+  return snap.exists() ? snap.data() : {};
+};
+
+export const subscribeToSiteSettings = (callback, errorCallback) => {
+  return onSnapshot(
+    settingsRef(),
+    (snap) => callback(snap.exists() ? snap.data() : {}),
+    (error) => {
+      console.error("Error subscribing to settings:", error);
+      if (errorCallback) errorCallback(error);
+    }
+  );
+};
+
+export const saveSiteSettings = async (data) => {
+  return await setDoc(settingsRef(), { ...data, updatedAt: serverTimestamp() }, { merge: true });
 };
 
 /**

@@ -1,143 +1,73 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Edit2, Trash2 } from "lucide-react";
+import { IconButton, Pagination, useAdminT } from "./AdminUI";
+
+const ITEMS_PER_PAGE = 8;
 
 const CollectionList = ({ products, allProducts, onEdit, onDelete }) => {
+  const at = useAdminT();
   const [currentPage, setCurrentPage] = useState(1);
-  const [collectionsWithCounts, setCollectionsWithCounts] = useState([]);
 
-  const itemsPerPage = 7;
-  const totalPages = Math.ceil(collectionsWithCounts.length / itemsPerPage);
-  const currentItems = collectionsWithCounts.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  const collectionsWithCounts = useMemo(() => products.map((collection) => ({
+    ...collection,
+    artCount: allProducts.filter(
+      (product) => typeof product.collections === 'string' && product.collections === collection.name
+    ).length,
+    cover: allProducts.find((p) => p.collections === collection.name)?.img,
+  })), [products, allProducts]);
 
-  useEffect(() => {
-    const enriched = products.map((collection) => {
-      const artCount = allProducts.filter(
-        (product) =>
-          typeof product.collections === 'string' &&
-          product.collections === collection.name
-      ).length;
+  const totalPages = Math.ceil(collectionsWithCounts.length / ITEMS_PER_PAGE);
+  const page = Math.min(currentPage, Math.max(totalPages, 1));
+  const currentItems = collectionsWithCounts.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
 
-      return { ...collection, artCount };
-    });
-
-    setCollectionsWithCounts(enriched);
-  }, [products, allProducts]);
-
-  const handlePageChange = (page) => {
-    if (page < 1 || page > totalPages) return;
-    setCurrentPage(page);
-  };
+  if (!collectionsWithCounts.length) {
+    return <p className="py-16 text-center text-sm text-white/50">{at('collectionsEmpty')}</p>;
+  }
 
   return (
-    <div className="space-y-4">
-      <div className="rounded-xl border border-primary/20 bg-surface overflow-hidden shadow-lg">
-        <table className="w-full">
+    <>
+      <div className="overflow-x-auto -mx-4 sm:mx-0">
+        <table className="w-full min-w-[620px] text-left">
           <thead>
-            <tr className="bg-primary/5">
-              {["Collection Name", "Description", "Arts", "Actions"].map((header) => (
-                <th
-                  key={header}
-                  className="text-left px-6 py-4 text-gray-400 font-medium tracking-wide text-sm"
-                >
-                  {header}
-                </th>
+            <tr className="border-b border-white/10">
+              {[at('colName'), at('colDesc'), at('colCount')].map((h) => (
+                <th key={h} scope="col" className="px-4 pb-3 text-[12px] font-medium text-white/45">{h}</th>
               ))}
+              <th scope="col" className="px-4 pb-3 text-[12px] font-medium text-white/45 text-right">{at('colActions')}</th>
             </tr>
           </thead>
-
-          <tbody className="divide-y divide-primary/10">
-            {currentItems.length ? (
-              currentItems.map((collection) => (
-                <tr
-                  key={collection.id}
-                  className="hover:bg-primary/5 transition-colors group"
-                >
-                  <td className="px-6 py-4 text-left font-medium text-white">{collection.name}</td>
-                  <td className="px-6 py-4 text-left text-gray-300 max-w-md truncate">{collection.description || '--'}</td>
-                  <td className="px-6 py-4 text-left">
-                    <span className="inline-flex items-center justify-center bg-primary/10 border border-primary/20 text-primary-light px-3 py-1 rounded-full text-xs font-medium">
-                      {collection.artCount || '0'} Artworks
+          <tbody className="divide-y divide-white/[0.06]">
+            {currentItems.map((collection) => (
+              <tr key={collection.id} className="hover:bg-white/[0.025] transition-colors duration-150">
+                <td className="px-4 py-3">
+                  <div className="flex items-center gap-4">
+                    <span className="w-12 h-12 shrink-0 rounded-[3px] overflow-hidden bg-white/[0.04] ring-1 ring-white/10">
+                      {collection.cover && <img src={collection.cover} alt="" className="w-full h-full object-cover" />}
                     </span>
-                  </td>
-                  <td className="px-6 py-4 text-left">
-                    <div className="flex items-center justify-start gap-3">
-                      <button
-                        className="p-1.5 rounded-md border border-transparent hover:border-blue-500/20 hover:bg-blue-500/10 text-gray-400 hover:text-blue-400 transition-all shadow-sm hover:shadow"
-                        title="Edit Collection"
-                        onClick={() => onEdit(collection)}
-                      >
-                        <Edit2 size={18} />
-                      </button>
-                      <button
-                        className="p-1.5 rounded-md border border-transparent hover:border-red-500/20 hover:bg-red-500/10 text-gray-400 hover:text-red-400 transition-all shadow-sm hover:shadow"
-                        title="Delete Collection"
-                        onClick={() => onDelete(collection.id)}
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="4" className="text-center py-8 text-muted-foreground">
-                  No products found. Add your first product to get started.
+                    <span className="font-serif text-lg text-white">{collection.name}</span>
+                  </div>
+                </td>
+                <td className="px-4 py-3 text-sm text-white/60 max-w-md">
+                  <span className="line-clamp-2">{collection.description || '—'}</span>
+                </td>
+                <td className="px-4 py-3 text-sm text-white/80 tabular-nums">{at('worksCount', { n: collection.artCount })}</td>
+                <td className="px-4 py-3">
+                  <div className="flex items-center justify-end gap-0.5">
+                    <IconButton label={at('edit')} onClick={() => onEdit(collection)}>
+                      <Edit2 size={16} strokeWidth={1.6} />
+                    </IconButton>
+                    <IconButton label={at('delete')} tone="danger" onClick={() => onDelete(collection.id)}>
+                      <Trash2 size={16} strokeWidth={1.6} />
+                    </IconButton>
+                  </div>
                 </td>
               </tr>
-            )}
+            ))}
           </tbody>
         </table>
       </div>
-
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex justify-center items-center space-x-2 mt-8">
-          <button
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-              currentPage === 1
-                ? "opacity-50 cursor-not-allowed bg-surface text-gray-500 border border-primary/10"
-                : "bg-surface text-gray-300 border border-primary/20 hover:bg-primary/20 hover:text-white"
-            }`}
-          >
-            Prev
-          </button>
-
-          <div className="flex bg-surface rounded-lg border border-primary/20 p-1">
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-              <button
-                key={page}
-                onClick={() => handlePageChange(page)}
-                className={`w-8 h-8 rounded-md flex items-center justify-center text-sm font-medium transition-all ${
-                  currentPage === page
-                    ? "bg-primary text-white shadow-sm"
-                    : "text-gray-400 hover:bg-primary/10 hover:text-white"
-                }`}
-              >
-                {page}
-              </button>
-            ))}
-          </div>
-
-          <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-              currentPage === totalPages
-                ? "opacity-50 cursor-not-allowed bg-surface text-gray-500 border border-primary/10"
-                : "bg-surface text-gray-300 border border-primary/20 hover:bg-primary/20 hover:text-white"
-            }`}
-          >
-            Next
-          </button>
-        </div>
-      )}
-    </div>
+      <Pagination page={page} total={totalPages} onChange={setCurrentPage} />
+    </>
   );
 };
 

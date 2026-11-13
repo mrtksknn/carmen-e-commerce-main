@@ -1,0 +1,35 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "radial-halo",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/assigned.html"
+        ],
+        "createdAt": "2026-11-12T18:07:05.305Z",
+        "reason": "Claude decided: radial gradients are the placeholder stand-in painting in a decision sketch, not a page glow"
+      },
+      {
+        "rule": "radial-halo",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/model-pick.html"
+        ],
+        "createdAt": "2026-11-12T18:07:05.403Z",
+        "reason": "Claude decided: radial gradients are the placeholder stand-in painting in a decision sketch, not a page glow"
+      },
+      {
+        "rule": "radial-halo",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/canon.html"
+        ],
+        "createdAt": "2026-11-12T18:07:05.530Z",
+        "reason": "Claude decided: radial gradients are the placeholder stand-in painting in a decision sketch, not a page glow"
+      }
+    ]
+  }
+}

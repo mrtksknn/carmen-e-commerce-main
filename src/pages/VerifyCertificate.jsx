@@ -1,21 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { motion, useReducedMotion } from 'framer-motion';
+import { ArrowRight, Check } from 'lucide-react';
 import { verifyCertificate } from '../services/firebaseService';
-import { ShieldCheck, Calendar, User, Tag, ArrowRight, Loader2, Award } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { useLanguage } from '../context/LanguageContext';
 import SEO from '../components/SEO';
+import { MaskLine, FadeUp, EASE_OUT } from '../components/motion/Reveal';
 
 const VerifyCertificate = () => {
   const { certId } = useParams();
+  const { t, language } = useLanguage();
+  const reduce = useReducedMotion();
   const [loading, setLoading] = useState(true);
   const [certificate, setCertificate] = useState(null);
 
   useEffect(() => {
     const checkCert = async () => {
-      console.log("Checking Certificate ID:", certId);
       try {
         const data = await verifyCertificate(certId);
-        console.log("Fetched Data:", data);
         setCertificate(data);
       } catch (error) {
         console.error("Verification error details:", error);
@@ -32,108 +34,104 @@ const VerifyCertificate = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="text-primary animate-spin" size={40} />
+      <div className="min-h-screen bg-background flex items-center justify-center" role="status">
+        <motion.span
+          className="font-serif italic text-white/40 text-lg"
+          animate={reduce ? undefined : { opacity: [0.3, 0.8, 0.3] }}
+          transition={{ repeat: Infinity, duration: 2.4, ease: 'easeInOut' }}
+        >
+          {t('verify', 'loading')}
+        </motion.span>
       </div>
     );
   }
 
+  const issued = certificate?.createdAt
+    ? new Date(certificate.createdAt.toDate()).toLocaleDateString(language === 'tr' ? 'tr-TR' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+    : '—';
+
+  const rows = certificate ? [
+    { label: t('verify', 'artist'), value: 'Beliz Keskin', serif: true },
+    { label: t('verify', 'collector'), value: certificate.collectorName || '—', serif: true },
+    { label: t('verify', 'issued'), value: issued },
+    { label: t('verify', 'edition'), value: t('verify', 'editionValue') },
+    { label: t('verify', 'certId'), value: certId, mono: true },
+  ] : [];
+
   return (
-    <main className="min-h-screen bg-background text-white pt-32 pb-20 px-6 relative overflow-hidden">
-      <SEO title="Artwork Verification | Piece Of Oblivion" />
-      
-      {/* Decorative Glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_center,rgba(168,50,41,0.05)_0%,transparent_70%)] pointer-events-none"></div>
+    <main className="min-h-screen bg-background text-white pt-36 lg:pt-44 pb-32 px-6">
+      <SEO title={t('verify', 'title')} />
 
-      <div className="max-w-2xl mx-auto relative z-10">
+      <div className="max-w-3xl mx-auto">
         {!certificate ? (
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center p-12 bg-surface/50 border border-white/5 rounded-[2rem] backdrop-blur-xl"
-          >
-            <div className="w-20 h-20 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-red-500/20">
-              <ShieldCheck className="text-red-500" size={40} />
-            </div>
-            <h1 className="text-3xl font-serif mb-4">Verification Failed</h1>
-            <p className="text-gray-400 mb-8 font-light">This certificate ID could not be found in our official registry. Please contact the gallery for assistance.</p>
-            <Link to="/" className="inline-flex items-center gap-2 text-primary hover:text-white transition-colors uppercase tracking-widest text-xs font-bold">
-              Return to Gallery <ArrowRight size={14} />
-            </Link>
-          </motion.div>
+          <div>
+            <h1 className="font-serif font-light tracking-[-0.02em] leading-[1.04] text-[2.75rem] sm:text-6xl text-white text-balance">
+              <MaskLine delay={0.1}>{t('verify', 'failTitle')}</MaskLine>
+            </h1>
+            <FadeUp delay={0.35}>
+              <p className="mt-6 text-white/60 font-light leading-relaxed text-base md:text-lg max-w-xl">{t('verify', 'failDesc')}</p>
+              <Link to="/contact" className="group mt-10 inline-flex items-center gap-3 text-xs font-semibold tracking-[0.18em] uppercase text-white/70 hover:text-white transition-colors">
+                {t('verify', 'contact')}
+                <ArrowRight size={14} className="transition-transform duration-500 group-hover:translate-x-1" />
+              </Link>
+            </FadeUp>
+          </div>
         ) : (
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-8"
-          >
-            {/* Header Success */}
-            <div className="text-center mb-12">
-              <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-primary/20 shadow-[0_0_40px_rgba(168,50,41,0.2)]">
-                <ShieldCheck className="text-primary" size={48} />
-              </div>
-              <h1 className="text-4xl md:text-5xl font-serif tracking-tight mb-2 italic">Authenticity Verified</h1>
-              <p className="text-[#d4af37] uppercase tracking-[0.4em] text-[10px] font-bold">Official Digital Record • Piece Of Oblivion</p>
+          <div>
+            {/* The seal: a ring that draws itself closed before the check appears */}
+            <div className="relative w-16 h-16 mb-10" aria-hidden="true">
+              <svg viewBox="0 0 64 64" className="absolute inset-0 w-full h-full -rotate-90">
+                <circle cx="32" cy="32" r="30" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="1" />
+                <motion.circle
+                  cx="32" cy="32" r="30" fill="none" stroke="#f26868" strokeWidth="1.25"
+                  initial={{ pathLength: reduce ? 1 : 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: 1.4, ease: EASE_OUT }}
+                />
+              </svg>
+              <motion.span
+                className="absolute inset-0 flex items-center justify-center text-primary-light"
+                initial={{ opacity: 0, scale: reduce ? 1 : 0.6 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: reduce ? 0 : 1.1, ease: EASE_OUT }}
+              >
+                <Check size={24} strokeWidth={1.5} />
+              </motion.span>
             </div>
 
-            {/* Certificate Card */}
-            <div className="bg-surface/30 border border-white/10 rounded-[2.5rem] overflow-hidden backdrop-blur-md shadow-2xl">
-              <div className="bg-gradient-to-r from-primary/20 to-transparent p-8 border-b border-white/5">
-                <span className="text-[10px] uppercase tracking-widest text-primary font-bold mb-2 block">Original Masterpiece</span>
-                <h2 className="text-3xl md:text-4xl font-serif text-white">{certificate.artwork?.name}</h2>
-              </div>
+            <h1 className="font-serif font-light tracking-[-0.02em] leading-[1.04] text-[2.75rem] sm:text-6xl text-white">
+              <MaskLine delay={0.2}>{t('verify', 'okTitle')}</MaskLine>
+            </h1>
+            <FadeUp delay={0.45}>
+              <p className="mt-4 text-[11px] font-medium tracking-[0.22em] uppercase text-white/50">{t('verify', 'okSub')}</p>
+            </FadeUp>
 
-              <div className="p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-10">
-                <div className="space-y-6">
-                  <div className="flex items-start gap-4">
-                    <User className="text-gray-500 mt-1" size={18} />
-                    <div>
-                      <span className="text-[10px] uppercase tracking-widest text-gray-500 block mb-1">Collector</span>
-                      <p className="text-lg text-white font-medium">{certificate.collectorName}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-4">
-                    <Calendar className="text-gray-500 mt-1" size={18} />
-                    <div>
-                      <span className="text-[10px] uppercase tracking-widest text-gray-500 block mb-1">Issue Date</span>
-                      <p className="text-lg text-white font-medium">{certificate.createdAt ? new Date(certificate.createdAt.toDate()).toLocaleDateString() : 'N/A'}</p>
-                    </div>
-                  </div>
-                </div>
+            <FadeUp delay={0.6}>
+              <h2 className="mt-14 font-serif font-light italic text-3xl md:text-4xl text-white">
+                {certificate.artwork?.name}
+              </h2>
 
-                <div className="space-y-6">
-                  <div className="flex items-start gap-4">
-                    <Tag className="text-gray-500 mt-1" size={18} />
-                    <div>
-                      <span className="text-[10px] uppercase tracking-widest text-gray-500 block mb-1">Edition</span>
-                      <p className="text-lg text-white font-medium">Original 1 of 1</p>
-                    </div>
+              <dl className="mt-8 border-t border-white/10">
+                {rows.map((r) => (
+                  <div key={r.label} className="flex items-baseline justify-between gap-6 py-4 border-b border-white/10">
+                    <dt className="text-[11px] tracking-[0.18em] uppercase text-white/50">{r.label}</dt>
+                    <dd className={`text-right ${r.serif ? 'font-serif text-lg text-white' : r.mono ? 'font-mono text-sm text-primary-light break-all' : 'text-white/85'}`}>
+                      {r.value}
+                    </dd>
                   </div>
-                  <div className="flex items-start gap-4">
-                    <Award className="text-gray-500 mt-1" size={18} />
-                    <div>
-                      <span className="text-[10px] uppercase tracking-widest text-gray-500 block mb-1">Authenticity ID</span>
-                      <code className="text-sm text-primary font-mono bg-primary/5 px-2 py-1 rounded">{certId}</code>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                ))}
+              </dl>
 
-              {/* Status Badge */}
-              <div className="px-8 pb-12 pt-4 flex justify-center">
-                <div className="px-6 py-3 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-[10px] font-bold tracking-[0.2em] uppercase flex items-center gap-3">
-                  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                  Valid Digital Asset
-                </div>
-              </div>
-            </div>
-
-            <div className="text-center">
-              <p className="text-gray-500 text-xs font-light leading-relaxed max-w-sm mx-auto italic">
-                "This document serves as the permanent digital record of authenticity for the work of art mentioned above, curated by Piece Of Oblivion."
+              <p className="mt-6 inline-flex items-center gap-2.5 text-[11px] tracking-[0.18em] uppercase text-white/70">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary-light" aria-hidden="true" />
+                {t('verify', 'status')}
               </p>
-            </div>
-          </motion.div>
+
+              <p className="mt-12 text-sm text-white/45 font-light leading-relaxed max-w-md">
+                {t('verify', 'note')}
+              </p>
+            </FadeUp>
+          </div>
         )}
       </div>
     </main>

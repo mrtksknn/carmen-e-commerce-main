@@ -1,119 +1,93 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Check } from 'lucide-react';
 import { useCustomToast } from "../ui/toast-context";
 import { addCollection, updateCollection } from '../../services/firebaseService';
+import { Button, Field, inputClass, useAdminT } from './AdminUI';
 
 const CollectionForm = ({ collectionItem, onClose, onSave }) => {
-    const toast = useCustomToast();
-    const [formData, setFormData] = useState({
-        name: '',
-        description: '',
-    });
+  const at = useAdminT();
+  const toast = useCustomToast();
+  const [isSaving, setIsSaving] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+  });
 
-    useEffect(() => {
-        if (collectionItem) {
-            setFormData({
-                name: collectionItem.name || '',
-                description: collectionItem.description || '',
-            });
-        }
-    }, [collectionItem]);
+  useEffect(() => {
+    if (collectionItem) {
+      setFormData({
+        name: collectionItem.name || '',
+        description: collectionItem.description || '',
+      });
+    }
+  }, [collectionItem]);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-        if (!formData.name) {
-            toast({ type: "error", message: "Please enter a collection name." });
-            return;
-        }
+    if (!formData.name.trim()) {
+      toast({ type: "error", message: at('collectionNameRequired') });
+      return;
+    }
 
-        try {
-            const collectionData = {
-                name: formData.name,
-                description: formData.description,
-            };
+    setIsSaving(true);
+    try {
+      const collectionData = {
+        name: formData.name.trim(),
+        description: formData.description,
+      };
 
-            if (collectionItem?.id) {
-                await updateCollection(collectionItem.id, collectionData);
-                toast({ type: "success", message: `${formData.name} koleksiyonu başarıyla güncellendi.` });
-            } else {
-                await addCollection(collectionData);
-                toast({ type: "success", message: `${formData.name} koleksiyonu başarıyla oluşturuldu.` });
-            }
+      if (collectionItem?.id) {
+        await updateCollection(collectionItem.id, collectionData);
+        toast({ type: "success", message: at('collectionUpdated', { name: collectionData.name }) });
+      } else {
+        await addCollection(collectionData);
+        toast({ type: "success", message: at('collectionCreated', { name: collectionData.name }) });
+      }
 
-            onSave();
-            onClose();
-        } catch (error) {
-            console.error('Error saving collection:', error);
-            toast({ type: "error", message: "Something went wrong. Please try again." });
-        }
-    };
+      onSave();
+      onClose();
+    } catch (error) {
+      console.error('Error saving collection:', error);
+      toast({ type: "error", message: at('genericError') });
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
-    return (
-        <Card className="bg-surface border-none shadow-none w-full max-w-4xl">
-            <CardHeader className="px-0 pt-0">
-                <CardTitle className="text-2xl font-serif text-white">{collectionItem ? "Update Collection" : "Create New Collection"}</CardTitle>
-            </CardHeader>
-            <CardContent className="px-0 pb-0">
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    {/* Name */}
-                    <div className="space-y-2">
-                        <label htmlFor="name" className="block text-sm font-medium text-gray-300">
-                            Collection Name *
-                        </label>
-                        <input
-                            type="text"
-                            id="name"
-                            value={formData.name}
-                            onChange={(e) =>
-                                setFormData((prev) => ({ ...prev, name: e.target.value }))
-                            }
-                            placeholder="Enter collection name"
-                            required
-                            className="w-full px-4 py-3 border border-primary/30 rounded-lg bg-background-dark text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-gray-600"
-                        />
-                    </div>
+  return (
+    <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
+      <Field label={at('collectionName')} required requiredLabel={at('required')} htmlFor="cf-name">
+        <input
+          type="text"
+          id="cf-name"
+          value={formData.name}
+          onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
+          placeholder={at('collectionNamePh')}
+          required
+          className={inputClass}
+        />
+      </Field>
 
-                    {/* Description */}
-                    <div className="space-y-2">
-                        <label htmlFor="description" className="block text-sm font-medium text-gray-300">
-                            Description
-                        </label>
-                        <textarea
-                            id="description"
-                            value={formData.description}
-                            onChange={(e) =>
-                                setFormData((prev) => ({
-                                    ...prev,
-                                    description: e.target.value,
-                                }))
-                            }
-                            placeholder="Enter collection description"
-                            rows={4}
-                            className="w-full px-4 py-3 border border-primary/30 rounded-lg bg-background-dark text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-gray-600 resize-y"
-                        />
-                    </div>
+      <Field label={at('fieldDescription')} htmlFor="cf-desc">
+        <textarea
+          id="cf-desc"
+          value={formData.description}
+          onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
+          placeholder={at('collectionDescPh')}
+          rows={4}
+          className={`${inputClass} resize-y`}
+        />
+      </Field>
 
-                    {/* Buttons */}
-                    <div className="flex gap-4 pt-4">
-                        <button
-                            type="submit"
-                            className="flex-1 bg-primary text-white py-3 px-4 rounded-lg font-semibold hover:bg-primary-hover shadow-lg shadow-primary/20 transition-all hover:-translate-y-0.5"
-                        >
-                            {collectionItem ? "Update Collection" : "Create Collection"}
-                        </button>
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="flex-1 border border-primary/30 text-gray-300 hover:text-white py-3 px-4 rounded-lg hover:border-primary/60 hover:bg-primary/10 transition-all"
-                        >
-                            Cancel
-                        </button>
-                    </div>
-                </form>
-            </CardContent>
-        </Card>
-    );
+      <div className="flex flex-col-reverse sm:flex-row gap-3 pt-2">
+        <Button type="submit" variant="accent" icon={Check} loading={isSaving}>
+          {collectionItem ? at('update') : at('create')}
+        </Button>
+        <Button variant="ghost" onClick={onClose} disabled={isSaving}>{at('cancel')}</Button>
+      </div>
+    </form>
+  );
 };
 
 export default CollectionForm;

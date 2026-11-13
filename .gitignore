@@ -24,3 +24,10 @@ yarn-error.log*
 
 # Environment Variables
 .env
+
+# Local tooling
+.playwright-mcp/
+.impeccable/hook.cache.json
+.impeccable/mocks/
+.impeccable/questions/
+.impeccable/review/

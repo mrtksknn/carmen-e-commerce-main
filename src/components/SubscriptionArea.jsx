@@ -12,6 +12,7 @@ import {
   getDocs,
 } from "firebase/firestore";
 import { useLanguage } from "../context/LanguageContext";
+import { MaskLine } from "./motion/Reveal";
 
 const SubscriptionArea = () => {
   const { t } = useLanguage();
@@ -132,10 +133,12 @@ const SubscriptionArea = () => {
         </div>
 
         {/* Headings */}
-        <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-light text-white mb-6 tracking-tight">
-          {step === 1 && t('subscription', 'step1Title')}
-          {step === 2 && t('subscription', 'step2Title')}
-          {step === 3 && t('subscription', 'step3Title')}
+        <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-light text-white mb-6 tracking-tight text-balance">
+          <MaskLine inView key={step}>
+            {step === 1 && t('subscription', 'step1Title')}
+            {step === 2 && t('subscription', 'step2Title')}
+            {step === 3 && t('subscription', 'step3Title')}
+          </MaskLine>
         </h2>
 
         <p className="text-gray-400 font-light text-sm md:text-base mb-12 max-w-xl mx-auto leading-relaxed">

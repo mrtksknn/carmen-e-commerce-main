@@ -1,150 +1,125 @@
 import React, { forwardRef } from 'react';
-import { useLanguage } from '../../context/LanguageContext';
-import { ShieldCheck, Award, QrCode } from 'lucide-react';
+
+// Printed on paper, so it is set like a paper document: warm stock, black ink,
+// the studio's red used once. English is kept as the document language because
+// the works ship worldwide.
+const PAPER = '#f6f2ec';
+const INK = '#16120f';
+const MUTED = '#6f665d';
+const RULE = '#d9d0c4';
+const ACCENT = '#af362c';
 
 const CertificateOfAuthenticity = forwardRef(({ artwork, certificateId, collectorName }, ref) => {
-  const { t } = useLanguage();
-  const today = new Date().toLocaleDateString();
-
   if (!artwork) return null;
+
+  const today = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  const id = typeof certificateId === 'string' ? certificateId : (certificateId?.id || 'PREVIEW');
+  const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+  const verifyUrl = `${window.location.origin}${base}verify/${id}`;
+
+  const details = [
+    { label: 'Medium', value: artwork.material },
+    { label: 'Dimensions', value: artwork.dimensions },
+    { label: 'Collection', value: artwork.collections },
+    { label: 'Edition', value: 'Original, one of one' },
+  ].filter((d) => d.value);
+
+  const label = { fontFamily: '"DM Sans", system-ui, sans-serif', fontSize: '8.5pt', letterSpacing: '0.22em', textTransform: 'uppercase', color: MUTED };
 
   return (
     <>
       <style>
         {`
           @media print {
-            @page {
-              size: A4;
-              margin: 0;
-            }
-            body {
-              margin: 0;
-              -webkit-print-color-adjust: exact;
-            }
-            .certificate-container {
-              box-shadow: none !important;
-              border: none !important;
-              width: 210mm !important;
-              height: 297mm !important;
-              margin: 0 !important;
-              border-radius: 0 !important;
-            }
+            @page { size: A4; margin: 0; }
+            body { margin: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .coa-sheet { box-shadow: none !important; }
           }
         `}
       </style>
 
       <div
         ref={ref}
-        className="certificate-container relative bg-[#0c0c0c] text-white p-12 sm:p-12 shadow-2xl mx-auto border-[16px] border-[#1a1a1a] overflow-hidden font-serif print:shadow-none print:border-none"
-        style={{
-          width: '210mm',
-          height: '297mm',
-          boxSizing: 'border-box'
-        }}
+        className="coa-sheet relative mx-auto overflow-hidden font-serif"
+        style={{ width: '210mm', height: '297mm', boxSizing: 'border-box', background: PAPER, color: INK, padding: '22mm 22mm 18mm' }}
       >
-        {/* Header - Orijinal Hali */}
-        <div className="text-center mb-8 relative z-10">
-          <div className="flex justify-center mb-6">
-            <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="Carmen Logo" className="w-12 h-12 object-contain" />
-          </div>
-          <h1 className="text-2xl sm:text-2xl font-bold uppercase tracking-[0.2em] text-white mb-4">
-            Certificate of Authenticity
-          </h1>
-          <div className="w-32 h-[1px] bg-[#d4af37] mx-auto mb-4"></div>
-          <p className="text-[10px] uppercase tracking-[0.4em] text-[#888]">Official Document • Carmen Arts Gallery</p>
+        {/* Inner frame */}
+        <div className="absolute pointer-events-none" style={{ inset: '9mm', border: `0.4mm solid ${RULE}` }} />
+
+        <div className="relative h-full flex flex-col">
+          {/* Masthead */}
+          <header className="text-center">
+            <img src={`${base}logo.svg`} alt="Piece Of Oblivion" style={{ width: '13mm', height: '13mm', margin: '0 auto 7mm', objectFit: 'contain' }} />
+            <p style={label}>Piece Of Oblivion</p>
+            <h1 style={{ fontSize: '30pt', fontWeight: 300, lineHeight: 1.1, margin: '5mm 0 0', letterSpacing: '-0.01em' }}>
+              Certificate of Authenticity
+            </h1>
+            <div style={{ width: '18mm', height: '0.5mm', background: ACCENT, margin: '7mm auto 0' }} />
+          </header>
+
+          <p className="text-center" style={{ fontSize: '12.5pt', fontStyle: 'italic', color: MUTED, lineHeight: 1.6, margin: '11mm auto 0', maxWidth: '135mm' }}>
+            This certifies that the work described below is an original, signed work of art created by the artist Beliz Keskin.
+          </p>
+
+          {/* The work */}
+          <section className="text-center" style={{ marginTop: '14mm' }}>
+            <p style={label}>Title of the work</p>
+            <h2 style={{ fontSize: '28pt', fontWeight: 400, fontStyle: 'italic', lineHeight: 1.15, margin: '3mm 0 0' }}>{artwork.name}</h2>
+            {collectorName && (
+              <p style={{ fontSize: '12.5pt', marginTop: '6mm', color: INK }}>
+                <span style={{ ...label, marginRight: '3mm' }}>Collector</span>
+                {collectorName}
+              </p>
+            )}
+          </section>
+
+          <dl
+            className="grid grid-cols-2"
+            style={{ marginTop: '12mm', borderTop: `0.3mm solid ${RULE}`, borderBottom: `0.3mm solid ${RULE}`, padding: '7mm 0', rowGap: '6mm', columnGap: '10mm' }}
+          >
+            {details.map((d) => (
+              <div key={d.label} className="text-center">
+                <dt style={label}>{d.label}</dt>
+                <dd style={{ fontSize: '13pt', margin: '2mm 0 0', fontVariantNumeric: 'lining-nums' }}>{d.value}</dd>
+              </div>
+            ))}
+          </dl>
+
+          {/* Verification */}
+          <section className="flex items-center justify-between" style={{ marginTop: '11mm', gap: '10mm' }}>
+            <div>
+              <p style={label}>Certificate number</p>
+              <p style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontSize: '10.5pt', marginTop: '2mm', letterSpacing: '0.04em' }}>{id}</p>
+              <p style={{ fontFamily: '"DM Sans", system-ui, sans-serif', fontSize: '8.5pt', color: MUTED, marginTop: '3mm', maxWidth: '95mm', lineHeight: 1.5 }}>
+                Scan the code or visit the address below to confirm this record.
+              </p>
+              <p style={{ fontFamily: '"DM Sans", system-ui, sans-serif', fontSize: '8pt', color: MUTED, marginTop: '1.5mm', wordBreak: 'break-all' }}>{verifyUrl}</p>
+            </div>
+            <img
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=0&color=16120f&bgcolor=f6f2ec&data=${encodeURIComponent(verifyUrl)}`}
+              alt="Verification QR code"
+              style={{ width: '26mm', height: '26mm', flexShrink: 0 }}
+            />
+          </section>
+
+          {/* Signature */}
+          <section className="grid grid-cols-2 mt-auto" style={{ columnGap: '18mm', paddingBottom: '6mm' }}>
+            <div>
+              <p style={{ fontSize: '12.5pt', height: '14mm', display: 'flex', alignItems: 'flex-end', paddingBottom: '2mm', fontVariantNumeric: 'lining-nums' }}>{today}</p>
+              <div style={{ height: '0.3mm', background: INK, opacity: 0.6 }} />
+              <p style={{ ...label, marginTop: '2.5mm' }}>Date of issue</p>
+            </div>
+            <div>
+              <div style={{ height: '14mm' }} />
+              <div style={{ height: '0.3mm', background: INK, opacity: 0.6 }} />
+              <p style={{ ...label, marginTop: '2.5mm' }}>Signature · Beliz Keskin</p>
+            </div>
+          </section>
+
+          <footer className="text-center" style={{ ...label, fontSize: '7.5pt', letterSpacing: '0.3em', paddingTop: '4mm' }}>
+            Piece Of Oblivion · Beliz Keskin
+          </footer>
         </div>
-
-        {/* Body - Orijinal Hali */}
-        <div className="relative z-10">
-          <div className="text-center">
-            <p className="text-lg italic text-gray-400 mb-8">This document certifies that the artwork described below is an authentic, original work of art created by the artist.</p>
-          </div>
-
-          {/* Orijinal İçeriğe Ek: Collector (İsteğe bağlı olarak eklenmişti, koruyorum) */}
-          {collectorName && (
-            <div className="text-center -mt-4 mb-4">
-              <span className="text-[10px] uppercase tracking-[0.3em] text-[#d4af37] font-bold block mb-1">Presented to Collector</span>
-              <p className="text-xl text-white">{collectorName}</p>
-            </div>
-          )}
-
-          {/* Artwork Info - Orijinal Hali */}
-          <div className="grid grid-cols-1 gap-10 border-y border-white/10 py-12 space-y-6" style={{ marginTop: '0 !important' }}>
-            <div className="text-center">
-              <span className="text-[10px] uppercase tracking-[0.3em] text-[#d4af37] font-bold block mb-3">Title of Artwork</span>
-              <h2 className="text-3xl font-bold text-white">{artwork.name}</h2>
-            </div>
-
-            <div className="grid grid-cols-2 gap-8 text-center">
-              <div>
-                <span className="text-[10px] uppercase tracking-[0.3em] text-gray-500 block mb-2">Medium</span>
-                <p className="text-sm font-bold text-white">{artwork.collections || 'Fine Art'}</p>
-              </div>
-              <div>
-                <span className="text-[10px] uppercase tracking-[0.3em] text-gray-500 block mb-2">Year</span>
-                <p className="text-sm font-bold text-white">{new Date().getFullYear()}</p>
-              </div>
-              <div>
-                <span className="text-[10px] uppercase tracking-[0.3em] text-gray-500 block mb-2">Dimensions</span>
-                <p className="text-sm font-bold text-white">{artwork.dimensions || 'Custom Size'}</p>
-              </div>
-              <div>
-                <span className="text-[10px] uppercase tracking-[0.3em] text-gray-500 block mb-2">Edition</span>
-                <p className="text-sm font-bold text-white">Original 1 of 1</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Authentication ID & QR - Orijinal yapıya saygı duyarak yerleştirildi */}
-          <div className="grid grid-cols-2 items-center py-0 space-y-6 m-0" style={{ marginTop: '0 !important' }}>
-            <div className="bg-white/5 border border-white/10 px-6 py-4 rounded-lg flex items-center gap-4">
-              <ShieldCheck className="text-[#d4af37]" size={20} />
-              <div className="text-left">
-                <span className="text-[9px] uppercase tracking-widest text-gray-500 block">Authentication ID</span>
-                <code className="text-xs font-mono font-bold tracking-wider text-white uppercase">
-                  {typeof certificateId === 'string' ? certificateId : (certificateId?.id || artwork.id?.toString() || 'REF-8821-X')}
-                </code>
-              </div>
-            </div>
-            <div className="flex flex-col items-end">
-              <div className="p-2 bg-white rounded-lg mb-1 shadow-lg">
-                <img 
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
-                    window.location.origin + (import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/') + 'verify/' + (certificateId || 'PREVIEW')
-                  )}`}
-                  alt="Verification QR Code"
-                  className="w-[100px] h-[100px]"
-                />
-              </div>
-              <span className="text-[7px] uppercase tracking-widest text-gray-500">Scan to Verify</span>
-            </div>
-          </div>
-
-          {/* Signatures - Orijinal Hali */}
-          <div className="grid grid-cols-2 gap-20 pt-5">
-            <div className="text-center flex flex-col items-center">
-              <div className="w-full h-px bg-white/10 mb-4"></div>
-              <span className="text-[10px] uppercase tracking-widest text-gray-500">Date of Issue</span>
-              <p className="text-xs font-bold mt-2 text-white">{today}</p>
-            </div>
-            <div className="text-center flex flex-col items-center">
-              <div className="h-12 w-32 flex items-center justify-center opacity-70 mb-2">
-                <span className="font-serif italic text-2xl text-white">Carmen</span>
-              </div>
-              <div className="w-full h-px bg-white/10 mb-4"></div>
-              <span className="text-[10px] uppercase tracking-widest text-gray-500">Authorized Signature</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Footer Branding - Orijinal Hali */}
-        <div className="absolute bottom-12 left-0 right-0 text-center opacity-30">
-          <p className="text-[9px] uppercase tracking-[0.5em] font-bold">Carmen Arts • International Fine Art Gallery</p>
-        </div>
-
-        {/* Decorative Corner Elements - Orijinal Hali */}
-        <div className="absolute top-0 left-0 w-24 h-24 border-t-2 border-l-2 border-[#d4af37]/20"></div>
-        <div className="absolute bottom-0 right-0 w-24 h-24 border-b-2 border-r-2 border-[#d4af37]/20"></div>
       </div>
     </>
   );

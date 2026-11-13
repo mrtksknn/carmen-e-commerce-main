@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
-import { X, Send, CheckCircle2, MapPin, User, Mail, MessageSquare, Info } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import emailjs from '@emailjs/browser';
-import { addInquiry } from '../../services/firebaseService';
+import { X, ArrowRight, Check } from 'lucide-react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { submitInquiry } from '../../services/inquiryService';
+import { EASE_OUT } from '../motion/Reveal';
+
+const fieldClass =
+  'w-full bg-transparent border-0 border-b border-white/20 px-0 py-3 text-white text-base font-light placeholder:text-white/35 focus:outline-none focus:border-primary-light transition-colors duration-300';
+const labelClass = 'block text-[11px] font-medium tracking-[0.18em] uppercase text-white/55';
 
 const ConciergeModal = ({ artwork, t, children, isMulti = false, onSuccess, open: controlledOpen, onOpenChange: controlledOnOpenChange }) => {
+  const reduce = useReducedMotion();
   const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
 
   const isOpen = controlledOpen !== undefined ? controlledOpen : uncontrolledOpen;
@@ -13,6 +18,7 @@ const ConciergeModal = ({ artwork, t, children, isMulti = false, onSuccess, open
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -24,13 +30,15 @@ const ConciergeModal = ({ artwork, t, children, isMulti = false, onSuccess, open
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setHasError(false);
 
     try {
       const artworkInfo = isMulti
         ? (artwork.items?.map(item => ({ id: item.id, name: item.name })) || [])
         : { id: artwork?.id || 'unknown', name: artwork?.name || 'unknown' };
 
-      const inquiryData = {
+      // Saved to the panel, then emailed to the address set in admin settings
+      await submitInquiry({
         customer: {
           name: formData.name,
           email: formData.email,
@@ -39,34 +47,9 @@ const ConciergeModal = ({ artwork, t, children, isMulti = false, onSuccess, open
         interest: formData.interest,
         message: formData.message,
         artwork: artworkInfo,
-        type: isMulti ? 'multi' : 'single'
-      };
-
-      // 1. Save to Firebase for Dashboard
-      await addInquiry(inquiryData);
-
-      // 2. Send via EmailJS for instant notification
-      const emailParams = {
-        from_name: formData.name,
-        from_email: formData.email,
-        subject: isMulti ? 'Toplu Eser Bilgi Talebi' : `${artwork?.name} - Eser Bilgi Talebi`,
-        message: `
-          ${formData.message}
-
-          Konum: ${formData.location}
-
-          İlgi Alanı: ${formData.interest}
-          
-          Talep Edilen Eser(ler): ${isMulti ? artwork.items?.map(i => i.name).join(', ') : artwork?.name}
-        `.trim()
-      };
-
-      await emailjs.send(
-        import.meta.env.VITE_EMAILJS_SERVICE_ID,
-        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-        emailParams,
-        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
-      );
+        type: isMulti ? 'multi' : 'single',
+        subjectLine: isMulti ? 'Toplu eser talebi' : `${artwork?.name} - Eser talebi`,
+      });
 
       setIsSubmitting(false);
       setIsSuccess(true);
@@ -81,8 +64,12 @@ const ConciergeModal = ({ artwork, t, children, isMulti = false, onSuccess, open
     } catch (error) {
       console.error("Inquiry error:", error);
       setIsSubmitting(false);
+      setHasError(true);
     }
   };
+
+  const set = (key) => (e) => setFormData({ ...formData, [key]: e.target.value });
+  const multiSubtitle = (t('productDetails', 'multiConciergeSubtitle') || '').replace('{n}', artwork?.items?.length || 0);
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
@@ -91,163 +78,126 @@ const ConciergeModal = ({ artwork, t, children, isMulti = false, onSuccess, open
       </Dialog.Trigger>
 
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 bg-black/60 backdrop-blur-[4px] z-[120] animate-in fade-in duration-200" />
-        <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95vw] max-w-2xl z-[121] outline-none">
+        <Dialog.Overlay className="fixed inset-0 bg-black/80 z-[120] data-[state=open]:animate-in data-[state=open]:fade-in data-[state=open]:duration-300" />
+        <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100vw-2rem)] max-w-2xl max-h-[calc(100svh-2rem)] overflow-y-auto z-[121] outline-none">
           <motion.div
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            className="bg-[#0c0c0c] border border-white/10 rounded-[2.5rem] overflow-hidden shadow-2xl relative"
+            initial={{ opacity: 0, y: reduce ? 0 : 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, ease: EASE_OUT }}
+            className="bg-[#0b0b0b] border border-white/10 rounded-[4px] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.9)] relative"
           >
-            {/* Header / Banner */}
-            <div className="relative h-32 sm:h-40 bg-gradient-to-br from-primary/20 to-transparent flex items-center px-8 sm:px-12 border-b border-white/5">
-              <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent"></div>
-              <div className="flex items-center gap-6">
-                {isMulti ? (
-                  <div className="flex -space-x-4">
-                    {artwork.items?.slice(0, 3).map((item, i) => (
-                      <div key={i} className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl overflow-hidden border-2 border-[#0c0c0c] shadow-xl relative" style={{ zIndex: 3 - i }}>
-                        <img src={item.img} alt="" className="w-full h-full object-cover" />
-                      </div>
-                    ))}
-                    {artwork.items?.length > 3 && (
-                      <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl bg-white/10 border-2 border-[#0c0c0c] flex items-center justify-center text-[10px] font-bold z-0">
-                        +{artwork.items.length - 3}
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden border border-white/20 shadow-xl">
-                    <img src={artwork?.img} alt={artwork?.name} className="w-full h-full object-cover" />
-                  </div>
-                )}
-                <div>
-                  <Dialog.Title className="text-xl sm:text-2xl font-serif text-white tracking-tight">
-                    {isMulti ? t('productDetails', 'multiConciergeTitle') || 'Toplu Danışmanlık' : t('productDetails', 'conciergeTitle')}
-                  </Dialog.Title>
-                  <Dialog.Description className="text-xs sm:text-sm text-gray-400 font-light mt-1 max-w-xs">
-                    {isMulti ? `${artwork.items?.length} ${t('allProducts', 'masterworksCount')} için bilgi alıyorsunuz.` : t('productDetails', 'conciergeSubtitle')}
-                  </Dialog.Description>
+            {/* Header */}
+            <div className="flex items-center gap-5 px-6 sm:px-10 pt-8 sm:pt-10 pb-6 border-b border-white/10">
+              {isMulti ? (
+                <div className="flex -space-x-3 flex-shrink-0">
+                  {artwork.items?.slice(0, 3).map((item, i) => (
+                    <div key={item.id || i} className="w-12 h-14 rounded-[2px] overflow-hidden ring-2 ring-[#0b0b0b]" style={{ zIndex: 3 - i }}>
+                      <img src={item.img} alt="" className="w-full h-full object-cover" />
+                    </div>
+                  ))}
+                  {artwork.items?.length > 3 && (
+                    <div className="w-12 h-14 rounded-[2px] bg-white/10 ring-2 ring-[#0b0b0b] flex items-center justify-center text-xs tabular-nums">
+                      +{artwork.items.length - 3}
+                    </div>
+                  )}
                 </div>
+              ) : (
+                <div className="w-14 h-16 sm:w-16 sm:h-20 flex-shrink-0 rounded-[2px] overflow-hidden ring-1 ring-white/10">
+                  <img src={artwork?.img} alt="" className="w-full h-full object-cover" />
+                </div>
+              )}
+              <div className="min-w-0 pr-10">
+                <Dialog.Title className="font-serif font-light text-2xl sm:text-3xl text-white leading-tight">
+                  {isMulti ? t('productDetails', 'multiConciergeTitle') : (artwork?.name || t('productDetails', 'conciergeTitle'))}
+                </Dialog.Title>
+                <Dialog.Description className="text-sm text-white/55 font-light mt-1.5">
+                  {isMulti ? multiSubtitle : t('productDetails', 'conciergeSubtitle')}
+                </Dialog.Description>
               </div>
-              <Dialog.Close className="absolute top-6 right-6 p-2 rounded-full bg-white/5 border border-white/10 text-white hover:bg-primary transition-all">
-                <X size={18} />
+              <Dialog.Close
+                aria-label={t('productDetails', 'close')}
+                className="absolute top-6 right-6 w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white/70 hover:text-white hover:border-white/60 transition-colors"
+              >
+                <X size={16} />
               </Dialog.Close>
             </div>
 
-            {/* Content Area */}
-            <div className="p-8 sm:p-12">
+            <div className="px-6 sm:px-10 py-8 sm:py-10">
               <AnimatePresence mode="wait">
                 {isSuccess ? (
                   <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="flex flex-col items-center justify-center py-12 text-center"
+                    key="done"
+                    initial={{ opacity: 0, y: reduce ? 0 : 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, ease: EASE_OUT }}
+                    className="flex flex-col items-center justify-center py-10 text-center"
+                    role="status"
                   >
-                    <div className="w-20 h-20 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center mb-6">
-                      <CheckCircle2 size={40} className="text-green-500" />
-                    </div>
-                    <h3 className="text-2xl font-serif text-white mb-2">{t('productDetails', 'successTitle')}</h3>
-                    <p className="text-gray-400 font-light">{t('productDetails', 'successDesc')}</p>
+                    <span className="w-14 h-14 rounded-full border border-primary-light/60 flex items-center justify-center mb-6 text-primary-light">
+                      <Check size={22} />
+                    </span>
+                    <h3 className="font-serif font-light text-3xl text-white mb-2">{t('productDetails', 'successTitle')}</h3>
+                    <p className="text-white/60 font-light">{t('productDetails', 'successDesc')}</p>
                   </motion.div>
                 ) : (
                   <motion.form
                     key="form"
                     onSubmit={handleSubmit}
-                    className="grid grid-cols-1 sm:grid-cols-2 gap-6"
+                    className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-7"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                   >
-                    {/* Full Name */}
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-500 flex items-center gap-2">
-                        <User size={12} className="text-primary" />
-                        {t('productDetails', 'fullNameLabel')}
-                      </label>
-                      <input
-                        required
-                        type="text"
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all outline-none"
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      />
-                    </div>
+                    <label className="block">
+                      <span className={labelClass}>{t('productDetails', 'fullNameLabel')}</span>
+                      <input required type="text" autoComplete="name" className={fieldClass} value={formData.name} onChange={set('name')} />
+                    </label>
 
-                    {/* Email */}
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-500 flex items-center gap-2">
-                        <Mail size={12} className="text-primary" />
-                        {t('productDetails', 'emailLabel')}
-                      </label>
-                      <input
-                        required
-                        type="email"
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all outline-none"
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      />
-                    </div>
+                    <label className="block">
+                      <span className={labelClass}>{t('productDetails', 'emailLabel')}</span>
+                      <input required type="email" autoComplete="email" className={fieldClass} value={formData.email} onChange={set('email')} />
+                    </label>
 
-                    {/* Location */}
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-500 flex items-center gap-2">
-                        <MapPin size={12} className="text-primary" />
-                        {t('productDetails', 'locationLabel')}
-                      </label>
-                      <input
-                        type="text"
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all outline-none"
-                        value={formData.location}
-                        onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                      />
-                    </div>
+                    <label className="block">
+                      <span className={labelClass}>{t('productDetails', 'locationLabel')}</span>
+                      <input type="text" autoComplete="address-level2" className={fieldClass} value={formData.location} onChange={set('location')} />
+                    </label>
 
-                    {/* Nature of Interest */}
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-500 flex items-center gap-2">
-                        <Info size={12} className="text-primary" />
-                        {t('productDetails', 'interestLabel')}
-                      </label>
-                      <select
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-primary/50 outline-none appearance-none"
-                        value={formData.interest}
-                        onChange={(e) => setFormData({ ...formData, interest: e.target.value })}
-                      >
-                        <option value="purchase">{t('productDetails', 'interestPurchase')}</option>
-                        <option value="viewing">{t('productDetails', 'interestViewing')}</option>
-                        <option value="framing">{t('productDetails', 'interestFraming')}</option>
-                        <option value="other">{t('productDetails', 'interestOther')}</option>
+                    <label className="block">
+                      <span className={labelClass}>{t('productDetails', 'interestLabel')}</span>
+                      <select className={`${fieldClass} appearance-none cursor-pointer`} value={formData.interest} onChange={set('interest')}>
+                        <option className="bg-[#121212]" value="purchase">{t('productDetails', 'interestPurchase')}</option>
+                        <option className="bg-[#121212]" value="commission">{t('productDetails', 'interestCommission')}</option>
+                        <option className="bg-[#121212]" value="other">{t('productDetails', 'interestOther')}</option>
                       </select>
-                    </div>
+                    </label>
 
-                    {/* Message */}
-                    <div className="sm:col-span-2 space-y-2">
-                      <label className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-500 flex items-center gap-2">
-                        <MessageSquare size={12} className="text-primary" />
-                        {t('productDetails', 'messageLabel')}
-                      </label>
-                      <textarea
-                        rows="3"
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-primary/50 outline-none resize-none"
-                        value={formData.message}
-                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      ></textarea>
-                    </div>
+                    <label className="block sm:col-span-2">
+                      <span className={labelClass}>{t('productDetails', 'messageLabel')}</span>
+                      <textarea rows="3" className={`${fieldClass} resize-none`} value={formData.message} onChange={set('message')} />
+                    </label>
 
-                    {/* Submit Button */}
-                    <div className="sm:col-span-2 pt-4">
+                    {hasError && (
+                      <p className="sm:col-span-2 text-sm text-primary-light" role="alert">
+                        {t('productDetails', 'sendError')}
+                      </p>
+                    )}
+
+                    <div className="sm:col-span-2 pt-2">
                       <button
                         disabled={isSubmitting}
                         type="submit"
-                        className="w-full bg-primary hover:bg-primary-hover text-white font-bold tracking-[0.2em] uppercase text-xs py-4 rounded-xl flex items-center justify-center gap-3 transition-all disabled:opacity-50 group"
+                        className="group relative w-full inline-flex items-center justify-center gap-3 py-4 rounded-full bg-white text-black overflow-hidden disabled:opacity-60 disabled:cursor-wait focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-light focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b0b0b]"
                       >
+                        <span aria-hidden="true" className="absolute inset-0 bg-primary origin-bottom scale-y-0 group-hover:scale-y-100 group-disabled:scale-y-0 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" />
                         {isSubmitting ? (
-                          <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }} className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full" />
+                          <span className="relative z-10 w-4 h-4 border-2 border-black/25 border-t-black rounded-full animate-spin" />
                         ) : (
                           <>
-                            {t('productDetails', 'sendInquiry')}
-                            <Send size={14} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                            <span className="relative z-10 text-xs font-semibold tracking-[0.18em] uppercase transition-colors duration-500 group-hover:text-white">
+                              {t('productDetails', 'sendInquiry')}
+                            </span>
+                            <ArrowRight size={16} className="relative z-10 transition-all duration-500 group-hover:text-white group-hover:translate-x-1" />
                           </>
                         )}
                       </button>

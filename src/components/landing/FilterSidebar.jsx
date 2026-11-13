@@ -1,33 +1,27 @@
 import React from 'react';
-import { X, Filter, ChevronRight } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import * as Dialog from '@radix-ui/react-dialog';
+import { X, Check } from 'lucide-react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { EASE_OUT } from '../motion/Reveal';
 
-const FilterSidebar = ({ 
-  isOpen, 
-  onClose, 
-  filters, 
-  setFilters, 
-  options, 
-  t 
+const FilterSidebar = ({
+  isOpen,
+  onClose,
+  filters,
+  setFilters,
+  options,
+  resultCount = 0,
+  t
 }) => {
-  const sidebarVariants = {
-    closed: { x: '100%', transition: { type: 'spring', stiffness: 300, damping: 30 } },
-    open: { x: 0, transition: { type: 'spring', stiffness: 300, damping: 30 } }
-  };
-
-  const overlayVariants = {
-    closed: { opacity: 0 },
-    open: { opacity: 1 }
-  };
+  const reduce = useReducedMotion();
 
   const toggleFilter = (category, value) => {
     setFilters(prev => {
       const current = prev[category] || [];
       if (current.includes(value)) {
         return { ...prev, [category]: current.filter(v => v !== value) };
-      } else {
-        return { ...prev, [category]: [...current, value] };
       }
+      return { ...prev, [category]: [...current, value] };
     });
   };
 
@@ -35,141 +29,131 @@ const FilterSidebar = ({
     setFilters(prev => ({ ...prev, [category]: [] }));
   };
 
-  return (
-    <AnimatePresence>
-      {isOpen && (
-        <>
-          {/* Overlay */}
-          <motion.div
-            initial="closed"
-            animate="open"
-            exit="closed"
-            variants={overlayVariants}
-            onClick={onClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60]"
-          />
+  const sections = [
+    { key: 'collections', title: t('allProducts', 'filterCollections'), items: options.collections.map(v => ({ value: v, label: v })) },
+    { key: 'techniques', title: t('allProducts', 'filterTechniques'), items: options.techniques.map(v => ({ value: v, label: v })) },
+    {
+      key: 'status', title: t('allProducts', 'filterStatus'), items: [
+        { value: 'available', label: t('allProducts', 'statusAvailable') },
+        { value: 'sold', label: t('allProducts', 'statusSold') },
+      ]
+    },
+  ].filter(s => s.items.length > 0);
 
-          {/* Sidebar */}
-          <motion.div
-            initial="closed"
-            animate="open"
-            exit="closed"
-            variants={sidebarVariants}
-            className="fixed top-0 right-0 h-full w-full max-w-[400px] bg-surface/95 backdrop-blur-2xl border-l border-white/5 z-[70] shadow-2xl overflow-y-auto"
-          >
-            <div className="p-8 pb-32">
-              <div className="flex items-center justify-between mb-12">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-primary/10 rounded-lg text-primary">
-                    <Filter size={20} />
-                  </div>
-                  <h2 className="text-2xl font-serif text-white tracking-wide">
-                    {t('allProducts', 'filterTitle') || 'Curate View'}
-                  </h2>
+  return (
+    <Dialog.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <AnimatePresence>
+        {isOpen && (
+          <Dialog.Portal forceMount>
+            <Dialog.Overlay asChild forceMount>
+              <motion.div
+                className="fixed inset-0 bg-black/70 z-[60]"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+              />
+            </Dialog.Overlay>
+
+            <Dialog.Content asChild forceMount>
+              <motion.aside
+                className="fixed top-0 right-0 h-full w-full max-w-[420px] bg-[#0b0b0b] border-l border-white/10 z-[70] flex flex-col outline-none"
+                initial={{ x: reduce ? 0 : '100%', opacity: reduce ? 0 : 1 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: reduce ? 0 : '100%', opacity: reduce ? 0 : 1 }}
+                transition={{ duration: 0.55, ease: EASE_OUT }}
+              >
+                <div className="flex items-center justify-between px-7 pt-8 pb-6 border-b border-white/10">
+                  <Dialog.Title className="font-serif font-light text-3xl text-white">
+                    {t('allProducts', 'filterTitle')}
+                  </Dialog.Title>
+                  <Dialog.Description className="sr-only">{t('allProducts', 'filterTitle')}</Dialog.Description>
+                  <Dialog.Close
+                    aria-label={t('productDetails', 'close')}
+                    className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white/70 hover:text-white hover:border-white/60 transition-colors"
+                  >
+                    <X size={16} />
+                  </Dialog.Close>
                 </div>
-                <button 
-                  onClick={onClose}
-                  className="p-2 hover:bg-white/5 rounded-full text-gray-400 hover:text-white transition-colors"
-                >
-                  <X size={24} />
-                </button>
-              </div>
 
-              {/* Collections Filter */}
-              <FilterSection 
-                title={t('allProducts', 'filterCollections') || 'Collections'}
-                items={options.collections}
-                selectedItems={filters.collections}
-                onToggle={(val) => toggleFilter('collections', val)}
-                onClear={() => clearCategory('collections')}
-              />
+                <div className="flex-1 overflow-y-auto px-7 py-4">
+                  {sections.map((section, si) => {
+                    const selected = filters[section.key] || [];
+                    return (
+                      <motion.fieldset
+                        key={section.key}
+                        className="py-6 border-b border-white/10 last:border-b-0"
+                        initial={{ opacity: 0, y: reduce ? 0 : 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.15 + si * 0.07, ease: EASE_OUT }}
+                      >
+                        <div className="flex items-center justify-between mb-3">
+                          <legend className="text-[11px] font-medium tracking-[0.18em] uppercase text-white/55">
+                            {section.title}
+                          </legend>
+                          {selected.length > 0 && (
+                            <button
+                              type="button"
+                              onClick={() => clearCategory(section.key)}
+                              className="text-[11px] tracking-[0.18em] uppercase text-primary-light hover:text-white transition-colors"
+                            >
+                              {t('allProducts', 'clearSection')}
+                            </button>
+                          )}
+                        </div>
+                        <ul>
+                          {section.items.map((item) => {
+                            const isSelected = selected.includes(item.value);
+                            return (
+                              <li key={item.value}>
+                                <button
+                                  type="button"
+                                  role="checkbox"
+                                  aria-checked={isSelected}
+                                  onClick={() => toggleFilter(section.key, item.value)}
+                                  className="group w-full flex items-center justify-between gap-4 py-3 text-left"
+                                >
+                                  <span className={`font-serif text-xl transition-colors duration-300 ${isSelected ? 'text-white' : 'text-white/60 group-hover:text-white/90'}`}>
+                                    {item.label}
+                                  </span>
+                                  <span className={`w-5 h-5 rounded-[3px] border flex items-center justify-center transition-colors duration-300 ${isSelected ? 'bg-primary border-primary text-white' : 'border-white/30 group-hover:border-white/60'}`}>
+                                    {isSelected && <Check size={13} strokeWidth={2.5} />}
+                                  </span>
+                                </button>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </motion.fieldset>
+                    );
+                  })}
+                </div>
 
-              {/* Technique/Material Filter */}
-              <FilterSection 
-                title={t('allProducts', 'filterTechniques') || 'Techniques'}
-                items={options.techniques}
-                selectedItems={filters.techniques}
-                onToggle={(val) => toggleFilter('techniques', val)}
-                onClear={() => clearCategory('techniques')}
-              />
-
-              {/* Status Filter */}
-              <FilterSection 
-                title={t('allProducts', 'filterStatus') || 'Availability'}
-                items={[
-                  { label: t('allProducts', 'statusAvailable') || 'Available', value: 'available' },
-                  { label: t('allProducts', 'statusSold') || 'Sold', value: 'sold' }
-                ]}
-                selectedItems={filters.status}
-                onToggle={(val) => toggleFilter('status', val)}
-                onClear={() => clearCategory('status')}
-                isSimple
-              />
-
-            </div>
-
-            {/* Bottom Actions */}
-            <div className="absolute bottom-0 left-0 w-full p-8 bg-surface/90 backdrop-blur-md border-t border-white/5 flex gap-4">
-              <button 
-                onClick={() => setFilters({ collections: [], techniques: [], status: [] })}
-                className="flex-1 py-4 px-6 rounded-2xl border border-white/10 text-gray-400 hover:text-white hover:bg-white/5 transition-all text-xs font-bold tracking-widest uppercase"
-              >
-                Reset
-              </button>
-              <button 
-                onClick={onClose}
-                className="flex-[2] py-4 px-6 rounded-2xl bg-primary text-white shadow-[0_10px_20px_rgba(168,50,41,0.3)] hover:scale-[1.02] transition-all text-xs font-bold tracking-widest uppercase"
-              >
-                Show Results
-              </button>
-            </div>
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
-  );
-};
-
-const FilterSection = ({ title, items, selectedItems, onToggle, onClear, isSimple }) => {
-  if (!items || items.length === 0) return null;
-
-  return (
-    <div className="mb-10 animate-fade-in">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-gray-500">
-          {title}
-        </h3>
-        {selectedItems.length > 0 && (
-          <button 
-            onClick={onClear}
-            className="text-[9px] font-bold text-primary hover:underline uppercase tracking-widest"
-          >
-            Clear
-          </button>
+                <div className="px-7 py-6 border-t border-white/10 flex items-center gap-4">
+                  <button
+                    type="button"
+                    onClick={() => setFilters({ collections: [], techniques: [], status: [] })}
+                    className="text-[11px] tracking-[0.18em] uppercase text-white/55 hover:text-white transition-colors px-2 py-3"
+                  >
+                    {t('allProducts', 'resetFilters')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="group relative ml-auto flex-1 inline-flex items-center justify-center py-4 rounded-full bg-white text-black overflow-hidden"
+                  >
+                    <span aria-hidden="true" className="absolute inset-0 bg-primary origin-bottom scale-y-0 group-hover:scale-y-100 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" />
+                    <span className="relative z-10 text-xs font-semibold tracking-[0.18em] uppercase tabular-nums transition-colors duration-500 group-hover:text-white">
+                      {(t('allProducts', 'showResults') || '').replace('{n}', resultCount)}
+                    </span>
+                  </button>
+                </div>
+              </motion.aside>
+            </Dialog.Content>
+          </Dialog.Portal>
         )}
-      </div>
-      <div className="flex flex-wrap gap-2">
-        {items.map((item) => {
-          const value = isSimple ? item.value : item;
-          const label = isSimple ? item.label : item;
-          const isSelected = selectedItems.includes(value);
-
-          return (
-            <button
-              key={value}
-              onClick={() => onToggle(value)}
-              className={`px-4 py-2 rounded-xl text-xs transition-all border ${
-                isSelected 
-                  ? 'bg-primary/20 border-primary/50 text-white shadow-[0_0_15px_rgba(168,50,41,0.2)]' 
-                  : 'bg-white/5 border-white/5 text-gray-400 hover:border-white/20 hover:text-white'
-              }`}
-            >
-              {label}
-            </button>
-          );
-        })}
-      </div>
-    </div>
+      </AnimatePresence>
+    </Dialog.Root>
   );
 };
 

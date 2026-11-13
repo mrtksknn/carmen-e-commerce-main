@@ -1,9 +1,9 @@
 export const APP_CONFIG = {
-  NAME: "Carmen E-Commerce",
+  NAME: "Piece Of Oblivion",
   BASE_URL: "https://mrtksknn.github.io/carmen-e-commerce-main",
   LOGO_URL: "/logo.svg",
-  DESCRIPTION: "Unique hand-crafted models, figures and arts by Carmen.",
-  KEYWORDS: "el yapımı çizim, özel tasarım resim, sanat eserleri, carmen e-commerce",
+  DESCRIPTION: "Original hand-made paintings and drawings by Beliz Keskin. One of a kind, certified, shipped worldwide.",
+  KEYWORDS: "Beliz Keskin, Piece Of Oblivion, özgün tablo, el yapımı tablo, çizim, sanat eseri satın al, original painting, original drawing, buy art online",
   SITEMAP_BASE_URL: "https://mrtksknn.github.io/carmen-e-commerce-main"
 };
 

@@ -1,83 +1,100 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
+import { AnimatePresence, motion, useInView, useReducedMotion } from 'framer-motion';
 import { useLanguage } from '../context/LanguageContext';
+import { Unveil, ArtworkImage } from './motion/Reveal';
+import LogoMark from './motion/LogoMark';
 
-const ArtworkCard = ({ artwork, showPrice = true }) => {
+// How long the studio mark holds in the empty frame before the curtain opens
+const INTRO_MS = 1300;
+
+/**
+ * A work as it hangs on the wall: first the studio's mark is drawn in the
+ * empty frame, then the curtain opens on the canvas. Beneath it, a small
+ * label with the room it belongs to, its title and its medium.
+ */
+const ArtworkCard = ({ artwork, delay = 0 }) => {
   const { t } = useLanguage();
+  const reduce = useReducedMotion();
+  const isSold = artwork.status === true;
+
+  const frameRef = useRef(null);
+  const seen = useInView(frameRef, { once: true, margin: '0px 0px -10% 0px' });
+  const [ready, setReady] = useState(!!reduce);
+
+  useEffect(() => {
+    if (!seen || ready) return undefined;
+    const timer = setTimeout(() => setReady(true), INTRO_MS + delay * 1000);
+    return () => clearTimeout(timer);
+  }, [seen, ready, delay]);
 
   return (
     <Link
       to={`/product/${artwork.id}`}
-      className="group relative block w-full rounded-[2rem] overflow-hidden bg-surface border border-white/5 cursor-pointer shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] hover:shadow-[0_20px_50px_rgba(168,50,41,0.2)] transition-shadow transition-transform duration-700 will-change-[box-shadow,transform] hover:-translate-y-1"
+      className="group block focus-visible:outline-none"
     >
-      {/* Image Wrapper */}
-      <figure className="relative w-full aspect-[4/5] overflow-hidden m-0">
-        <img
-          src={artwork.img}
-          alt={`${t('common', 'artworkAlt')}${artwork.name}`}
-          loading="lazy"
-          width="400"
-          height="500"
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-[15s] ease-out group-hover:scale-110 will-change-transform"
-        />
-
-        {/* Gradient Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent z-10 transition-opacity duration-700 opacity-90 group-hover:opacity-80"></div>
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-10 mix-blend-overlay"></div>
-
-        {/* Floating Top Badges & Price */}
-        <div className="absolute top-5 left-5 right-5 z-20 flex justify-between items-start">
-          <div className="flex flex-col gap-2">
-            {artwork.status === true && (
-              <div className="bg-red-500/80 backdrop-blur-md border border-white/10 text-white text-[0.6rem] font-bold tracking-[0.15em] uppercase px-3 py-1 rounded-md shadow-lg">
-                Sold
-              </div>
-            )}
-            {(!artwork.status || artwork.status === 'new') && (
-              <div className="bg-white/10 backdrop-blur-md border border-white/10 text-white text-[0.6rem] font-bold tracking-[0.15em] uppercase px-3 py-1 rounded-md shadow-lg">
-                New
-              </div>
-            )}
-          </div>
-
-          {/* Elegant Price Tag */}
-          {showPrice && artwork.price && (
-            <div className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl bg-black/40 backdrop-blur-md border border-white/10 flex flex-col items-end shadow-lg transition-transform duration-500 group-hover:-translate-y-1">
-              <span className="text-[7px] sm:text-[8px] tracking-widest uppercase text-white/60 mb-0.5">
-                Price
-              </span>
-              <span className="text-xs sm:text-sm font-bold text-white tabular-nums tracking-wide">
-                {artwork.price}₺
-              </span>
-            </div>
+      <div ref={frameRef} className="relative w-full aspect-[4/5] rounded-[3px] bg-surface ring-1 ring-inset ring-white/[0.06]">
+        {/* Intro: the mark is drawn in the empty frame, then gives way */}
+        <AnimatePresence>
+          {seen && !ready && (
+            <motion.div
+              key="intro"
+              aria-hidden="true"
+              className="absolute inset-0 flex items-center justify-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1, transition: { duration: 0.3, delay } }}
+              exit={{ opacity: 0, scale: 0.92, transition: { duration: 0.35, ease: [0.16, 1, 0.3, 1] } }}
+            >
+              <LogoMark size={56} delay={delay} />
+            </motion.div>
           )}
-        </div>
+        </AnimatePresence>
 
-        {/* Bottom Info Panel (Bento Style) */}
-        <figcaption className="absolute bottom-0 left-0 w-full p-4 sm:p-5 z-20">
-          <div className="rounded-[1.25rem] bg-black/40 backdrop-blur-xl border border-white/10 flex flex-row items-center justify-between overflow-hidden relative group-hover:bg-primary/10 transition-colors duration-700 p-4 sm:p-5 gap-4 shadow-xl">
-            
-            <div className="absolute top-0 left-6 right-6 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-40"></div>
+        <Unveil ready={ready} duration={1.2} className="absolute inset-0">
+          <figure className="absolute inset-0 m-0 overflow-hidden rounded-[3px] bg-surface shadow-[0_30px_60px_-25px_rgba(0,0,0,0.9)] group-focus-visible:ring-2 group-focus-visible:ring-primary-light group-focus-visible:ring-offset-4 group-focus-visible:ring-offset-background">
+            <ArtworkImage
+              src={artwork.img}
+              alt={`${t('common', 'artworkAlt')}${artwork.name}`}
+              drift={5}
+              loading="lazy"
+              decoding="async"
+              imgClassName={`transition-transform duration-[1600ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.05] ${isSold ? 'grayscale-[35%]' : ''}`}
+            />
+            <div aria-hidden="true" className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-[3px]" />
 
-            <div className="flex-1 min-w-0 z-10">
-              <p className="text-primary text-[9px] font-bold tracking-[0.3em] uppercase mb-1 drop-shadow-md">
-                {artwork.collections || "Curated"}
-              </p>
-              <h2 className="font-serif text-white text-lg sm:text-xl leading-tight font-light truncate drop-shadow-md group-hover:text-gray-100 transition-colors">
-                {artwork.name}
-              </h2>
-            </div>
+            {isSold && (
+              <span className="absolute top-4 left-4 px-2.5 py-1 rounded-[2px] bg-black/70 text-[11px] font-medium tracking-[0.18em] uppercase text-white/85">
+                {t('common', 'sold')}
+              </span>
+            )}
 
-            {/* Hover Arrow Button */}
-            <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full border border-white/20 bg-white/5 text-white transition-all duration-500 z-10 group-hover:bg-primary group-hover:border-primary group-hover:shadow-[0_0_15px_rgba(168,50,41,0.5)] group-hover:scale-110">
-              <ArrowRight className="-rotate-45 group-hover:rotate-0 transition-transform duration-500 w-3.5 h-3.5 sm:w-4 sm:h-4" />
-            </div>
+            <span
+              aria-hidden="true"
+              className="absolute bottom-4 right-4 w-10 h-10 rounded-full bg-black/60 border border-white/20 flex items-center justify-center text-white opacity-0 translate-y-2 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0 group-hover:bg-primary group-hover:border-primary"
+            >
+              <ArrowUpRight className="w-4 h-4" strokeWidth={1.5} />
+            </span>
+          </figure>
+        </Unveil>
+      </div>
 
-          </div>
-        </figcaption>
-        
-      </figure>
+      {/* Wall label */}
+      <div className="pt-5 min-w-0">
+        {artwork.collections && (
+          <p className="text-[11px] font-medium tracking-[0.22em] uppercase text-white/50 mb-1.5">
+            {artwork.collections}
+          </p>
+        )}
+        <h2 className="font-serif font-light text-white text-xl sm:text-2xl leading-snug line-clamp-2">
+          <span className="bg-[linear-gradient(currentColor,currentColor)] bg-no-repeat bg-[length:0%_1px] bg-[position:0_100%] group-hover:bg-[length:100%_1px] transition-[background-size] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]">
+            {artwork.name}
+          </span>
+        </h2>
+        {artwork.material && (
+          <p className="mt-1 text-sm text-white/45">{artwork.material}</p>
+        )}
+      </div>
     </Link>
   );
 };

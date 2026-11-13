@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import ArtworkCard from '../components/ArtworkCard';
 import FilterSidebar from '../components/landing/FilterSidebar';
-import { Search, SlidersHorizontal, ImageOff, X, Filter as FilterIcon } from "lucide-react";
+import { Search, X, SlidersHorizontal, ChevronDown } from "lucide-react";
 import { useLanguage } from '../context/LanguageContext';
 import { useProducts } from '../hooks/useProducts';
 import SEO from '../components/SEO';
+import { MaskLine, FadeUp } from '../components/motion/Reveal';
 
 const AllProducts = () => {
   const { t } = useLanguage();
@@ -75,13 +76,7 @@ const AllProducts = () => {
         return true;
       })
       .sort((a, b) => {
-        const getPrice = (str) => parseFloat(String(str || "0").replace(/[^\d.-]/g, ''));
-
         switch (sortBy) {
-          case 'price-asc':
-            return getPrice(a.price) - getPrice(b.price);
-          case 'price-desc':
-            return getPrice(b.price) - getPrice(a.price);
           case 'name-asc':
             return String(a.name || "").localeCompare(String(b.name || ""));
           case 'name-desc':
@@ -99,165 +94,132 @@ const AllProducts = () => {
     setActiveFilters({ collections: [], techniques: [], status: [] });
   };
 
-  const hasActiveFilters = searchTerm || sortBy !== 'newest' ||
-    activeFilters.collections.length > 0 ||
-    activeFilters.techniques.length > 0 ||
-    activeFilters.status.length > 0;
+  const filterCount = activeFilters.collections.length + activeFilters.techniques.length + activeFilters.status.length;
+  const hasActiveFilters = searchTerm || sortBy !== 'newest' || filterCount > 0;
+
+  const statusLabel = (s) => (s === 'sold' ? t('common', 'sold') : s);
 
   return (
-    <main className="relative min-h-screen bg-background text-white font-sans overflow-hidden">
+    <main className="relative min-h-screen bg-background text-white font-sans">
       <SEO
         title={t('seo', 'productsTitle')}
         description={t('seo', 'productsDesc')}
       />
 
-      {/* Cinematic Ambient Glows */}
-      <div className="absolute top-[-10%] right-[-10%] w-[55vw] h-[55vw] bg-primary/10 blur-[130px] rounded-full pointer-events-none z-0"></div>
-      <div className="absolute bottom-[20%] left-[-15%] w-[45vw] h-[45vw] bg-primary/5 blur-[120px] rounded-full pointer-events-none z-0"></div>
-
-      {/* Noise Texture Overlay */}
-      <div className="absolute inset-0 pointer-events-none z-0 opacity-20" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.85\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\' opacity=\'0.2\'/%3E%3C/svg%3E")' }}></div>
-
-      <div className='max-w-[85rem] mx-auto px-6 lg:px-20 relative z-10 pt-32 pb-20'>
+      <div className="max-w-7xl mx-auto px-6 relative pt-36 lg:pt-44 pb-36">
 
         {/* ── Header ── */}
-        <header className="text-center mb-16 flex flex-col items-center">
-          <div className="flex items-center gap-3 mb-6 animate-fade-in">
-            <div className="w-10 h-px bg-gradient-to-r from-transparent to-primary"></div>
-            <span className="text-[0.65rem] font-extrabold tracking-[0.4em] uppercase text-primary">
-              {t('allProducts', 'archiveLabel') || 'EXHIBITION WALL'}
-            </span>
-            <div className="w-10 h-px bg-gradient-to-l from-transparent to-primary"></div>
-          </div>
-
-          <h1 className="text-5xl md:text-6xl lg:text-[4.5rem] font-black mb-6 font-serif tracking-tight leading-[0.95] animate-fade-in delay-75">
-            {t('allProducts', 'heroTitle')}
+        <header className="mb-16">
+          <h1 className="font-serif font-light tracking-[-0.02em] leading-[1.02] text-[3rem] sm:text-[4rem] lg:text-[5.5rem] text-white">
+            <MaskLine delay={0.15}>{t('allProducts', 'heroTitle')}</MaskLine>
           </h1>
-          <p className="text-base md:text-lg text-gray-400 max-w-2xl mx-auto font-light leading-relaxed animate-fade-in delay-150">
-            {t('allProducts', 'heroSubtitle')}
-          </p>
+          <FadeUp delay={0.45}>
+            <p className="mt-6 text-base md:text-lg text-white/60 max-w-2xl font-light leading-relaxed">
+              {t('allProducts', 'heroSubtitle')}
+            </p>
+          </FadeUp>
         </header>
 
-        {/* ── Control Bar ── */}
-        <section className="bg-surface/40 border border-white/5 backdrop-blur-xl rounded-2xl p-4 md:p-6 mb-16 shadow-[0_20px_40px_rgba(0,0,0,0.5)] animate-fade-in delay-200 relative overflow-hidden group">
-
-          {/* Subtle glow accent */}
-          <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/10 blur-3xl rounded-full pointer-events-none group-hover:bg-primary/20 transition-colors duration-700"></div>
-
-          <div className="flex flex-col lg:flex-row gap-4 lg:items-center relative z-10">
-
+        {/* ── Controls ── */}
+        <FadeUp delay={0.6}>
+          <section className="flex flex-col lg:flex-row gap-6 lg:gap-10 lg:items-end pb-6 border-b border-white/10">
             {/* Search */}
-            <div className="relative flex-1 group/search">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-500 group-focus-within/search:text-primary transition-colors duration-300">
-                <Search size={20} />
-              </div>
+            <label className="relative flex-1 group block">
+              <span className="sr-only">{t('allProducts', 'searchLabel')}</span>
+              <Search size={18} strokeWidth={1.5} className="absolute left-0 top-1/2 -translate-y-1/2 text-white/40 group-focus-within:text-primary-light transition-colors duration-300" />
               <input
                 type="text"
-                placeholder={t('allProducts', 'searchPlaceholder') || 'Search masterworks...'}
+                placeholder={t('allProducts', 'searchPlaceholder')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-12 py-4 rounded-xl bg-black/40 border border-white/5 text-white focus:outline-none focus:bg-background focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all placeholder:text-gray-600 font-light text-sm"
+                className="w-full pl-8 pr-10 py-3 bg-transparent border-0 border-b border-white/20 text-white text-base font-light placeholder:text-white/40 focus:outline-none focus:border-primary-light transition-colors duration-300"
               />
               {searchTerm && (
-                <button onClick={() => setSearchTerm('')} className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 hover:text-primary transition-colors">
+                <button
+                  type="button"
+                  onClick={() => setSearchTerm('')}
+                  aria-label={t('allProducts', 'clearAll')}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 p-1 text-white/50 hover:text-white transition-colors"
+                >
                   <X size={16} />
                 </button>
               )}
-            </div>
+            </label>
 
-            <div className="flex items-center gap-4">
-              {/* Filter Toggle Button */}
+            <div className="flex items-center gap-6">
+              {/* Filters */}
               <button
+                type="button"
                 onClick={() => setIsSidebarOpen(true)}
-                className={`flex items-center justify-center gap-3 px-6 py-4 rounded-xl border transition-all text-sm font-medium ${activeFilters.collections.length > 0 || activeFilters.techniques.length > 0 || activeFilters.status.length > 0
-                  ? 'bg-primary/10 border-primary/40 text-primary'
-                  : 'bg-black/40 border-white/5 text-gray-400 hover:text-white hover:border-white/20'
-                  }`}
+                className={`inline-flex items-center gap-2.5 py-3 text-xs font-semibold tracking-[0.18em] uppercase transition-colors duration-300 ${filterCount > 0 ? 'text-primary-light' : 'text-white/70 hover:text-white'}`}
               >
-                <FilterIcon size={18} />
-
+                <SlidersHorizontal size={16} strokeWidth={1.5} />
+                {t('allProducts', 'filtersLabel')}
+                {filterCount > 0 && <span className="tabular-nums">({filterCount})</span>}
               </button>
 
-              {/* Sort Dropdown */}
-              <div className="relative min-w-[200px] flex-1 lg:flex-none group/sort">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-500 group-focus-within/sort:text-primary transition-colors duration-300">
-                  <SlidersHorizontal size={18} />
-                </div>
+              {/* Sort */}
+              <label className="relative inline-flex items-center">
+                <span className="sr-only">{t('allProducts', 'sortLabel')}</span>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="w-full pl-12 pr-10 py-4 rounded-xl bg-black/40 border border-white/5 text-white focus:outline-none focus:bg-background focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all cursor-pointer font-light appearance-none text-sm group-hover/sort:border-white/10"
+                  className="appearance-none bg-transparent border-0 border-b border-white/20 py-3 pr-7 text-sm text-white/80 cursor-pointer focus:outline-none focus:border-primary-light transition-colors"
                 >
                   <option value="newest" className="bg-[#121212]">{t('allProducts', 'sortNewest')}</option>
-                  <option value="price-asc" className="bg-[#121212]">{t('allProducts', 'sortPriceAsc')}</option>
-                  <option value="price-desc" className="bg-[#121212]">{t('allProducts', 'sortPriceDesc')}</option>
                   <option value="name-asc" className="bg-[#121212]">{t('allProducts', 'sortNameAsc')}</option>
                   <option value="name-desc" className="bg-[#121212]">{t('allProducts', 'sortNameDesc')}</option>
                 </select>
-                <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-gray-500">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6" /></svg>
-                </div>
-              </div>
+                <ChevronDown size={14} className="absolute right-0 pointer-events-none text-white/50" />
+              </label>
             </div>
+          </section>
+
+          {/* Active selections + count */}
+          <div className="flex flex-wrap items-center gap-3 pt-5 mb-14 min-h-[2.5rem]">
+            {hasActiveFilters && (
+              <>
+                <span className="text-[11px] tracking-[0.18em] uppercase text-white/45 mr-1">{t('allProducts', 'activeLabel')}</span>
+                {searchTerm && <Pill label={`“${searchTerm}”`} onClear={() => setSearchTerm('')} />}
+                {activeFilters.collections.map(c => (
+                  <Pill key={c} label={c} onClear={() => setActiveFilters(prev => ({ ...prev, collections: prev.collections.filter(v => v !== c) }))} />
+                ))}
+                {activeFilters.techniques.map(tech => (
+                  <Pill key={tech} label={tech} onClear={() => setActiveFilters(prev => ({ ...prev, techniques: prev.techniques.filter(v => v !== tech) }))} />
+                ))}
+                {activeFilters.status.map(s => (
+                  <Pill key={s} label={statusLabel(s)} onClear={() => setActiveFilters(prev => ({ ...prev, status: prev.status.filter(v => v !== s) }))} />
+                ))}
+                <button type="button" onClick={clearFilters} className="text-[11px] uppercase tracking-[0.18em] text-primary-light hover:text-white transition-colors ml-1">
+                  {t('allProducts', 'clearAll')}
+                </button>
+              </>
+            )}
+            <span className="ml-auto text-sm text-white/55 tabular-nums">
+              {filteredArtworks.length} {t('allProducts', 'masterworksCount')}
+            </span>
           </div>
+        </FadeUp>
 
-          {/* Active Pills Bar */}
-          {hasActiveFilters && (
-            <div className="flex flex-wrap items-center gap-3 mt-6 pt-6 border-t border-white/5 animate-fade-in relative z-10">
-              <span className="text-[10px] text-gray-500 uppercase tracking-widest font-bold mr-2">Active:</span>
-
-              {searchTerm && (
-                <Pill label={`"${searchTerm}"`} onClear={() => setSearchTerm('')} />
-              )}
-              {activeFilters.collections.map(c => (
-                <Pill key={c} label={c} onClear={() => setActiveFilters(prev => ({ ...prev, collections: prev.collections.filter(v => v !== c) }))} />
-              ))}
-              {activeFilters.techniques.map(t => (
-                <Pill key={t} label={t} onClear={() => setActiveFilters(prev => ({ ...prev, techniques: prev.techniques.filter(v => v !== t) }))} />
-              ))}
-              {activeFilters.status.map(s => (
-                <Pill key={s} label={s.toUpperCase()} onClear={() => setActiveFilters(prev => ({ ...prev, status: prev.status.filter(v => v !== s) }))} />
-              ))}
-
-              <button onClick={clearFilters} className="text-[10px] uppercase font-bold tracking-widest text-primary hover:text-white ml-auto transition-colors">
-                Clear All
-              </button>
-            </div>
-          )}
-        </section>
-
-        {/* ── Results ── */}
+        {/* ── The wall ── */}
         <section>
-          <div className="flex justify-between items-end border-b border-white/10 pb-6 mb-12">
-            <h2 className="text-3xl font-serif text-white">{t('allProducts', 'exhibitionWall') || 'Exhibition'}</h2>
-            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10">
-              <span className="text-sm font-bold text-white">{filteredArtworks.length}</span>
-              <span className="text-[10px] text-gray-400 uppercase tracking-widest font-medium">{t('allProducts', 'masterworksCount') || 'Pieces'}</span>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
             {filteredArtworks.map((artwork, i) => (
-              <div className="animate-fade-in" style={{ animationDelay: `${Math.min(i * 40, 400)}ms` }} key={artwork.id}>
-                <ArtworkCard artwork={artwork} />
-              </div>
+              <ArtworkCard key={artwork.id} artwork={artwork} delay={Math.min(i % 3, 2) * 0.12} />
             ))}
 
-            {/* Empty State */}
             {!loading && filteredArtworks.length === 0 && (
-              <div className="col-span-full flex flex-col items-center justify-center py-32 px-4 text-center border border-white/5 bg-white/[0.01] rounded-[2.5rem]">
-                <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mb-8 text-gray-700 shadow-inner">
-                  <ImageOff size={32} />
-                </div>
-                <h3 className="text-2xl font-serif text-white mb-4">{t('allProducts', 'noMasterworksTitle')}</h3>
-                <p className="text-gray-500 max-w-md mx-auto font-light leading-relaxed mb-10">
+              <div className="col-span-full py-28 text-center">
+                <h3 className="font-serif text-2xl text-white mb-3">{t('allProducts', 'noMasterworksTitle')}</h3>
+                <p className="text-white/55 max-w-md mx-auto font-light leading-relaxed mb-10">
                   {t('allProducts', 'noMasterworksDesc')}
                 </p>
                 <button
+                  type="button"
                   onClick={clearFilters}
-                  className="px-10 py-4 bg-primary text-white font-bold text-xs tracking-widest uppercase rounded-full hover:scale-105 transition-all shadow-xl"
+                  className="px-8 py-3.5 rounded-full border border-white/30 text-xs font-semibold tracking-[0.18em] uppercase text-white hover:bg-white hover:text-black transition-colors duration-500"
                 >
-                  {t('allProducts', 'clearFilters') || 'Reset Exhibition'}
+                  {t('allProducts', 'clearFilters')}
                 </button>
               </div>
             )}
@@ -265,13 +227,13 @@ const AllProducts = () => {
         </section>
       </div>
 
-      {/* Advanced Filter Sidebar */}
       <FilterSidebar
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
         filters={activeFilters}
         setFilters={setActiveFilters}
         options={filterOptions}
+        resultCount={filteredArtworks.length}
         t={t}
       />
     </main>
@@ -280,11 +242,12 @@ const AllProducts = () => {
 
 const Pill = ({ label, onClear }) => (
   <button
+    type="button"
     onClick={onClear}
-    className="group inline-flex items-center gap-2 text-[11px] bg-white/5 border border-white/10 text-gray-300 px-4 py-1.5 rounded-full hover:bg-primary/20 hover:border-primary/50 hover:text-white transition-all"
+    className="group inline-flex items-center gap-2 text-xs text-white/80 pl-3 pr-2 py-1.5 rounded-full border border-white/15 hover:border-white/40 hover:text-white transition-colors"
   >
     <span>{label}</span>
-    <X size={12} className="text-gray-500 group-hover:text-white transition-colors" />
+    <X size={12} className="text-white/50 group-hover:text-white transition-colors" />
   </button>
 );
 

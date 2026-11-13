@@ -1,4 +1,5 @@
 import './App.css';
+import { MotionConfig } from "framer-motion";
 import React, { lazy, Suspense } from 'react';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -48,6 +49,7 @@ function App() {
           <ToastProvider>
             <CustomToaster />
             <HelmetProvider>
+              <MotionConfig reducedMotion="user">
               <Router basename={import.meta.env.BASE_URL}>
                 <Suspense fallback={<LoadingFallback />}>
                   <Routes>
@@ -74,6 +76,7 @@ function App() {
                   </Routes>
                 </Suspense>
               </Router>
+              </MotionConfig>
             </HelmetProvider>
           </ToastProvider>
         </InquiryProvider>

@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import '../assets/styles/landing.css';
-import SubscriptionArea from '../components/SubscriptionArea';
 import { useLanguage } from '../context/LanguageContext';
 import { useProducts } from '../hooks/useProducts';
 import SEO from '../components/SEO';
@@ -46,7 +45,6 @@ const Landing = () => {
 
       <FeaturedExhibition t={t} galleryPieces={galleryPieces} />
 
-      <SubscriptionArea />
 
       <ArtistSection t={t} />
     </main>
