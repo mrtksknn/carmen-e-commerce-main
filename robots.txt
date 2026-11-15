@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /carmen-e-commerce-main/admin
+Disallow: /carmen-e-commerce-main/verify/
+Disallow: /carmen-e-commerce-main/en/verify/
 
 Sitemap: https://mrtksknn.github.io/carmen-e-commerce-main/sitemap.xml

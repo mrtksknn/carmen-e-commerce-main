@@ -1,48 +1,153 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
-    <loc>https://mrtksknn.github.io/carmen-e-commerce-main</loc>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
+    <loc>https://mrtksknn.github.io/carmen-e-commerce-main/</loc>
+    <lastmod>2026-11-15</lastmod>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://mrtksknn.github.io/carmen-e-commerce-main/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mrtksknn.github.io/carmen-e-commerce-main/en/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://mrtksknn.github.io/carmen-e-commerce-main/" />
+  </url>
+  <url>
+    <loc>https://mrtksknn.github.io/carmen-e-commerce-main/en/</loc>
+    <lastmod>2026-11-15</lastmod>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://mrtksknn.github.io/carmen-e-commerce-main/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mrtksknn.github.io/carmen-e-commerce-main/en/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://mrtksknn.github.io/carmen-e-commerce-main/" />
   </url>
   <url>
     <loc>https://mrtksknn.github.io/carmen-e-commerce-main/products</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-11-15</lastmod>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://mrtksknn.github.io/carmen-e-commerce-main/products" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mrtksknn.github.io/carmen-e-commerce-main/en/products" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://mrtksknn.github.io/carmen-e-commerce-main/products" />
+  </url>
+  <url>
+    <loc>https://mrtksknn.github.io/carmen-e-commerce-main/en/products</loc>
+    <lastmod>2026-11-15</lastmod>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://mrtksknn.github.io/carmen-e-commerce-main/products" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mrtksknn.github.io/carmen-e-commerce-main/en/products" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://mrtksknn.github.io/carmen-e-commerce-main/products" />
   </url>
   <url>
     <loc>https://mrtksknn.github.io/carmen-e-commerce-main/collections</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-11-15</lastmod>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://mrtksknn.github.io/carmen-e-commerce-main/collections" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mrtksknn.github.io/carmen-e-commerce-main/en/collections" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://mrtksknn.github.io/carmen-e-commerce-main/collections" />
+  </url>
+  <url>
+    <loc>https://mrtksknn.github.io/carmen-e-commerce-main/en/collections</loc>
+    <lastmod>2026-11-15</lastmod>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://mrtksknn.github.io/carmen-e-commerce-main/collections" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mrtksknn.github.io/carmen-e-commerce-main/en/collections" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://mrtksknn.github.io/carmen-e-commerce-main/collections" />
   </url>
   <url>
     <loc>https://mrtksknn.github.io/carmen-e-commerce-main/about</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-11-15</lastmod>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://mrtksknn.github.io/carmen-e-commerce-main/about" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mrtksknn.github.io/carmen-e-commerce-main/en/about" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://mrtksknn.github.io/carmen-e-commerce-main/about" />
+  </url>
+  <url>
+    <loc>https://mrtksknn.github.io/carmen-e-commerce-main/en/about</loc>
+    <lastmod>2026-11-15</lastmod>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://mrtksknn.github.io/carmen-e-commerce-main/about" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mrtksknn.github.io/carmen-e-commerce-main/en/about" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://mrtksknn.github.io/carmen-e-commerce-main/about" />
   </url>
   <url>
     <loc>https://mrtksknn.github.io/carmen-e-commerce-main/contact</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-11-15</lastmod>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://mrtksknn.github.io/carmen-e-commerce-main/contact" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mrtksknn.github.io/carmen-e-commerce-main/en/contact" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://mrtksknn.github.io/carmen-e-commerce-main/contact" />
   </url>
   <url>
-    <loc>https://mrtksknn.github.io/carmen-e-commerce-main/product/OmgFIK7f3B3q7UPTq4FR</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://mrtksknn.github.io/carmen-e-commerce-main/en/contact</loc>
+    <lastmod>2026-11-15</lastmod>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://mrtksknn.github.io/carmen-e-commerce-main/contact" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mrtksknn.github.io/carmen-e-commerce-main/en/contact" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://mrtksknn.github.io/carmen-e-commerce-main/contact" />
   </url>
   <url>
-    <loc>https://mrtksknn.github.io/carmen-e-commerce-main/product/aIq7vUhwLiY5GR6LWwdh</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://mrtksknn.github.io/carmen-e-commerce-main/eser/enantiomorph-ii</loc>
+    <lastmod>2026-11-13</lastmod>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://mrtksknn.github.io/carmen-e-commerce-main/eser/enantiomorph-ii" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mrtksknn.github.io/carmen-e-commerce-main/en/artwork/enantiomorph-ii" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://mrtksknn.github.io/carmen-e-commerce-main/eser/enantiomorph-ii" />
+    <image:image><image:loc>https://i.ibb.co/jP0vpTdc/EEFED69-D-E5-A5-4-D14-969-E-CCCCB5-A55-D91.webp</image:loc></image:image>
   </url>
   <url>
-    <loc>https://mrtksknn.github.io/carmen-e-commerce-main/product/gYGKDTTJytxOcnXT7EFe</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://mrtksknn.github.io/carmen-e-commerce-main/en/artwork/enantiomorph-ii</loc>
+    <lastmod>2026-11-13</lastmod>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://mrtksknn.github.io/carmen-e-commerce-main/eser/enantiomorph-ii" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mrtksknn.github.io/carmen-e-commerce-main/en/artwork/enantiomorph-ii" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://mrtksknn.github.io/carmen-e-commerce-main/eser/enantiomorph-ii" />
+    <image:image><image:loc>https://i.ibb.co/jP0vpTdc/EEFED69-D-E5-A5-4-D14-969-E-CCCCB5-A55-D91.webp</image:loc></image:image>
   </url>
   <url>
-    <loc>https://mrtksknn.github.io/carmen-e-commerce-main/product/jPYMgbVcBFEVwvjICQ8V</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://mrtksknn.github.io/carmen-e-commerce-main/eser/hamartia</loc>
+    <lastmod>2026-11-13</lastmod>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://mrtksknn.github.io/carmen-e-commerce-main/eser/hamartia" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mrtksknn.github.io/carmen-e-commerce-main/en/artwork/hamartia" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://mrtksknn.github.io/carmen-e-commerce-main/eser/hamartia" />
+    <image:image><image:loc>https://i.ibb.co/mChTB13k/53335-F13-1-C54-4-B80-A43-B-2-D9-E1311-B8-F4.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://mrtksknn.github.io/carmen-e-commerce-main/en/artwork/hamartia</loc>
+    <lastmod>2026-11-13</lastmod>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://mrtksknn.github.io/carmen-e-commerce-main/eser/hamartia" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mrtksknn.github.io/carmen-e-commerce-main/en/artwork/hamartia" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://mrtksknn.github.io/carmen-e-commerce-main/eser/hamartia" />
+    <image:image><image:loc>https://i.ibb.co/mChTB13k/53335-F13-1-C54-4-B80-A43-B-2-D9-E1311-B8-F4.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://mrtksknn.github.io/carmen-e-commerce-main/eser/kholos</loc>
+    <lastmod>2026-11-13</lastmod>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://mrtksknn.github.io/carmen-e-commerce-main/eser/kholos" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mrtksknn.github.io/carmen-e-commerce-main/en/artwork/kholos" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://mrtksknn.github.io/carmen-e-commerce-main/eser/kholos" />
+    <image:image><image:loc>https://i.ibb.co/Cpgrys3d/9-F05-E953-CFAD-451-C-94-A2-0446-BBEF977-F.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://mrtksknn.github.io/carmen-e-commerce-main/en/artwork/kholos</loc>
+    <lastmod>2026-11-13</lastmod>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://mrtksknn.github.io/carmen-e-commerce-main/eser/kholos" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mrtksknn.github.io/carmen-e-commerce-main/en/artwork/kholos" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://mrtksknn.github.io/carmen-e-commerce-main/eser/kholos" />
+    <image:image><image:loc>https://i.ibb.co/Cpgrys3d/9-F05-E953-CFAD-451-C-94-A2-0446-BBEF977-F.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://mrtksknn.github.io/carmen-e-commerce-main/eser/agonia</loc>
+    <lastmod>2026-11-13</lastmod>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://mrtksknn.github.io/carmen-e-commerce-main/eser/agonia" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mrtksknn.github.io/carmen-e-commerce-main/en/artwork/agonia" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://mrtksknn.github.io/carmen-e-commerce-main/eser/agonia" />
+    <image:image><image:loc>https://i.ibb.co/dwtRCRSt/73-C65-AF2-0433-4935-8-F25-65-A39-A0-AAE33.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://mrtksknn.github.io/carmen-e-commerce-main/en/artwork/agonia</loc>
+    <lastmod>2026-11-13</lastmod>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://mrtksknn.github.io/carmen-e-commerce-main/eser/agonia" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mrtksknn.github.io/carmen-e-commerce-main/en/artwork/agonia" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://mrtksknn.github.io/carmen-e-commerce-main/eser/agonia" />
+    <image:image><image:loc>https://i.ibb.co/dwtRCRSt/73-C65-AF2-0433-4935-8-F25-65-A39-A0-AAE33.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://mrtksknn.github.io/carmen-e-commerce-main/eser/enantiomorph-i</loc>
+    <lastmod>2026-11-13</lastmod>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://mrtksknn.github.io/carmen-e-commerce-main/eser/enantiomorph-i" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mrtksknn.github.io/carmen-e-commerce-main/en/artwork/enantiomorph-i" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://mrtksknn.github.io/carmen-e-commerce-main/eser/enantiomorph-i" />
+    <image:image><image:loc>https://i.ibb.co/DDX9MRLt/34-F30-AF0-5754-45-E0-85-CF-25-CFAF490-E8-D.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://mrtksknn.github.io/carmen-e-commerce-main/en/artwork/enantiomorph-i</loc>
+    <lastmod>2026-11-13</lastmod>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://mrtksknn.github.io/carmen-e-commerce-main/eser/enantiomorph-i" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mrtksknn.github.io/carmen-e-commerce-main/en/artwork/enantiomorph-i" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://mrtksknn.github.io/carmen-e-commerce-main/eser/enantiomorph-i" />
+    <image:image><image:loc>https://i.ibb.co/DDX9MRLt/34-F30-AF0-5754-45-E0-85-CF-25-CFAF490-E8-D.webp</image:loc></image:image>
   </url>
 </urlset>

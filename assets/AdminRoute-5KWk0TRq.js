@@ -1,0 +1,1 @@
+import{o as e,t}from"./react-D50QREaB.js";var n=e(t()),r=({children:e})=>{let[t,r]=(0,n.useState)(null);return(0,n.useEffect)(()=>{let e=sessionStorage.getItem(`adminAuth`)===`true`;r(e)},[]),t===null?null:e};export{r as default};
