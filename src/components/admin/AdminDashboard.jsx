@@ -1,19 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import * as Tabs from "@radix-ui/react-tabs";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { Plus, Download, LogOut, ArrowUpRight } from "lucide-react";
+import { Plus, LogOut, ArrowUpRight } from "lucide-react";
 import ProductList from "./ProductList";
 import ProductForm from "./ProductForm";
 import CollectionForm from "./CollectionForm";
 import CollectionList from "./CollectionList";
-import InquiryList from "./InquiryList";
 import AdminStats from "./AdminStats";
 import SettingsPanel from "./SettingsPanel";
 import Logo from "../ui/Logo";
 import { Button, Panel, useAdminT } from "./AdminUI";
-import { APP_CONFIG } from "../../lib/constants";
-import { deleteProduct, updateProduct, deleteCollection, subscribeToInquiries } from "../../services/firebaseService";
+import { deleteProduct, updateProduct, deleteCollection } from "../../services/firebaseService";
 
 const AdminDashboard = ({ products, collections, onLogout }) => {
   const at = useAdminT();
@@ -23,12 +21,6 @@ const AdminDashboard = ({ products, collections, onLogout }) => {
   const [showCollectionForm, setShowCollectionForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [editingCollection, setEditingCollection] = useState(null);
-  const [inquiries, setInquiries] = useState([]);
-
-  useEffect(() => {
-    const unsubscribe = subscribeToInquiries((data) => setInquiries(data));
-    return () => unsubscribe();
-  }, []);
 
   const handleEditProduct = (product) => {
     setEditingProduct(product);
@@ -77,32 +69,10 @@ const AdminDashboard = ({ products, collections, onLogout }) => {
     setEditingCollection(null);
   };
 
-  const generateSitemap = () => {
-    let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
-    const baseUrl = APP_CONFIG.SITEMAP_BASE_URL;
-    ["", "/products", "/collections", "/about", "/contact"].forEach(route => {
-      xml += `  <url>\n    <loc>${baseUrl}${route}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>${route === "" ? "1.0" : "0.8"}</priority>\n  </url>\n`;
-    });
-    products.forEach(product => {
-      xml += `  <url>\n    <loc>${baseUrl}/product/${product.id}</loc>\n    <changefreq>monthly</changefreq>\n    <priority>0.6</priority>\n  </url>\n`;
-    });
-    xml += `</urlset>`;
-    const blob = new Blob([xml], { type: "application/xml" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "sitemap.xml";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  };
 
-  const pendingCount = inquiries.filter(i => i.status !== 'replied').length;
   const tabs = [
     { value: "products", label: at('tabWorks'), count: products.length },
     { value: "collections", label: at('tabCollections'), count: collections.length },
-    { value: "inquiries", label: at('tabInquiries'), count: pendingCount, alert: pendingCount > 0 },
     { value: "settings", label: at('tabSettings') },
   ];
 
@@ -125,6 +95,7 @@ const AdminDashboard = ({ products, collections, onLogout }) => {
             <Link
               to="/"
               target="_blank"
+              rel="noopener noreferrer"
               className="hidden sm:inline-flex items-center gap-1.5 h-9 px-3 rounded-full text-[13px] text-white/60 hover:text-white hover:bg-white/[0.06] transition-colors"
             >
               {at('viewSite')}
@@ -143,12 +114,9 @@ const AdminDashboard = ({ products, collections, onLogout }) => {
             <h1 className="font-serif font-light text-5xl text-white">{at('dashTitle')}</h1>
             <p className="mt-2 text-sm text-white/50">{at('dashSubtitle')}</p>
           </div>
-          <Button variant="secondary" icon={Download} onClick={generateSitemap}>
-            {at('sitemap')}
-          </Button>
         </div>
 
-        <AdminStats products={products} inquiries={inquiries} />
+        <AdminStats products={products} />
 
         <Tabs.Root value={tab} onValueChange={setTab}>
           <Tabs.List className="flex gap-8 border-b border-white/10 mb-8 overflow-x-auto">
@@ -213,16 +181,6 @@ const AdminDashboard = ({ products, collections, onLogout }) => {
                     ) : (
                       <CollectionList products={collections} allProducts={products} onEdit={handleEditCollection} onDelete={handleDeleteCollection} />
                     )}
-                  </Panel>
-                </motion.div>
-              </Tabs.Content>
-            )}
-
-            {tab === "inquiries" && (
-              <Tabs.Content value="inquiries" forceMount asChild>
-                <motion.div key="inquiries" {...panelMotion}>
-                  <Panel title={at('inquiriesTitle')} description={at('inquiriesDesc')}>
-                    <InquiryList products={products} />
                   </Panel>
                 </motion.div>
               </Tabs.Content>

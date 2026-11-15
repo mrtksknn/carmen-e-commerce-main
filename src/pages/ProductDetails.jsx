@@ -1,19 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
+import { Link, Navigate } from '../components/ui/LocaleLink';
 import { motion, useReducedMotion } from 'framer-motion';
 import * as Dialog from '@radix-ui/react-dialog';
-import { useProduct } from "../hooks/useProduct";
+import { useProducts } from "../hooks/useProducts";
 import { useLanguage } from '../context/LanguageContext';
 import SEO from '../components/SEO';
 import { ArrowLeft, ArrowRight, X, Maximize2 } from 'lucide-react';
 import ConciergeModal from '../components/landing/ConciergeModal';
 import { MaskLine, FadeUp, Unveil, EASE_OUT } from '../components/motion/Reveal';
+import { artImage } from '../lib/artImage';
+import { artworkPath, findArtwork } from '../lib/artworkPath';
+import { APP_CONFIG } from '../lib/constants';
+import { artworkAlt, artworkDescription, artworkSchema, artworkShareImage, breadcrumbSchema, jsonLd } from '../lib/seo-data.mjs';
 
 const Details = () => {
-  const { id } = useParams();
-  const { t } = useLanguage();
+  const { slug } = useParams();
+  const location = useLocation();
+  const { t, language, lp } = useLanguage();
   const reduce = useReducedMotion();
-  const { product: data, loading: isLoading } = useProduct(id);
+  const { products, loading: isLoading } = useProducts();
+  const data = findArtwork(products, slug);
   const [activeImage, setActiveImage] = useState('');
   const [isViewerOpen, setIsViewerOpen] = useState(false);
 
@@ -42,7 +49,7 @@ const Details = () => {
 
   if (!data) return (
     <div className="min-h-screen bg-background flex items-center justify-center px-6 py-24 text-center">
-      <SEO title={t('productDetails', 'notFoundTitle')} description={t('productDetails', 'notFoundDesc')} />
+      <SEO title={t('productDetails', 'notFoundTitle')} description={t('productDetails', 'notFoundDesc')} noindex />
       <div className="max-w-lg">
         <h1 className="text-4xl md:text-5xl font-serif font-light text-white mb-4">{t('productDetails', 'notFoundTitle')}</h1>
         <p className="text-white/60 mb-10 font-light">{t('productDetails', 'notFoundDesc')}</p>
@@ -54,23 +61,26 @@ const Details = () => {
     </div>
   );
 
+  // Old (/product/<id>) or outdated addresses move to the work's current readable address
+  const artworkRoot = artworkPath(data); // Turkish form, e.g. /eser/hamartia
+  const canonicalPath = lp(artworkRoot);
+  if (location.pathname !== canonicalPath) {
+    return <Navigate to={artworkRoot} replace />;
+  }
+
   const isSold = data.status === true;
   const images = [data.img, data.img2, data.img3].filter(Boolean);
   const shown = activeImage || data.img;
 
   // Prices are not published, so the work is described as an artwork rather than a priced product
-  const artworkSchema = {
-    "@context": "https://schema.org/",
-    "@type": "VisualArtwork",
-    "name": data.name,
-    "image": data.img,
-    "description": data.description || `${data.name} — Beliz Keskin.`,
-    "creator": { "@type": "Person", "name": "Beliz Keskin" },
-    ...(data.material ? { "artMedium": data.material } : {}),
-    ...(data.dimensions ? { "size": data.dimensions } : {}),
-    "artEdition": 1,
-    "url": window.location.href
-  };
+  const schema = jsonLd(
+    artworkSchema(APP_CONFIG.BASE_URL, data, canonicalPath, language),
+    breadcrumbSchema(APP_CONFIG.BASE_URL, [
+      { name: 'Piece Of Oblivion', path: '/' },
+      { name: t('seo', 'productsTitle'), path: '/products' },
+      { name: data.name, path: artworkRoot },
+    ], language),
+  );
 
   const specs = [
     { label: t('productDetails', 'dimensionsLabel'), value: data.dimensions },
@@ -86,30 +96,32 @@ const Details = () => {
   const [planBefore, planAfter] = (t('productDetails', 'paymentNotePlan') || '').split('{email}');
 
   return (
-    <main className="bg-background min-h-screen relative font-sans pt-28 lg:pt-32 pb-32">
+    <main className="bg-background min-h-screen relative font-sans pt-28 lg:pt-32 short:pt-20 pb-32">
       <SEO
         title={data.name}
-        description={data.description || `${data.name} — Beliz Keskin.`}
-        ogImage={data.img}
-        schema={artworkSchema}
+        description={artworkDescription(data, language)}
+        ogImage={artworkShareImage(data.img)}
+        ogImageAlt={artworkAlt(data)}
+        type="article"
+        schema={schema}
       />
 
       <article className="max-w-7xl mx-auto px-6">
         <FadeUp>
           <Link
             to="/products"
-            className="group inline-flex items-center gap-3 text-xs tracking-[0.18em] uppercase font-semibold text-white/60 hover:text-white transition-colors duration-300 mb-10"
+            className="hit group inline-flex items-center gap-3 text-xs tracking-[0.18em] uppercase font-semibold text-white/60 hover:text-white transition-colors duration-300 mb-10 short:mb-5"
           >
             <ArrowLeft size={16} className="transition-transform duration-500 group-hover:-translate-x-1" />
             {t('productDetails', 'backToProducts')}
           </Link>
         </FadeUp>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 short:grid-cols-12 gap-12 short:gap-8 lg:gap-16 items-start">
 
           {/* ── The work ── */}
-          <div className="lg:col-span-7 w-full">
-            <Unveil delay={0.1} duration={1.4} className="relative w-full h-[62vh] sm:h-[70vh] lg:h-[78vh] max-h-[860px]">
+          <div className="lg:col-span-7 short:col-span-6 w-full">
+            <Unveil delay={0.1} duration={1.4} className="relative w-full h-[62vh] sm:h-[70vh] lg:h-[78vh] short:h-[82svh] max-h-[860px]">
               {/* A faint wash of light on the wall so the black frame reads against the dark page */}
               <div aria-hidden="true" className="absolute inset-0 bg-[radial-gradient(60%_55%_at_50%_45%,rgba(255,255,255,0.06),transparent_72%)]" />
 
@@ -123,12 +135,12 @@ const Details = () => {
                 >
                   <motion.img
                     key={shown}
-                    src={shown}
-                    alt={data.name}
+                    {...artImage(shown, { sizes: '(min-width: 1024px) 58vw, 100vw', maxWidth: 2400 })}
+                    alt={artworkAlt(data)}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.6, ease: EASE_OUT }}
-                    className="block w-auto h-auto max-w-full max-h-[calc(62vh-50px)] sm:max-h-[calc(70vh-60px)] lg:max-h-[min(calc(78vh-60px),800px)] object-contain"
+                    className="block w-auto h-auto max-w-full max-h-[calc(62vh-50px)] sm:max-h-[calc(70vh-60px)] lg:max-h-[min(calc(78vh-60px),800px)] short:max-h-[calc(82svh-40px)] object-contain"
                   />
                   {/* Inner lip where the canvas meets the moulding */}
                   <span aria-hidden="true" className="pointer-events-none absolute inset-[9px] sm:inset-[12px] shadow-[inset_0_0_0_1px_rgba(0,0,0,0.85),inset_0_3px_8px_rgba(0,0,0,0.45)]" />
@@ -152,7 +164,7 @@ const Details = () => {
                       aria-pressed={active}
                       className={`relative w-16 h-20 sm:w-20 sm:h-24 overflow-hidden rounded-[2px] transition-opacity duration-500 ${active ? 'opacity-100' : 'opacity-45 hover:opacity-85'}`}
                     >
-                      <img src={imgUrl} alt="" className="w-full h-full object-cover" />
+                      <img {...artImage(imgUrl, { sizes: '96px', maxWidth: 480 })} alt="" className="w-full h-full object-cover" />
                       <span aria-hidden="true" className={`absolute inset-x-0 bottom-0 h-px transition-colors duration-500 ${active ? 'bg-primary-light' : 'bg-transparent'}`} />
                     </button>
                   );
@@ -162,7 +174,7 @@ const Details = () => {
           </div>
 
           {/* ── Wall label ── */}
-          <div className="lg:col-span-5 w-full lg:sticky lg:top-32">
+          <div className="lg:col-span-5 short:col-span-6 w-full lg:sticky lg:top-32">
             {data.collections && (
               <FadeUp delay={0.3}>
                 <p className="text-[11px] font-medium tracking-[0.22em] uppercase text-white/50 mb-4">
@@ -200,7 +212,7 @@ const Details = () => {
                   {planBefore}
                   <a
                     href={purchaseMailto}
-                    className="text-white underline decoration-primary-light/70 underline-offset-4 hover:decoration-primary-light transition-colors whitespace-nowrap"
+                    className="hit text-white underline decoration-primary-light/70 underline-offset-4 hover:decoration-primary-light transition-colors whitespace-nowrap"
                   >
                     {purchaseEmail}
                   </a>
@@ -236,8 +248,8 @@ const Details = () => {
             <Dialog.Title className="sr-only">{data.name}</Dialog.Title>
             <Dialog.Description className="sr-only">{t('productDetails', 'viewLarge')}</Dialog.Description>
             <motion.img
-              src={shown}
-              alt={data.name}
+              {...artImage(shown, { sizes: '100vw', maxWidth: 2400 })}
+              alt={artworkAlt(data)}
               initial={{ opacity: 0, scale: reduce ? 1 : 0.97 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, ease: EASE_OUT }}

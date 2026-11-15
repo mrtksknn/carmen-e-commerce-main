@@ -6,6 +6,7 @@ import { X, ArrowRight } from 'lucide-react';
 import * as Dialog from '@radix-ui/react-dialog';
 import ConciergeModal from './ConciergeModal';
 import { EASE_OUT } from '../motion/Reveal';
+import { artImage } from '../../lib/artImage';
 
 const InquiryFloatingBar = () => {
   const reduce = useReducedMotion();
@@ -44,7 +45,7 @@ const InquiryFloatingBar = () => {
               <span className="flex -space-x-2">
                 {inquiryList.slice(0, 3).map((item, i) => (
                   <span key={item.id} className="w-9 h-9 rounded-full overflow-hidden ring-2 ring-[#111]" style={{ zIndex: 3 - i }}>
-                    <img src={item.img} alt="" className="w-full h-full object-cover" />
+                    <img {...artImage(item.img, { sizes: '96px', maxWidth: 480 })} alt="" className="w-full h-full object-cover" />
                   </span>
                 ))}
               </span>
@@ -96,7 +97,7 @@ const InquiryFloatingBar = () => {
                       className="flex items-center gap-4 py-4"
                     >
                       <span className="w-14 h-16 flex-shrink-0 rounded-[2px] overflow-hidden ring-1 ring-white/10">
-                        <img src={item.img} alt="" className="w-full h-full object-cover" />
+                        <img {...artImage(item.img, { sizes: '96px', maxWidth: 480 })} alt="" className="w-full h-full object-cover" />
                       </span>
                       <span className="flex-1 min-w-0">
                         <span className="block font-serif text-lg text-white leading-tight truncate">{item.name}</span>

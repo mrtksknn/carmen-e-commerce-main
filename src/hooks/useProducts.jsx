@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { subscribeToProducts } from "../services/firebaseService";
+import { sortNewestFirst } from "../lib/seo-data.mjs";
+import { registerProducts } from "../lib/artworkPath";
 
+/** The whole catalogue, newest first, kept live. */
 export const useProducts = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -9,7 +12,9 @@ export const useProducts = () => {
   useEffect(() => {
     const unsubscribe = subscribeToProducts(
       (data) => {
-        setProducts(data);
+        const sorted = sortNewestFirst(data);
+        registerProducts(sorted);
+        setProducts(sorted);
         setLoading(false);
       },
       (err) => {

@@ -6,9 +6,11 @@ import { useLanguage } from '../context/LanguageContext';
 import { useProducts } from '../hooks/useProducts';
 import SEO from '../components/SEO';
 import { MaskLine, FadeUp } from '../components/motion/Reveal';
+import { APP_CONFIG } from '../lib/constants';
+import { breadcrumbSchema, jsonLd } from '../lib/seo-data.mjs';
 
 const AllProducts = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { products, loading } = useProducts();
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -104,6 +106,7 @@ const AllProducts = () => {
       <SEO
         title={t('seo', 'productsTitle')}
         description={t('seo', 'productsDesc')}
+        schema={jsonLd(breadcrumbSchema(APP_CONFIG.BASE_URL, [{ name: 'Piece Of Oblivion', path: '/' }, { name: t('seo', 'productsTitle'), path: '/products' }], language))}
       />
 
       <div className="max-w-7xl mx-auto px-6 relative pt-36 lg:pt-44 pb-36">
@@ -203,7 +206,7 @@ const AllProducts = () => {
 
         {/* ── The wall ── */}
         <section>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 short:grid-cols-3 gap-x-8 short:gap-x-6 gap-y-16 short:gap-y-12">
             {filteredArtworks.map((artwork, i) => (
               <ArtworkCard key={artwork.id} artwork={artwork} delay={Math.min(i % 3, 2) * 0.12} />
             ))}

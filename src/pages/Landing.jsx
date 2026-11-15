@@ -9,28 +9,24 @@ import { APP_CONFIG } from '../lib/constants';
 import Hero from '../components/landing/Hero';
 import FeaturedExhibition from '../components/landing/FeaturedExhibition';
 import ArtistSection from '../components/landing/ArtistSection';
+import { jsonLd, organizationSchema, personSchema, websiteSchema } from '../lib/seo-data.mjs';
 
 const Landing = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { products } = useProducts();
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  // 1 Main Hero piece + 3 Exhibition pieces = Total 4 pieces
-  const latestProducts = products.slice(0, 4);
-  const heroPiece = latestProducts.length > 0 ? latestProducts[0] : null;
-  const galleryPieces = latestProducts.length > 1 ? latestProducts.slice(1, 4) : [];
+  // The hero is typographic; the three latest works open the exhibition below it
+  const galleryPieces = products.slice(0, 3);
 
-  const orgSchema = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": APP_CONFIG.NAME,
-    "url": window.location.origin,
-    "logo": `${window.location.origin}${APP_CONFIG.LOGO_URL}`,
-    "description": APP_CONFIG.DESCRIPTION
-  };
+  const schema = jsonLd(
+    websiteSchema(APP_CONFIG.BASE_URL),
+    organizationSchema(APP_CONFIG.BASE_URL),
+    personSchema(APP_CONFIG.BASE_URL, language),
+  );
 
   return (
     <main className="landing-container bg-background text-white font-sans overflow-hidden">
@@ -38,10 +34,10 @@ const Landing = () => {
         title={t('seo', 'homeTitle')}
         description={t('seo', 'homeDesc')}
         keywords={APP_CONFIG.KEYWORDS}
-        schema={orgSchema}
+        schema={schema}
       />
 
-      <Hero t={t} heroPiece={heroPiece} />
+      <Hero t={t} />
 
       <FeaturedExhibition t={t} galleryPieces={galleryPieces} />
 

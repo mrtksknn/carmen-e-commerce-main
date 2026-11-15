@@ -58,7 +58,7 @@ export const IconButton = ({ label, tone = 'neutral', children, className = '', 
     aria-label={label}
     title={label}
     {...props}
-    className={`w-9 h-9 inline-flex items-center justify-center rounded-full text-white/55 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-light ${iconTones[tone]} ${className}`}
+    className={`w-9 h-9 [@media(pointer:coarse)]:w-11 [@media(pointer:coarse)]:h-11 inline-flex items-center justify-center rounded-full text-white/55 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-light ${iconTones[tone]} ${className}`}
   >
     {children}
   </button>

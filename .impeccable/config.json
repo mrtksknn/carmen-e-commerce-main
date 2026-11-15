@@ -29,6 +29,12 @@
         ],
         "createdAt": "2026-11-12T18:07:05.530Z",
         "reason": "Claude decided: radial gradients are the placeholder stand-in painting in a decision sketch, not a page glow"
+      },
+      {
+        "rule": "overused-font",
+        "value": "arial",
+        "createdAt": "2026-11-15T14:32:22.911Z",
+        "reason": "Claude: Arial is the web-safe sans fallback inside email/Gmail templates, where custom web fonts do not load; the site itself uses DM Sans"
       }
     ]
   }

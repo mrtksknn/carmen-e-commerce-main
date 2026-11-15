@@ -1,10 +1,12 @@
+import { normalizeSiteUrl } from "./seo-data.mjs";
+
 export const APP_CONFIG = {
   NAME: "Piece Of Oblivion",
-  BASE_URL: "https://mrtksknn.github.io/carmen-e-commerce-main",
+  // Public address of the site. Set VITE_SITE_URL in .env when the domain changes.
+  BASE_URL: normalizeSiteUrl(import.meta.env.VITE_SITE_URL),
   LOGO_URL: "/logo.svg",
   DESCRIPTION: "Original hand-made paintings and drawings by Beliz Keskin. One of a kind, certified, shipped worldwide.",
-  KEYWORDS: "Beliz Keskin, Piece Of Oblivion, özgün tablo, el yapımı tablo, çizim, sanat eseri satın al, original painting, original drawing, buy art online",
-  SITEMAP_BASE_URL: "https://mrtksknn.github.io/carmen-e-commerce-main"
+  KEYWORDS: "Beliz Keskin, Piece Of Oblivion, özgün tablo, el yapımı tablo, çizim, sanat eseri satın al, original painting, original drawing, buy art online"
 };
 
 export const ROUTES = {
@@ -13,7 +15,7 @@ export const ROUTES = {
   COLLECTIONS: "/collections",
   ABOUT: "/about",
   CONTACT: "/contact",
-  PRODUCT_DETAILS: "/product/:id",
+  PRODUCT_DETAILS: "/eser/:slug",
   ADMIN: "/admin"
 };
 

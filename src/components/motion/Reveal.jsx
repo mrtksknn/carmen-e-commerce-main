@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useRef } from 'react';
 import { motion, useInView, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import { artImage } from '../../lib/artImage';
 
 // Shared motion language for the gallery.
 // Arrivals decelerate (expo-out); the curtain that unveils an artwork moves in-out,
@@ -120,6 +121,7 @@ export const ArtworkImage = ({
   drift = 8,
   className = '',
   imgClassName = '',
+  sizes = '100vw',
   ...imgProps
 }) => {
   const reduce = useReducedMotion();
@@ -136,7 +138,7 @@ export const ArtworkImage = ({
         style={reduce ? { top: 0, bottom: 0 } : { y, top: `-${drift}%`, bottom: `-${drift}%` }}
       >
         <motion.img
-          src={src}
+          {...artImage(src, { sizes })}
           alt={alt}
           className={`w-full h-full object-cover object-center ${imgClassName}`}
           initial={{ scale: reduce ? 1 : 1.18 }}

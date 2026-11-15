@@ -1,13 +1,15 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '../ui/LocaleLink';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import { MaskLine, FadeUp, Unveil, ArtworkImage, EASE_OUT } from '../motion/Reveal';
+import { artworkPath } from '../../lib/artworkPath';
+import { artworkAlt } from '../../lib/seo-data.mjs';
 
 const UnderlineLink = ({ to, children, className = '' }) => (
   <Link
     to={to}
-    className={`group relative inline-flex items-center gap-3 py-2 text-xs font-semibold tracking-[0.18em] uppercase text-white/60 hover:text-white transition-colors duration-500 focus-visible:outline-none focus-visible:text-white ${className}`}
+    className={`hit group relative inline-flex items-center gap-3 py-2 whitespace-nowrap text-xs font-semibold tracking-[0.18em] uppercase text-white/60 hover:text-white transition-colors duration-500 focus-visible:outline-none focus-visible:text-white ${className}`}
   >
     <span>{children}</span>
     <ArrowRight size={14} className="transition-transform duration-500 group-hover:translate-x-1" />
@@ -22,7 +24,7 @@ const FeaturedExhibition = ({ t, galleryPieces }) => {
   const pieces = galleryPieces ? galleryPieces.slice(0, 3) : [];
 
   return (
-    <section className="relative bg-background pt-16 pb-28 lg:pt-24 lg:pb-36 px-6 z-20">
+    <section id="latest-works" className="relative scroll-mt-20 bg-background pt-16 pb-28 lg:pt-24 lg:pb-36 px-6 z-20">
       <div className="max-w-7xl mx-auto relative">
 
         {/* ── Section header ── */}
@@ -68,15 +70,16 @@ const FeaturedExhibition = ({ t, galleryPieces }) => {
                 className={`${size} relative`}
               >
                 <Link
-                  to={`/product/${artwork.id}`}
+                  to={artworkPath(artwork)}
                   className="group absolute inset-0 block overflow-hidden rounded-[3px] bg-surface shadow-[0_40px_80px_-30px_rgba(0,0,0,0.85)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-light focus-visible:ring-offset-4 focus-visible:ring-offset-background"
                 >
                   <ArtworkImage
                     src={artwork.img}
-                    alt={artwork.name}
+                    alt={artworkAlt(artwork)}
                     inView
                     delay={index * 0.15}
                     drift={isFeatured ? 6 : 8}
+                    sizes={isFeatured ? '(min-width: 768px) 66vw, 100vw' : '(min-width: 768px) 33vw, 100vw'}
                     loading="lazy"
                     decoding="async"
                     imgClassName="transition-transform duration-[1600ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.05]"

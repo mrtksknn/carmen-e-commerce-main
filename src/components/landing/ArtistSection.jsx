@@ -1,19 +1,19 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '../ui/LocaleLink';
 import { ArrowRight } from 'lucide-react';
 import StudioImg from '../../assets/images/studio.webP';
 import { FadeUp, Unveil, ArtworkImage, ScrollWords } from '../motion/Reveal';
 
 const ArtistSection = ({ t }) => {
   return (
-    <section className="relative bg-background py-28 lg:py-40 px-6 z-20">
-      <div className="max-w-7xl mx-auto relative flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
+    <section className="relative bg-background py-28 short:py-16 lg:py-40 px-6 z-20">
+      <div className="max-w-7xl mx-auto relative flex flex-col md:flex-row items-center gap-16 md:gap-12 lg:gap-24">
 
         {/* ── Statement ── */}
         <div className="flex-1 w-full flex flex-col justify-center">
           <ScrollWords
             text={t('landing', 'artistQuote')}
-            className="font-serif font-light text-white leading-[1.12] tracking-[-0.01em] text-[2.25rem] sm:text-5xl lg:text-[3.5rem] mb-10 text-balance"
+            className="font-serif font-light text-white leading-[1.2] tracking-[-0.01em] text-[1.85rem] sm:text-[2.3rem] md:text-[1.75rem] lg:text-[2.3rem] xl:text-[2.75rem] mb-10 text-pretty"
           />
 
           <FadeUp inView>
@@ -25,7 +25,7 @@ const ArtistSection = ({ t }) => {
           <FadeUp inView delay={0.15}>
             <Link
               to="/about"
-              className="group relative inline-flex items-center gap-3 py-2 text-xs font-semibold tracking-[0.18em] uppercase text-white hover:text-white transition-colors duration-500 focus-visible:outline-none"
+              className="hit group relative inline-flex items-center gap-3 py-2 text-xs font-semibold tracking-[0.18em] uppercase text-white hover:text-white transition-colors duration-500 focus-visible:outline-none"
             >
               <span>{t('landing', 'artistCta')}</span>
               <ArrowRight size={14} className="transition-transform duration-500 group-hover:translate-x-1" />
@@ -38,7 +38,7 @@ const ArtistSection = ({ t }) => {
 
         {/* ── Studio ── */}
         <div className="flex-1 w-full">
-          <Unveil inView duration={1.4} className="relative aspect-[4/5] sm:aspect-square lg:aspect-[4/5]">
+          <Unveil inView duration={1.4} className="relative aspect-[4/5] sm:aspect-[4/3] md:aspect-[4/5] short:aspect-[4/3]">
             <figure className="absolute inset-0 overflow-hidden rounded-[3px] bg-surface shadow-[0_50px_100px_-30px_rgba(0,0,0,0.9)]">
               <ArtworkImage
                 src={StudioImg}

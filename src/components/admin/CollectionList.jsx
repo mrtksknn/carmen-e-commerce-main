@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { Edit2, Trash2 } from "lucide-react";
 import { IconButton, Pagination, useAdminT } from "./AdminUI";
+import { artImage } from '../../lib/artImage';
 
 const ITEMS_PER_PAGE = 8;
 
@@ -26,7 +27,30 @@ const CollectionList = ({ products, allProducts, onEdit, onDelete }) => {
 
   return (
     <>
-      <div className="overflow-x-auto -mx-4 sm:mx-0">
+      {/* Phones: one row per collection, actions on the right */}
+      <ul className="md:hidden divide-y divide-white/[0.06] border-y border-white/[0.06]">
+        {currentItems.map((collection) => (
+          <li key={collection.id} className="py-4 flex items-center gap-4">
+            <span className="w-12 h-12 shrink-0 rounded-[3px] overflow-hidden bg-white/[0.04] ring-1 ring-white/10">
+              {collection.cover && <img {...artImage(collection.cover, { sizes: '96px', maxWidth: 480 })} alt="" className="w-full h-full object-cover" />}
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="font-serif text-lg text-white leading-tight truncate">{collection.name}</p>
+              <p className="text-[12px] text-white/55 tabular-nums">{at('worksCount', { n: collection.artCount })}</p>
+            </div>
+            <div className="flex items-center gap-1 shrink-0">
+              <IconButton label={at('edit')} onClick={() => onEdit(collection)}>
+                <Edit2 size={16} strokeWidth={1.6} />
+              </IconButton>
+              <IconButton label={at('delete')} tone="danger" onClick={() => onDelete(collection.id)}>
+                <Trash2 size={16} strokeWidth={1.6} />
+              </IconButton>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <div className="hidden md:block overflow-x-auto">
         <table className="w-full min-w-[620px] text-left">
           <thead>
             <tr className="border-b border-white/10">
@@ -42,7 +66,7 @@ const CollectionList = ({ products, allProducts, onEdit, onDelete }) => {
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-4">
                     <span className="w-12 h-12 shrink-0 rounded-[3px] overflow-hidden bg-white/[0.04] ring-1 ring-white/10">
-                      {collection.cover && <img src={collection.cover} alt="" className="w-full h-full object-cover" />}
+                      {collection.cover && <img {...artImage(collection.cover, { sizes: '96px', maxWidth: 480 })} alt="" className="w-full h-full object-cover" />}
                     </span>
                     <span className="font-serif text-lg text-white">{collection.name}</span>
                   </div>

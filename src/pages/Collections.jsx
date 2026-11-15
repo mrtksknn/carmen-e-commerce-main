@@ -8,12 +8,19 @@ import ArtworkCard from '../components/ArtworkCard';
 import { useLanguage } from '../context/LanguageContext';
 import SEO from '../components/SEO';
 import { MaskLine, FadeUp, EASE_OUT } from '../components/motion/Reveal';
+import { artImage } from '../lib/artImage';
+import { registerProducts } from '../lib/artworkPath';
+import { APP_CONFIG } from '../lib/constants';
+import { breadcrumbSchema, jsonLd, slugify } from '../lib/seo-data.mjs';
+import { useParams } from 'react-router-dom';
+import { Link, Navigate } from '../components/ui/LocaleLink';
 
 const Collections = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [products, setProducts] = useState([]);
   const [collectionsInfo, setCollectionsInfo] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  // Each room has its own address: /collections/<room>; /collections shows every work
+  const { room: roomSlug } = useParams();
   const [loaded, setLoaded] = useState(false);
 
   // Embla Carousel Hook
@@ -26,6 +33,9 @@ const Collections = () => {
   const scrollNext = useCallback(() => {
     if (emblaApi) emblaApi.scrollNext();
   }, [emblaApi]);
+
+  const currentRoom = roomSlug ? collectionsInfo.find((c) => slugify(c.name) === roomSlug) : null;
+  const selectedCategory = currentRoom ? currentRoom.name : 'All';
 
   const filteredArtworks = selectedCategory === 'All'
     ? products
@@ -59,6 +69,7 @@ const Collections = () => {
           return (b.timeStamp?.seconds || 0) - (a.timeStamp?.seconds || 0);
         });
 
+        registerProducts(list);
         setProducts(list);
 
         // Map abstract collections
@@ -78,15 +89,23 @@ const Collections = () => {
   }, []);
 
   const rooms = [
-    { key: 'All', label: t('collections', 'vaultTitle'), sub: t('collections', 'vaultSubtitle'), cover: null },
-    ...collectionsInfo.map((c) => ({ key: c.name, label: c.name, sub: null, cover: c.cover })),
+    { key: 'All', label: t('collections', 'vaultTitle'), sub: t('collections', 'vaultSubtitle'), cover: null, to: '/collections' },
+    ...collectionsInfo.map((c) => ({ key: c.name, label: c.name, sub: null, cover: c.cover, to: `/collections/${slugify(c.name)}` })),
   ];
+
+  // A room that no longer exists falls back to the full gallery
+  if (roomSlug && loaded && !currentRoom) return <Navigate to="/collections" replace />;
+
+  const seoTitle = currentRoom ? `${currentRoom.name} — ${t('seo', 'collectionsTitle')}` : t('seo', 'collectionsTitle');
+  const seoCrumbs = [{ name: 'Piece Of Oblivion', path: '/' }, { name: t('seo', 'collectionsTitle'), path: '/collections' }]
+    .concat(currentRoom ? [{ name: currentRoom.name, path: `/collections/${roomSlug}` }] : []);
 
   return (
     <main className="bg-background min-h-screen text-white font-sans relative">
       <SEO
-        title={t('seo', 'collectionsTitle')}
+        title={seoTitle}
         description={t('seo', 'collectionsDesc')}
+        schema={jsonLd(breadcrumbSchema(APP_CONFIG.BASE_URL, seoCrumbs, language))}
       />
 
       {/* ── Header ── */}
@@ -114,17 +133,16 @@ const Collections = () => {
               {rooms.map((room) => {
                 const active = selectedCategory === room.key;
                 return (
-                  <button
+                  <Link
                     key={room.key}
-                    type="button"
-                    onClick={() => setSelectedCategory(room.key)}
-                    aria-pressed={active}
+                    to={room.to}
+                    aria-current={active ? 'page' : undefined}
                     className="group flex-[0_0_auto] w-[240px] md:w-[300px] text-left focus-visible:outline-none"
                   >
                     <span className={`relative block h-[150px] md:h-[190px] overflow-hidden rounded-[3px] bg-surface transition-opacity duration-500 ${active ? 'opacity-100' : 'opacity-55 group-hover:opacity-90'} group-focus-visible:ring-2 group-focus-visible:ring-primary-light group-focus-visible:ring-offset-4 group-focus-visible:ring-offset-background`}>
                       {room.cover ? (
                         <img
-                          src={room.cover}
+                          {...artImage(room.cover, { sizes: '300px', maxWidth: 800 })}
                           alt=""
                           loading="lazy"
                           className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1600ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
@@ -147,7 +165,7 @@ const Collections = () => {
                     <span aria-hidden="true" className="mt-3 block h-px bg-white/10 overflow-hidden">
                       <span className={`block h-full bg-primary-light origin-left transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${active ? 'scale-x-100' : 'scale-x-0'}`} />
                     </span>
-                  </button>
+                  </Link>
                 );
               })}
             </div>
@@ -195,7 +213,7 @@ const Collections = () => {
             </p>
           </div>
 
-          <div key={selectedCategory} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
+          <div key={selectedCategory} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 short:grid-cols-3 gap-x-8 short:gap-x-6 gap-y-16 short:gap-y-12">
             {filteredArtworks.map((artwork, i) => (
               <ArtworkCard key={artwork.id} artwork={artwork} delay={Math.min(i % 3, 2) * 0.12} />
             ))}

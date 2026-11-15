@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Gmail Şablonları · Piece Of Oblivion</title>
+<style>
+  :root { --bg:#030303; --surface:#0a0a0a; --line:#1f1d1c; --text:#ece6df; --muted:#a69e96; --accent:#f26868; --brand:#af362c; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:16px/1.6 "DM Sans", system-ui, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 56px 16px 96px; }
+  h1 { font: 300 2.6rem/1.1 "Cormorant Garamond", Georgia, serif; margin: 0 0 12px; color:#fff; }
+  h2 { font: 400 1.7rem/1.2 "Cormorant Garamond", Georgia, serif; margin: 0 0 8px; color:#fff; }
+  p.lead { color: var(--muted); margin: 0 0 48px; max-width: 60ch; }
+  section { border-top: 1px solid var(--line); padding-top: 40px; margin-top: 40px; }
+  ol { color: var(--muted); padding-left: 20px; margin: 12px 0 24px; }
+  ol li { margin: 6px 0; }
+  ol b { color: var(--text); font-weight: 500; }
+  .paper { background:#fff; color:#16120f; border-radius:3px; padding:28px 24px; overflow:auto; }
+  .row { display:flex; align-items:center; gap:16px; margin: 0 0 16px; flex-wrap: wrap; }
+  button { cursor:pointer; border:0; border-radius:999px; background:#fff; color:#030303; padding:12px 24px; font: 600 12px/1 "DM Sans", system-ui, sans-serif; letter-spacing:.16em; text-transform:uppercase; }
+  button:hover { background: var(--brand); color:#fff; }
+  button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .status { color: var(--accent); font-size: 14px; min-height: 1.6em; }
+  .note { color: var(--muted); font-size: 14px; margin-top: 16px; }
+  ::selection { background: rgba(242,104,104,.35); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Gmail şablonları</h1>
+  <p class="lead">
+    Talepleri Gmail'den yanıtlarken kullanacağınız yanıt şablonu ve imza. Her bölümdeki
+    "Kopyala" düğmesine basın, sonra Gmail'de anlatılan yere yapıştırın. Görseller siteden
+    yüklendiği için site yayına alındıktan sonra kullanın.
+  </p>
+
+  <!-- ─────────────── 1. Yanıt şablonu ─────────────── -->
+  <section aria-labelledby="t1">
+    <h2 id="t1">1. Yanıt şablonu</h2>
+    <ol>
+      <li>Gmail'de <b>Ayarlar → Tüm ayarları gör → Gelişmiş → Şablonlar → Etkinleştir</b>, en altta <b>Değişiklikleri kaydet</b>.</li>
+      <li>Aşağıdaki <b>Kopyala</b> düğmesine basın.</li>
+      <li>Gmail'de <b>Oluştur</b> ile yeni bir taslak açın, gövdeye yapıştırın (Ctrl+V).</li>
+      <li>Taslakta <b>⋮ → Şablonlar → Taslağı şablon olarak kaydet → Yeni şablon olarak kaydet</b>; adını "Piece Of Oblivion yanıt" koyun.</li>
+      <li>Bir talebi yanıtlarken: <b>Yanıtla → ⋮ → Şablonlar → Piece Of Oblivion yanıt</b>. Köşeli parantezli yerleri doldurup gönderin.</li>
+    </ol>
+    <div class="row">
+      <button type="button" data-copy="reply">Kopyala</button>
+      <span class="status" role="status" aria-live="polite" data-status="reply"></span>
+    </div>
+
+    <div class="paper">
+      <div id="reply">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:580px;border-collapse:collapse;">
+          <tr>
+            <td style="padding:0 0 28px 0;">
+              <img src="https://mrtksknn.github.io/carmen-e-commerce-main/email-header.png" width="580" alt="Piece Of Oblivion" style="display:block;width:100%;max-width:580px;height:auto;border:0;" />
+            </td>
+          </tr>
+          <tr>
+            <td style="font-family:Georgia,'Times New Roman',serif;font-size:17px;line-height:1.7;">
+              <p style="margin:0 0 18px 0;">Sayın [Ad Soyad],</p>
+              <p style="margin:0 0 18px 0;">[Yanıtınızı buraya yazın.]</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:16px 0 0 0;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
+                <tr><td style="width:48px;border-top:1px solid #af362c;font-size:1px;line-height:1px;">&nbsp;</td></tr>
+              </table>
+              <p style="margin:14px 0 0 0;font-family:Georgia,'Times New Roman',serif;font-size:20px;font-style:italic;">Beliz Keskin</p>
+              <p style="margin:4px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#736b64;">Piece Of Oblivion</p>
+              <p style="margin:10px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;"><a href="https://mrtksknn.github.io/carmen-e-commerce-main/" style="color:#af362c;text-decoration:none;">mrtksknn.github.io/carmen-e-commerce-main</a></p>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <p class="note">Metin rengi bilinçli olarak belirlenmedi: Gmail'in açık ve koyu modunda okunabilir kalsın diye her iki modda da Gmail'in kendi yazı rengini kullanır.</p>
+  </section>
+
+  <!-- ─────────────── 2. İmza ─────────────── -->
+  <section aria-labelledby="t2">
+    <h2 id="t2">2. Gmail imzası</h2>
+    <ol>
+      <li>Aşağıdaki <b>Kopyala</b> düğmesine basın.</li>
+      <li>Gmail'de <b>Ayarlar → Tüm ayarları gör → Genel → İmza → Yeni oluştur</b>; adını "Piece Of Oblivion" koyun ve kutuya yapıştırın.</li>
+      <li>Hemen altındaki <b>İmza varsayılanları</b> bölümünde "Yeni e-postalar için" ve "Yanıtlama/yönlendirme için" alanlarında bu imzayı seçin.</li>
+      <li>Sayfanın en altında <b>Değişiklikleri kaydet</b>.</li>
+    </ol>
+    <div class="row">
+      <button type="button" data-copy="signature">Kopyala</button>
+      <span class="status" role="status" aria-live="polite" data-status="signature"></span>
+    </div>
+
+    <div class="paper">
+      <div id="signature">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
+          <tr>
+            <td style="padding:0 0 10px 0;">
+              <p style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:18px;font-style:italic;">Beliz Keskin</p>
+              <p style="margin:2px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#736b64;">Piece Of Oblivion</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:0 0 8px 0;">
+              <a href="https://mrtksknn.github.io/carmen-e-commerce-main/" style="text-decoration:none;">
+                <img src="https://mrtksknn.github.io/carmen-e-commerce-main/email-header.png" width="290" alt="Piece Of Oblivion" style="display:block;width:290px;height:auto;border:0;" />
+              </a>
+            </td>
+          </tr>
+          <tr>
+            <td style="font-family:Arial,Helvetica,sans-serif;font-size:12px;">
+              <a href="https://mrtksknn.github.io/carmen-e-commerce-main/" style="color:#af362c;text-decoration:none;">mrtksknn.github.io/carmen-e-commerce-main</a>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <p class="note">İmzayı kullanırsanız yanıt şablonundaki imza kısmı tekrar etmesin diye şablonu kaydetmeden önce oradaki "Beliz Keskin" bölümünü silebilirsiniz.</p>
+  </section>
+</main>
+
+<script>
+  // Copies the rendered template as rich text, so Gmail receives the formatting and images.
+  document.querySelectorAll('[data-copy]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const id = btn.dataset.copy;
+      const node = document.getElementById(id);
+      const status = document.querySelector(`[data-status="${id}"]`);
+      let ok = false;
+      try {
+        if (window.ClipboardItem && navigator.clipboard?.write) {
+          await navigator.clipboard.write([new ClipboardItem({
+            'text/html': new Blob([node.innerHTML], { type: 'text/html' }),
+            'text/plain': new Blob([node.innerText], { type: 'text/plain' }),
+          })]);
+          ok = true;
+        }
+      } catch (e) { ok = false; }
+      if (!ok) {
+        const range = document.createRange();
+        range.selectNode(node);
+        const sel = window.getSelection();
+        sel.removeAllRanges(); sel.addRange(range);
+        try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+        sel.removeAllRanges();
+      }
+      status.textContent = ok
+        ? 'Kopyalandı. Şimdi Gmail’e yapıştırın.'
+        : 'Kopyalanamadı. Önizlemeyi fareyle seçip Ctrl+C ile kopyalayın.';
+    });
+  });
+</script>
+</body>
+</html>

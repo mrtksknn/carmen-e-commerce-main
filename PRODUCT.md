@@ -44,7 +44,7 @@ Tek bir sanatçının yalnızca orijinal, tek parça tablolarını ve çizimleri
   - React + Vite + Tailwind yığını
   - GitHub Pages yayını, `/carmen-e-commerce-main/` base yolu
   - Firebase (Firestore, Auth) veri yapısı: koleksiyon ve alan adları aynı kalacak, mevcut veriler çalışmaya devam edecek
-  - TR / EN iki dil desteği (`src/locales/tr.json`, `src/locales/en.json`). Dil cihaz diline göre seçilir: cihaz Türkçeyse TR, değilse EN. Elle dil değiştirme butonu yoktur.
+  - TR / EN iki dil desteği (`src/locales/tr.json`, `src/locales/en.json`). Dil adresten gelir (2026-11-15 kararı): Türkçe kök adreste, İngilizce `/en/` altında; eser adresi TR `/eser/<slug>`, EN `/en/artwork/<slug>`. İlk ziyarette cihaz dili bir kez yönlendirir (botlar yönlendirilmez); üst menüde küçük bir TR · EN geçişi vardır ve seçim hatırlanır.
   - EmailJS ile iletişim, ImgBB ile görsel yükleme
 - Yeniden tasarım tüm sayfaları kapsar: vitrin sayfaları, admin paneli, sertifika ve doğrulama sayfası. Çalışma ana sayfadan başlar, onaylandıktan sonra diğer sayfalara yayılır.
 - Site yalnızca koyu temada çalışır; açık tema yok.
@@ -54,7 +54,7 @@ Tek bir sanatçının yalnızca orijinal, tek parça tablolarını ve çizimleri
 - **İsimler:** Site ve marka adı **Piece Of Oblivion**; sanatçının adı **Beliz Keskin**. Sayfa başlıkları, logo ve kurumsal satırlar marka adını; eser imzası, biyografi ve sertifikadaki sanatçı satırı sanatçının adını kullanır. "Carmen" yalnızca depo ve kod içi adlarda kalır, sitede görünmez.
 - **Sabit (sanatçının seçimi, değiştirilemez):** Piece Of Oblivion logosu (`public/logo.svg`, `src/components/ui/Logo.jsx`), siyah zemin ve bordo-kırmızı vurgu rengi (mevcut değer `#af362c`).
 - Sanatçının deneyim süresi sitede belirtilmez ("on yılı aşkın" ifadesi doğru değildir).
-- **Onaylı biyografi (2026-11-14, sanatçıdan):** 1998 Ankara doğumlu; ilk, orta ve lise eğitimi Ankara'da; 2020'de Gazi Üniversitesi Radyo, Televizyon ve Sinema Bölümü mezunu. Sanat anlayışı: insanın iç dünyası, bastırılmış duyguları ve yüzleşmekten kaçındığı gerçeklikler; sanat izleyicinin duygusal konfor alanını sarsmalı, sorgulatmalı, "bakılan ile hissedilen arasındaki mesafeyi" kaldırmalı. Sitedeki biyografi metinleri (`about.bio1–3`, `landing.artistQuote/artistBio`) bu metinden türetilmiştir; yeni iddia eklenmez.
+- **Onaylı biyografi (2026-11-14, sanatçıdan):** 1998 Ankara doğumlu; ilk, orta ve lise eğitimi Ankara'da; 2020'de Gazi Üniversitesi Radyo, Televizyon ve Sinema Bölümü mezunu. Sanat anlayışı: insanın iç dünyası, bastırılmış duyguları ve yüzleşmekten kaçındığı gerçeklikler; sanat izleyicinin duygusal konfor alanını sarsmalı, sorgulatmalı, "bakılan ile hissedilen arasındaki mesafeyi" kaldırmalı. Sitedeki biyografi metinleri bu metnin **birebir** kelimeleridir (2026-11-14, sanatçının isteği): metne ekleme yapılmaz, kelimeler değiştirilmez; yalnızca tam cümleler bölümlere ayrılarak kullanılabilir (`about.bio1–2`, `about.*Desc`, `landing.artistQuote/artistBio`).
 - Marka kişiliği: lüks butik. Koyu, dramatik ve seçkin bir koleksiyoncu deneyimi.
 - Metinlerin dili yeniden önerilecek: mevcut "Kasa", "Üstat", "Başyapıt" gibi abartılı ifadeler sanatçının onayıyla yeniden yazılacak. Onay gelmeden metin değiştirilmez.
 

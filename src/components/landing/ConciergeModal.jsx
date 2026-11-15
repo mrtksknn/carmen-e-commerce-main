@@ -4,6 +4,7 @@ import { X, ArrowRight, Check } from 'lucide-react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { submitInquiry } from '../../services/inquiryService';
 import { EASE_OUT } from '../motion/Reveal';
+import { artImage } from '../../lib/artImage';
 
 const fieldClass =
   'w-full bg-transparent border-0 border-b border-white/20 px-0 py-3 text-white text-base font-light placeholder:text-white/35 focus:outline-none focus:border-primary-light transition-colors duration-300';
@@ -24,7 +25,8 @@ const ConciergeModal = ({ artwork, t, children, isMulti = false, onSuccess, open
     email: '',
     location: '',
     interest: 'purchase',
-    message: ''
+    message: '',
+    website: ''
   });
 
   const handleSubmit = async (e) => {
@@ -46,6 +48,7 @@ const ConciergeModal = ({ artwork, t, children, isMulti = false, onSuccess, open
         },
         interest: formData.interest,
         message: formData.message,
+        website: formData.website,
         artwork: artworkInfo,
         type: isMulti ? 'multi' : 'single',
         subjectLine: isMulti ? 'Toplu eser talebi' : `${artwork?.name} - Eser talebi`,
@@ -59,7 +62,7 @@ const ConciergeModal = ({ artwork, t, children, isMulti = false, onSuccess, open
       setTimeout(() => {
         setIsOpen(false);
         setIsSuccess(false);
-        setFormData({ name: '', email: '', location: '', interest: 'purchase', message: '' });
+        setFormData({ name: '', email: '', location: '', interest: 'purchase', message: '', website: '' });
       }, 3000);
     } catch (error) {
       console.error("Inquiry error:", error);
@@ -92,7 +95,7 @@ const ConciergeModal = ({ artwork, t, children, isMulti = false, onSuccess, open
                 <div className="flex -space-x-3 flex-shrink-0">
                   {artwork.items?.slice(0, 3).map((item, i) => (
                     <div key={item.id || i} className="w-12 h-14 rounded-[2px] overflow-hidden ring-2 ring-[#0b0b0b]" style={{ zIndex: 3 - i }}>
-                      <img src={item.img} alt="" className="w-full h-full object-cover" />
+                      <img {...artImage(item.img, { sizes: '96px', maxWidth: 480 })} alt="" className="w-full h-full object-cover" />
                     </div>
                   ))}
                   {artwork.items?.length > 3 && (
@@ -103,7 +106,7 @@ const ConciergeModal = ({ artwork, t, children, isMulti = false, onSuccess, open
                 </div>
               ) : (
                 <div className="w-14 h-16 sm:w-16 sm:h-20 flex-shrink-0 rounded-[2px] overflow-hidden ring-1 ring-white/10">
-                  <img src={artwork?.img} alt="" className="w-full h-full object-cover" />
+                  <img {...artImage(artwork?.img, { sizes: '160px', maxWidth: 480 })} alt="" className="w-full h-full object-cover" />
                 </div>
               )}
               <div className="min-w-0 pr-10">
@@ -148,19 +151,21 @@ const ConciergeModal = ({ artwork, t, children, isMulti = false, onSuccess, open
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                   >
+                    {/* Honeypot: hidden from people and assistive tech, filled in only by bots */}
+                    <input type="text" name="website" value={formData.website} onChange={set('website')} tabIndex={-1} autoComplete="off" aria-hidden="true" className="absolute -left-[9999px] w-px h-px opacity-0" />
                     <label className="block">
                       <span className={labelClass}>{t('productDetails', 'fullNameLabel')}</span>
-                      <input required type="text" autoComplete="name" className={fieldClass} value={formData.name} onChange={set('name')} />
+                      <input required type="text" autoComplete="name" maxLength={100} className={fieldClass} value={formData.name} onChange={set('name')} />
                     </label>
 
                     <label className="block">
                       <span className={labelClass}>{t('productDetails', 'emailLabel')}</span>
-                      <input required type="email" autoComplete="email" className={fieldClass} value={formData.email} onChange={set('email')} />
+                      <input required type="email" autoComplete="email" maxLength={254} className={fieldClass} value={formData.email} onChange={set('email')} />
                     </label>
 
                     <label className="block">
                       <span className={labelClass}>{t('productDetails', 'locationLabel')}</span>
-                      <input type="text" autoComplete="address-level2" className={fieldClass} value={formData.location} onChange={set('location')} />
+                      <input type="text" autoComplete="address-level2" maxLength={120} className={fieldClass} value={formData.location} onChange={set('location')} />
                     </label>
 
                     <label className="block">
@@ -174,7 +179,7 @@ const ConciergeModal = ({ artwork, t, children, isMulti = false, onSuccess, open
 
                     <label className="block sm:col-span-2">
                       <span className={labelClass}>{t('productDetails', 'messageLabel')}</span>
-                      <textarea rows="3" className={`${fieldClass} resize-none`} value={formData.message} onChange={set('message')} />
+                      <textarea rows="3" maxLength={4000} className={`${fieldClass} resize-none`} value={formData.message} onChange={set('message')} />
                     </label>
 
                     {hasError && (

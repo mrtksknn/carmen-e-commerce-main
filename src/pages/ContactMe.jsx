@@ -6,6 +6,8 @@ import { useLanguage } from '../context/LanguageContext';
 import SEO from '../components/SEO';
 import { submitInquiry } from '../services/inquiryService';
 import { MaskLine, FadeUp } from '../components/motion/Reveal';
+import { APP_CONFIG } from '../lib/constants';
+import { breadcrumbSchema, jsonLd } from '../lib/seo-data.mjs';
 
 const fieldClass =
   'w-full bg-transparent border-0 border-b border-white/20 px-0 py-3.5 text-white text-base md:text-lg font-light placeholder:text-white/35 focus:outline-none focus:border-primary-light transition-colors duration-300';
@@ -14,13 +16,14 @@ const labelClass = 'block text-[11px] font-medium tracking-[0.18em] uppercase te
 const ContactMe = () => {
   const location = useLocation();
   const showToast = useCustomToast();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   const [formData, setFormData] = useState({
+    website: '',
     name: '',
     email: '',
     subject: location.state?.subject || '',
@@ -42,6 +45,7 @@ const ContactMe = () => {
           location: ''
         },
         interest: formData.subject || 'General Question',
+        website: formData.website,
         message: formData.message,
         artwork: null,
         type: 'contact_form',
@@ -49,7 +53,7 @@ const ContactMe = () => {
       });
 
       showToast({ type: "success", message: t('contact', 'successMessage') });
-      setFormData({ name: '', email: '', subject: '', message: '' });
+      setFormData({ website: '', name: '', email: '', subject: '', message: '' });
     } catch (error) {
       console.error('Contact submit error:', error);
       showToast({ type: "error", message: t('contact', 'errorMessage') });
@@ -76,6 +80,7 @@ const ContactMe = () => {
       <SEO
         title={t('seo', 'contactTitle')}
         description={t('seo', 'contactDesc')}
+        schema={jsonLd(breadcrumbSchema(APP_CONFIG.BASE_URL, [{ name: 'Piece Of Oblivion', path: '/' }, { name: t('seo', 'contactTitle'), path: '/contact' }], language))}
       />
 
       <div className="max-w-7xl mx-auto px-6">
@@ -96,11 +101,14 @@ const ContactMe = () => {
           <FadeUp delay={0.6} className="lg:col-span-7">
             <h2 className="sr-only">{t('contact', 'formTitle')}</h2>
             <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-10">
+              {/* Honeypot: hidden from people and assistive tech, filled in only by bots */}
+              <input type="text" name="website" value={formData.website} onChange={handleChange} tabIndex={-1} autoComplete="off" aria-hidden="true" className="absolute -left-[9999px] w-px h-px opacity-0" />
               <label className="block">
                 <span className={labelClass}>{t('contact', 'namePlaceholder')}</span>
                 <input
                   type="text"
                   name="name"
+                  maxLength={100}
                   autoComplete="name"
                   value={formData.name}
                   onChange={handleChange}
@@ -114,6 +122,7 @@ const ContactMe = () => {
                 <input
                   type="email"
                   name="email"
+                  maxLength={254}
                   autoComplete="email"
                   value={formData.email}
                   onChange={handleChange}
@@ -160,6 +169,7 @@ const ContactMe = () => {
                 <span className={labelClass}>{t('contact', 'messageLabel')}</span>
                 <textarea
                   name="message"
+                  maxLength={4000}
                   value={formData.message}
                   onChange={handleChange}
                   required

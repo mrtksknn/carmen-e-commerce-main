@@ -1,53 +1,128 @@
-import React, { useRef } from 'react';
-import { Link } from 'react-router-dom';
-import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
-import { ArrowRight, ArrowUpRight } from 'lucide-react';
-import { MaskLine, FadeUp, Unveil, ArtworkImage, EASE_OUT } from '../motion/Reveal';
+import React, { useEffect, useRef } from 'react';
+import { Link } from '../ui/LocaleLink';
+import {
+  motion,
+  useMotionTemplate,
+  useMotionValue,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+} from 'framer-motion';
+import { ArrowRight, ArrowDown } from 'lucide-react';
+import { MaskLine, FadeUp, EASE_OUT } from '../motion/Reveal';
 
-const Hero = ({ t, heroPiece }) => {
+// The studio's mark, the same paths as the header logo, drawn here at wall
+// scale as a faint line in the dark: the room before any work is hung.
+const B_PATH = 'M 30 20 L 30 80 M 30 20 L 60 20 C 75 20, 75 45, 60 50 L 30 50 M 60 50 C 75 50, 75 80, 60 80 L 30 80';
+const C_PATH = 'M 70 30 A 30 30 0 1 0 70 70';
+
+const WallMark = ({ reduce }) => {
+  const draw = (delay, duration) => ({
+    initial: { pathLength: reduce ? 1 : 0 },
+    animate: { pathLength: 1 },
+    transition: { duration: reduce ? 0 : duration, delay, ease: [0.65, 0, 0.35, 1] },
+  });
+
+  return (
+    <svg viewBox="0 0 100 100" fill="none" aria-hidden="true" className="w-full h-full overflow-visible">
+      <motion.path d={C_PATH} stroke="rgba(255,255,255,0.07)" strokeWidth="0.6" strokeLinecap="round" {...draw(0.6, 2.4)} />
+      <motion.path
+        d={B_PATH}
+        stroke="rgba(242,104,104,0.16)"
+        strokeWidth="0.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        {...draw(0.9, 2.8)}
+      />
+    </svg>
+  );
+};
+
+const Hero = ({ t }) => {
   const reduce = useReducedMotion();
   const sectionRef = useRef(null);
 
-  // As the visitor scrolls on, the copy recedes and the painting drifts back
-  // into the wall, handing the stage to the exhibition below.
+  // A single gallery light on the wall. It settles on the title, then follows
+  // the visitor's pointer at a walking pace.
+  const lightX = useMotionValue(38);
+  const lightY = useMotionValue(46);
+  const x = useSpring(lightX, { stiffness: 40, damping: 20, mass: 1 });
+  const y = useSpring(lightY, { stiffness: 40, damping: 20, mass: 1 });
+  const light = useMotionTemplate`radial-gradient(48% 58% at ${x}% ${y}%, rgba(175,54,44,0.13), rgba(175,54,44,0.04) 45%, transparent 72%)`;
+
+  useEffect(() => {
+    if (reduce) return undefined;
+    const fine = window.matchMedia('(hover: hover) and (pointer: fine)');
+    if (!fine.matches) return undefined;
+    const el = sectionRef.current;
+    const onMove = (e) => {
+      const r = el.getBoundingClientRect();
+      lightX.set(((e.clientX - r.left) / r.width) * 100);
+      lightY.set(((e.clientY - r.top) / r.height) * 100);
+    };
+    el.addEventListener('pointermove', onMove);
+    return () => el.removeEventListener('pointermove', onMove);
+  }, [reduce, lightX, lightY]);
+
+  // As the visitor scrolls on, the title recedes into the wall and hands the
+  // stage to the works below.
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start start', 'end start'] });
-  const copyY = useTransform(scrollYProgress, [0, 1], [0, -90]);
-  const copyOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
-  const frameY = useTransform(scrollYProgress, [0, 1], [0, 60]);
-  const frameScale = useTransform(scrollYProgress, [0, 1], [1, 0.94]);
+  const copyY = useTransform(scrollYProgress, [0, 1], [0, -110]);
+  const copyOpacity = useTransform(scrollYProgress, [0, 0.65], [1, 0]);
+  const markY = useTransform(scrollYProgress, [0, 1], [0, 80]);
 
   return (
     <section
       ref={sectionRef}
-      className="relative w-full min-h-[100svh] pt-28 pb-16 lg:pt-24 z-10 flex items-center bg-background overflow-hidden"
+      className="relative w-full min-h-[100svh] pt-32 pb-10 lg:pt-28 short:pt-24 short:pb-6 z-10 flex flex-col bg-background overflow-hidden"
     >
-      {/* Single gallery light falling on the wall behind the work */}
-      <div
+      <motion.div
         aria-hidden="true"
-        className="absolute inset-0 pointer-events-none bg-[radial-gradient(60%_55%_at_72%_45%,rgba(175,54,44,0.10),transparent_70%)]"
+        className="absolute inset-0 pointer-events-none"
+        style={{ backgroundImage: light }}
       />
 
-      <div className="relative w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between px-6 lg:px-8 gap-14 lg:gap-16">
+      {/* The mark, drawn large and faint at the right of the wall */}
+      <motion.div
+        aria-hidden="true"
+        className="absolute pointer-events-none right-[-18vw] top-[12%] w-[78vw] h-[78vw] sm:right-[-10vw] sm:w-[62vw] sm:h-[62vw] lg:right-[-4vw] lg:top-[8%] lg:w-[min(52vw,88vh)] lg:h-[min(52vw,88vh)]"
+        style={reduce ? undefined : { y: markY }}
+      >
+        <WallMark reduce={reduce} />
+      </motion.div>
 
-        {/* ── Copy ── */}
-        <motion.div
-          className="w-full lg:w-[44%] flex flex-col justify-center"
-          style={reduce ? undefined : { y: copyY, opacity: copyOpacity }}
-        >
-          <h1 className="font-serif font-light leading-[1.02] tracking-[-0.02em] mb-8 text-[3rem] sm:text-[4rem] md:text-[4.75rem] lg:text-[5.5rem] text-white text-balance">
-            <MaskLine delay={0.35}>{t('landing', 'heroTitle')}</MaskLine>
-            <MaskLine delay={0.5} className="italic text-primary-light">
-              {t('landing', 'heroTitleItalic')}
-            </MaskLine>
-          </h1>
+      <motion.div
+        className="relative flex-1 w-full max-w-7xl mx-auto px-6 lg:px-8 flex flex-col justify-center"
+        style={reduce ? undefined : { y: copyY, opacity: copyOpacity }}
+      >
+        <h1 className="font-serif font-light leading-[0.98] tracking-[-0.025em] text-white text-[3.4rem] sm:text-[4.75rem] md:text-[5.25rem] lg:text-[6rem] short:text-[3.75rem] max-w-[11ch] sm:max-w-none">
+          <MaskLine delay={0.3}>{t('landing', 'heroTitle')}</MaskLine>
+          <MaskLine delay={0.45} className="italic text-primary-light sm:pl-[0.9em]">
+            {t('landing', 'heroTitleItalic')}
+          </MaskLine>
+        </h1>
 
-          <FadeUp delay={0.8}>
-            <p className="text-base md:text-lg text-white/60 font-light leading-relaxed max-w-md mb-12">
+        {/* A hairline drawn under the title, the line the rest of the page hangs from */}
+        <motion.span
+          aria-hidden="true"
+          className="block h-px bg-white/15 mt-12 lg:mt-16 short:mt-6 origin-left"
+          initial={{ scaleX: reduce ? 1 : 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 1.4, delay: 0.75, ease: EASE_OUT }}
+        />
+
+        <div className="mt-10 short:mt-6 grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8 items-start">
+          <FadeUp delay={0.9} className="md:col-span-6 lg:col-span-5">
+            <p className="text-base md:text-lg text-white/65 font-light leading-relaxed max-w-md text-pretty">
               {t('landing', 'heroSubtitle')}
             </p>
           </FadeUp>
 
-          <FadeUp delay={0.95} className="flex flex-row items-center flex-wrap gap-x-8 gap-y-4">
+          <FadeUp
+            delay={1.05}
+            className="md:col-span-6 lg:col-span-6 lg:col-start-7 flex flex-row items-center flex-wrap gap-x-8 gap-y-4 md:justify-end"
+          >
             <Link
               to="/collections"
               className="group relative inline-flex items-center gap-3 pl-8 pr-7 py-4 bg-white text-black rounded-full overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-light focus-visible:ring-offset-2 focus-visible:ring-offset-background"
@@ -64,87 +139,43 @@ const Hero = ({ t, heroPiece }) => {
 
             <Link
               to="/about"
-              className="group relative inline-flex items-center py-2 text-xs font-semibold tracking-[0.18em] uppercase text-white/60 hover:text-white transition-colors duration-500 focus-visible:outline-none focus-visible:text-white"
+              className="hit group relative inline-flex items-center py-2 text-xs font-semibold tracking-[0.18em] uppercase text-white/65 hover:text-white transition-colors duration-500 focus-visible:outline-none focus-visible:text-white"
             >
               {t('landing', 'heroCtaSecondary')}
-              <span
-                aria-hidden="true"
-                className="absolute left-0 right-0 -bottom-0.5 h-px bg-white/25 overflow-hidden"
-              >
+              <span aria-hidden="true" className="absolute left-0 right-0 -bottom-0.5 h-px bg-white/25 overflow-hidden">
                 <span className="absolute inset-0 bg-primary-light origin-left scale-x-0 group-hover:scale-x-100 group-focus-visible:scale-x-100 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" />
               </span>
             </Link>
           </FadeUp>
-        </motion.div>
+        </div>
+      </motion.div>
 
-        {/* ── The work ── */}
-        <motion.div
-          className="w-full lg:w-[52%] relative"
-          style={reduce ? undefined : { y: frameY, scale: frameScale }}
-        >
-          {heroPiece ? (
-            <Unveil delay={0.1} duration={1.5} className="relative w-full h-[440px] sm:h-[540px] lg:h-[74vh] max-h-[720px]">
-              <Link
-                to={`/product/${heroPiece.id}`}
-                className="group absolute inset-0 block overflow-hidden rounded-[3px] bg-surface shadow-[0_50px_100px_-30px_rgba(0,0,0,0.9)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-light focus-visible:ring-offset-4 focus-visible:ring-offset-background"
-              >
-                <ArtworkImage
-                  src={heroPiece.img || ''}
-                  alt={heroPiece.name}
-                  delay={0.1}
-                  drift={5}
-                  fetchpriority="high"
-                  decoding="async"
-                  imgClassName="transition-transform duration-[1600ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
-                />
-
-                {/* Legibility for the caption only; the painting stays untinted */}
-                <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
-                <div aria-hidden="true" className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-[3px]" />
-
-                {/* Wall label */}
-                <motion.div
-                  className="absolute inset-x-0 bottom-0 p-6 sm:p-8 flex items-end justify-between gap-6"
-                  initial={{ opacity: 0, y: reduce ? 0 : 14 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.9, delay: 1.35, ease: EASE_OUT }}
-                >
-                  <div className="min-w-0">
-                    {heroPiece.collections && (
-                      <p className="text-[11px] font-medium tracking-[0.22em] uppercase text-white/60 mb-2">
-                        {heroPiece.collections}
-                      </p>
-                    )}
-                    <h2 className="font-serif font-light text-white text-2xl sm:text-4xl leading-tight line-clamp-2 text-balance">
-                      {heroPiece.name}
-                    </h2>
-                    {heroPiece.material && (
-                      <p className="mt-2 text-sm text-white/70">{heroPiece.material}</p>
-                    )}
-                  </div>
-
-                  <span className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-full border border-white/30 flex items-center justify-center text-white transition-all duration-500 group-hover:bg-primary group-hover:border-primary">
-                    <ArrowUpRight className="w-5 h-5 transition-transform duration-500 group-hover:rotate-45" strokeWidth={1.5} />
-                  </span>
-                </motion.div>
-              </Link>
-            </Unveil>
-          ) : (
-            <div
-              className="w-full h-[440px] sm:h-[540px] lg:h-[74vh] max-h-[720px] rounded-[3px] bg-surface ring-1 ring-inset ring-white/5 flex items-center justify-center"
-              role="status"
-            >
-              <motion.span
-                className="text-white/40 font-serif italic text-lg"
-                animate={reduce ? undefined : { opacity: [0.3, 0.8, 0.3] }}
-                transition={{ repeat: Infinity, duration: 2.4, ease: 'easeInOut' }}
-              >
-                {t('landing', 'curatingVault')}
-              </motion.span>
-            </div>
+      {/* Way down to the works */}
+      <motion.a
+        href="#latest-works"
+        onClick={(e) => {
+          const target = document.getElementById('latest-works');
+          if (!target) return;
+          e.preventDefault();
+          target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+        }}
+        className="group relative mx-auto mt-12 flex flex-col items-center gap-3 text-[11px] font-semibold tracking-[0.22em] uppercase text-white/50 hover:text-white transition-colors duration-500 focus-visible:outline-none focus-visible:text-white"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.9, delay: 1.5, ease: EASE_OUT }}
+      >
+        <span>{t('landing', 'featuredTitle')}</span>
+        <span aria-hidden="true" className="relative block w-px h-10 bg-white/15 overflow-hidden">
+          {!reduce && (
+            <motion.span
+              className="absolute inset-x-0 top-0 h-1/2 bg-primary-light"
+              animate={{ y: ['-100%', '200%'] }}
+              transition={{ duration: 2.2, repeat: Infinity, ease: [0.65, 0, 0.35, 1], repeatDelay: 0.6 }}
+            />
           )}
-        </motion.div>
-      </div>
+        </span>
+        <ArrowDown aria-hidden="true" className="w-3.5 h-3.5 -mt-1 transition-transform duration-500 group-hover:translate-y-0.5" strokeWidth={1.5} />
+      </motion.a>
     </section>
   );
 };

@@ -36,5 +36,10 @@ module.exports = {
   },
   plugins: [
     require('@tailwindcss/typography'),
+    // short: phones held sideways (wide but very short); compacts tall layouts.
+    // A variant rather than a raw screen, because a raw screen switches off
+    // Tailwind's max-[…] / min-[…] variants.
+    // ':root &' lifts specificity so short: wins over md:/lg: rules emitted after it.
+    ({ addVariant }) => addVariant('short', '@media (orientation: landscape) and (max-height: 500px) { :root & }'),
   ],
 }

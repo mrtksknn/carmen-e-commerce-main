@@ -1,0 +1,1 @@
+import{C as e}from"./Reveal-D0YZmNJ9.js";var t=e(`ChevronDown`,[[`path`,{d:`m6 9 6 6 6-6`,key:`qrunsl`}]]);export{t};

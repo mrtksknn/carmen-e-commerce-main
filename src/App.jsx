@@ -41,46 +41,56 @@ const queryClient = new QueryClient({
   },
 });
 
+// The storefront exists twice: Turkish at the root and English under /en/.
+// Only the artwork segment differs (/eser/… and /en/artwork/…).
+const storefrontRoutes = (artworkSegment) => (
+  <>
+    <Route index element={<Landing />} />
+    <Route path="products" element={<AllProducts />} />
+    <Route path="collections" element={<Collections />} />
+    <Route path="collections/:room" element={<Collections />} />
+    <Route path="about" element={<AboutMe />} />
+    <Route path="contact" element={<ContactMe />} />
+    <Route path={`${artworkSegment}/:slug`} element={<Details />} />
+    {/* Old addresses (/product/<firestore id>) forward to the readable one */}
+    <Route path="product/:slug" element={<Details />} />
+    <Route path="verify/:certId" element={<VerifyCertificate />} />
+  </>
+);
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <LanguageProvider>
-        <InquiryProvider>
-          <ToastProvider>
-            <CustomToaster />
-            <HelmetProvider>
-              <MotionConfig reducedMotion="user">
-              <Router basename={import.meta.env.BASE_URL}>
-                <Suspense fallback={<LoadingFallback />}>
-                  <Routes>
-                    <Route path="/" element={<Layout />}>
-                      <Route index element={<Landing />} />
-                      <Route path="products" element={<AllProducts />} />
-                      <Route path="collections" element={<Collections />} />
-                      <Route path="about" element={<AboutMe />} />
-                      <Route path="contact" element={<ContactMe />} />
-                      <Route path="product/:id" element={<Details />} />
-                      <Route path="verify/:certId" element={<VerifyCertificate />} />
-                    </Route>
-                    <Route
-                      path="/admin"
-                      element={
-                        <AdminRoute>
-                          <Admin />
-                        </AdminRoute>
-                      }
-                    />
-                    
-                    {/* 404 Catch-all */}
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </Suspense>
-              </Router>
-              </MotionConfig>
-            </HelmetProvider>
-          </ToastProvider>
-        </InquiryProvider>
-      </LanguageProvider>
+      <Router basename={import.meta.env.BASE_URL}>
+        <LanguageProvider>
+          <InquiryProvider>
+            <ToastProvider>
+              <CustomToaster />
+              <HelmetProvider>
+                <MotionConfig reducedMotion="user">
+                  <Suspense fallback={<LoadingFallback />}>
+                    <Routes>
+                      <Route path="/" element={<Layout />}>{storefrontRoutes('eser')}</Route>
+                      <Route path="/en" element={<Layout />}>{storefrontRoutes('artwork')}</Route>
+                      <Route
+                        path="/admin"
+                        element={
+                          <AdminRoute>
+                            <Admin />
+                          </AdminRoute>
+                        }
+                      />
+
+                      {/* 404 Catch-all */}
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  </Suspense>
+                </MotionConfig>
+              </HelmetProvider>
+            </ToastProvider>
+          </InquiryProvider>
+        </LanguageProvider>
+      </Router>
     </QueryClientProvider>
   );
 }

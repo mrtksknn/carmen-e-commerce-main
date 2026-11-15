@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { Link } from '../components/ui/LocaleLink';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowRight, Check } from 'lucide-react';
 import { verifyCertificate } from '../services/firebaseService';
@@ -60,7 +61,7 @@ const VerifyCertificate = () => {
 
   return (
     <main className="min-h-screen bg-background text-white pt-36 lg:pt-44 pb-32 px-6">
-      <SEO title={t('verify', 'title')} />
+      <SEO title={t('verify', 'title')} noindex />
 
       <div className="max-w-3xl mx-auto">
         {!certificate ? (
@@ -70,7 +71,7 @@ const VerifyCertificate = () => {
             </h1>
             <FadeUp delay={0.35}>
               <p className="mt-6 text-white/60 font-light leading-relaxed text-base md:text-lg max-w-xl">{t('verify', 'failDesc')}</p>
-              <Link to="/contact" className="group mt-10 inline-flex items-center gap-3 text-xs font-semibold tracking-[0.18em] uppercase text-white/70 hover:text-white transition-colors">
+              <Link to="/contact" className="hit group mt-10 inline-flex items-center gap-3 text-xs font-semibold tracking-[0.18em] uppercase text-white/70 hover:text-white transition-colors">
                 {t('verify', 'contact')}
                 <ArrowRight size={14} className="transition-transform duration-500 group-hover:translate-x-1" />
               </Link>

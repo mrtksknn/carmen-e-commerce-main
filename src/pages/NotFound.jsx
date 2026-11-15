@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '../components/ui/LocaleLink';
 import { ArrowLeft } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import SEO from '../components/SEO';
@@ -10,7 +10,7 @@ const NotFound = () => {
 
   return (
     <main className="min-h-[100svh] bg-background text-white flex items-center px-6">
-      <SEO title={t('notFound', 'title')} />
+      <SEO title={t('notFound', 'title')} noindex />
       <div className="w-full max-w-7xl mx-auto">
         <FadeUp>
           <p className="font-serif italic text-2xl text-primary-light mb-6 tabular-nums">{t('notFound', 'errorCode')}</p>

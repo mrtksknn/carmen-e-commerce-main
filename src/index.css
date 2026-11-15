@@ -68,6 +68,23 @@
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. */
 
 @layer utilities {
+  /* Text links that look small but must be easy to tap: on touch screens the
+     hit area grows to at least 44px tall without changing how the link looks. */
+  .hit {
+    position: relative;
+  }
+  @media (pointer: coarse) {
+    .hit::before {
+      content: "";
+      position: absolute;
+      left: -6px;
+      right: -6px;
+      top: 50%;
+      height: max(44px, 100%);
+      transform: translateY(-50%);
+    }
+  }
+
   .logo-text-glow {
     text-shadow: 0 0 15px rgba(242, 104, 104, 0.4);
   }

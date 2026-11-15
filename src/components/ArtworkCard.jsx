@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from './ui/LocaleLink';
 import { ArrowUpRight } from 'lucide-react';
 import { AnimatePresence, motion, useInView, useReducedMotion } from 'framer-motion';
 import { useLanguage } from '../context/LanguageContext';
 import { Unveil, ArtworkImage } from './motion/Reveal';
 import LogoMark from './motion/LogoMark';
+import { artworkPath } from '../lib/artworkPath';
+import { artworkAlt } from '../lib/seo-data.mjs';
 
 // How long the studio mark holds in the empty frame before the curtain opens
 const INTRO_MS = 1300;
@@ -31,7 +33,7 @@ const ArtworkCard = ({ artwork, delay = 0 }) => {
 
   return (
     <Link
-      to={`/product/${artwork.id}`}
+      to={artworkPath(artwork)}
       className="group block focus-visible:outline-none"
     >
       <div ref={frameRef} className="relative w-full aspect-[4/5] rounded-[3px] bg-surface ring-1 ring-inset ring-white/[0.06]">
@@ -55,8 +57,9 @@ const ArtworkCard = ({ artwork, delay = 0 }) => {
           <figure className="absolute inset-0 m-0 overflow-hidden rounded-[3px] bg-surface shadow-[0_30px_60px_-25px_rgba(0,0,0,0.9)] group-focus-visible:ring-2 group-focus-visible:ring-primary-light group-focus-visible:ring-offset-4 group-focus-visible:ring-offset-background">
             <ArtworkImage
               src={artwork.img}
-              alt={`${t('common', 'artworkAlt')}${artwork.name}`}
+              alt={artworkAlt(artwork)}
               drift={5}
+              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
               loading="lazy"
               decoding="async"
               imgClassName={`transition-transform duration-[1600ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.05] ${isSold ? 'grayscale-[35%]' : ''}`}

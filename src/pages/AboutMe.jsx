@@ -1,14 +1,16 @@
 import React, { useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link } from '../components/ui/LocaleLink';
 import { ArrowRight } from "lucide-react";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useLanguage } from "../context/LanguageContext";
 import SEO from "../components/SEO";
 import StudioImg from "../assets/images/studio.webP";
 import { MaskLine, FadeUp, ScrollWords, EASE_OUT } from "../components/motion/Reveal";
+import { APP_CONFIG } from '../lib/constants';
+import { breadcrumbSchema, jsonLd, personSchema } from '../lib/seo-data.mjs';
 
 const AboutMe = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const reduce = useReducedMotion();
   const heroRef = useRef(null);
 
@@ -31,10 +33,18 @@ const AboutMe = () => {
 
   return (
     <main className="bg-background min-h-screen text-white font-sans relative">
-      <SEO title={t("seo", "aboutTitle")} description={t("seo", "aboutDesc")} />
+      <SEO
+        title={t("seo", "aboutTitle")}
+        description={t("seo", "aboutDesc")}
+        type="profile"
+        schema={jsonLd(
+          personSchema(APP_CONFIG.BASE_URL, language),
+          breadcrumbSchema(APP_CONFIG.BASE_URL, [{ name: "Piece Of Oblivion", path: "/" }, { name: t("seo", "aboutTitle"), path: "/about" }], language),
+        )}
+      />
 
       {/* ── The studio ── */}
-      <section ref={heroRef} className="relative h-[100svh] w-full flex items-end overflow-hidden">
+      <section ref={heroRef} className="relative min-h-[100svh] pt-28 w-full flex items-end overflow-hidden">
         <motion.div
           className="absolute inset-0"
           style={reduce ? undefined : { y: imgY, scale: imgScale }}
@@ -47,10 +57,10 @@ const AboutMe = () => {
         <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-background" />
 
         <motion.div
-          className="relative w-full max-w-7xl mx-auto px-6 pb-24 lg:pb-32"
+          className="relative w-full max-w-7xl mx-auto px-6 pb-24 short:pb-10 lg:pb-32"
           style={reduce ? undefined : { y: copyY, opacity: copyOpacity }}
         >
-          <h1 className="font-serif font-light tracking-[-0.02em] leading-[1.02] text-[3rem] sm:text-[4.5rem] lg:text-[6rem] text-white max-w-4xl">
+          <h1 className="font-serif font-light tracking-[-0.02em] leading-[1.02] text-[3rem] sm:text-[4.5rem] lg:text-[6rem] short:text-[3.25rem] text-white max-w-4xl">
             <MaskLine delay={0.4}>{t("about", "heroTitle")}</MaskLine>
             <MaskLine delay={0.55} className="italic text-primary-light">
               {t("about", "heroTitleHighlight")}
@@ -65,24 +75,20 @@ const AboutMe = () => {
       {/* ── The artist: view of art (read as you scroll), then biography and approach ── */}
       <section className="relative py-28 lg:py-40 px-6">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-14 lg:gap-20">
-          <div className="lg:col-span-7">
-            <ScrollWords
-              text={t("about", "bio1")}
-              className="font-serif font-light text-[1.75rem] sm:text-[2.1rem] lg:text-[2.4rem] leading-[1.25] text-white"
-            />
-          </div>
-          <div className="lg:col-span-5 lg:pt-3">
+          {/* The approved biography, verbatim and in its own order: the life first, then the view of art */}
+          <div className="lg:col-span-4 lg:pt-3">
             <FadeUp inView>
               <span aria-hidden="true" className="block w-12 h-px bg-primary-light mb-8" />
               <p className="text-white/70 font-light leading-relaxed text-base md:text-lg max-w-prose">
                 {t("about", "bio2")}
               </p>
             </FadeUp>
-            <FadeUp inView delay={0.15}>
-              <p className="mt-6 text-white/60 font-light leading-relaxed text-base md:text-lg max-w-prose">
-                {t("about", "bio3")}
-              </p>
-            </FadeUp>
+          </div>
+          <div className="lg:col-span-8">
+            <ScrollWords
+              text={t("about", "bio1")}
+              className="font-serif font-light text-[1.75rem] sm:text-[2.1rem] lg:text-[2.4rem] leading-[1.25] text-white"
+            />
           </div>
         </div>
       </section>
@@ -94,13 +100,6 @@ const AboutMe = () => {
             <h2 className="lg:col-span-5 font-serif font-light text-[2.5rem] md:text-6xl leading-[1.04] tracking-[-0.02em] text-white">
               <MaskLine inView>{t("about", "doctrineTitle")}</MaskLine>
             </h2>
-            {t("about", "doctrineSubtitle") && (
-              <FadeUp inView delay={0.15} className="lg:col-span-6 lg:col-start-7 lg:pt-4">
-                <p className="text-white/60 font-light leading-relaxed text-base md:text-lg">
-                  {t("about", "doctrineSubtitle")}
-                </p>
-              </FadeUp>
-            )}
           </div>
 
           <ol className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-10">

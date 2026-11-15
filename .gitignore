@@ -31,3 +31,6 @@ yarn-error.log*
 .impeccable/mocks/
 .impeccable/questions/
 .impeccable/review/
+
+# Firestore rules are applied in the Firebase console; the local copy names the admin account
+firestore.rules

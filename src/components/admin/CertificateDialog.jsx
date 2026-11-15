@@ -5,6 +5,7 @@ import { Printer, X, ShieldCheck } from "lucide-react";
 import CertificateOfAuthenticity from "./CertificateOfAuthenticity";
 import { generateCertificate } from "../../services/firebaseService";
 import { AdminDialog, Button, Field, inputClass, useAdminT } from "./AdminUI";
+import { artImage } from '../../lib/artImage';
 
 /**
  * Issues a certificate for one work: asks for the collector's name, saves the
@@ -63,7 +64,7 @@ const CertificateDialog = ({ open, onOpenChange, artwork, defaultCollector = "",
         <form onSubmit={handleGenerate} className="space-y-6">
           <div className="flex items-center gap-4">
             {artwork.img && (
-              <img src={artwork.img} alt="" className="w-14 h-16 object-cover rounded-[3px] ring-1 ring-white/10" />
+              <img {...artImage(artwork.img, { sizes: '64px', maxWidth: 480 })} alt="" className="w-14 h-16 object-cover rounded-[3px] ring-1 ring-white/10" />
             )}
             <div>
               <p className="text-[12px] text-white/50">{at("certArtwork")}</p>
